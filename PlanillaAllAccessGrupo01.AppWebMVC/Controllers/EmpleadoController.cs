@@ -24,5 +24,30 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(await planillaDbContext.ToListAsync());
         }
 
+        public IActionResult Create()
+        {
+            ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados, "Id", "Id");
+            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos, "Id", "Id");
+            ViewData["TipoDeHorarioId"] = new SelectList(_context.TipodeHorarios, "Id", "Id");
+            return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,Usuario,Password,PuestoTrabajoId")] Empleado empleado)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(empleado);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados, "Id", "Id", empleado.JefeInmediatoId);
+            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos, "Id", "Id", empleado.PuestoTrabajoId);
+            ViewData["TipoDeHorarioId"] = new SelectList(_context.TipodeHorarios, "Id", "Id", empleado.TipoDeHorarioId);
+            return View(empleado);
+        }
+
     } 
 }
