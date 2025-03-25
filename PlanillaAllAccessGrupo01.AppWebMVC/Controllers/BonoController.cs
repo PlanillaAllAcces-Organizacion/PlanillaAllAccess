@@ -95,16 +95,11 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // GET: Bono/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var bono = await _context.Bonos.FindAsync(id);
-            if (bono == null)
-            {
-                return NotFound();
-            }
+            if (bono == null)return NotFound();
+
             return View(bono);
         }
 
@@ -115,10 +110,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,NombreBono,Valor,Estado,FechaValidacion,FechaExpiracion,Operacion,Planilla")] Bono bono)
         {
-            if (id != bono.Id)
-            {
-                return NotFound();
-            }
+            if (id != bono.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -129,14 +121,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BonoExists(bono.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!BonoExists(bono.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
