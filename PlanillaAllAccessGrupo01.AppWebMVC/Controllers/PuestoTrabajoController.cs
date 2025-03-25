@@ -91,5 +91,44 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
+        //HTTP POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NombrePuesto,SalarioBase,ValorxHora,ValorExtra,Estado")] PuestoTrabajo puestoTrabajo)
+        {
+            if (id != puestoTrabajo.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(puestoTrabajo);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PuestoTrabajoExists(puestoTrabajo.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(puestoTrabajo);
+        }
+
+        private bool PuestoTrabajoExists(int id)
+        {
+            return _context.PuestoTrabajos.Any(e => e.Id == id);
+        }
+
+
     }
 }
