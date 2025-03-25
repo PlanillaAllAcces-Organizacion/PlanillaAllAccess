@@ -40,7 +40,32 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return View(await query.ToListAsync());
         }
+        public IActionResult Create()
+        {
+            var estados = new List<SelectListItem>
+            {
+                new  SelectListItem{ Value="1",Text="Activo" },
+                new  SelectListItem{ Value="0",Text="Inactivo" }
+            };
 
+            ViewBag.Estados = estados;
+            return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,NombrePuesto,SalarioBase,ValorxHora,ValorExtra,Estado")] PuestoTrabajo puestoTrabajo)
+        {
+            if (ModelState.IsValid)
+            {
+                puestoTrabajo.FechaCreacion = DateTime.Now;
+                _context.Add(puestoTrabajo);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(puestoTrabajo);
+        }
 
     }
 }
