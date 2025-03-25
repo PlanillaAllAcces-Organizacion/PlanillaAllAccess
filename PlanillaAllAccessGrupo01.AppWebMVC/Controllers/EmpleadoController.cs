@@ -119,7 +119,25 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetSalarioBase(int puestoTrabajoId)
+        {
+            var puesto = await _context.PuestoTrabajos
+                .Where(p => p.Id == puestoTrabajoId)
+                .Select(p => new { SalarioBase = p.SalarioBase })
+                .FirstOrDefaultAsync();
+
+            if (puesto == null)
+            {
+                return NotFound();
+            }
+
+            return Json(new { salarioBase = puesto.SalarioBase });
+        }
+
     }
+
+}
 
 
 }
