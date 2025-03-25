@@ -1,0 +1,88 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Bono
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0"> Crear Nuevo Bono</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NombreBono" class="form-label fw-bold">Nombre del Bono</label>
+                        <input asp-for="NombreBono" class="form-control shadow-sm" />
+                        <span asp-validation-for="NombreBono" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Valor" class="form-label fw-bold">Valor</label>
+                        <input asp-for="Valor" type="number" step="0.01" class="form-control shadow-sm" />
+                        <span asp-validation-for="Valor" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Estado" class="form-label fw-bold">Estado</label>
+                        <select asp-for="Estado" class="form-select shadow-sm">
+                            <option value="0"> ---Seleccionnar---</option>
+                            <option value="1"> Activo</option>
+                            <option value="2"> Inactivo</option>
+                        </select>
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Operacion" class="form-label fw-bold">Operación</label>
+                        <select asp-for="Operacion" class="form-select shadow-sm">
+                            <option value="0"> ---Seleccionnar---</option>
+                            <option value="1"> Operacion Fija</option>
+                            <option value="2"> Operacion No fija</option>
+                        </select>
+                        <span asp-validation-for="Operacion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FechaValidacion" class="form-label fw-bold">Fecha de Validación</label>
+                        <input asp-for="FechaValidacion" type="date" class="form-control shadow-sm" />
+                        <span asp-validation-for="FechaValidacion" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FechaExpiracion" class="form-label fw-bold">Fecha de Expiración</label>
+                        <input asp-for="FechaExpiracion" type="date" class="form-control shadow-sm" />
+                        <span asp-validation-for="FechaExpiracion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Planilla" class="form-label fw-bold">Planilla</label>
+                    <select asp-for="Planilla" class="form-select shadow-sm">
+                        <option value="0"> ---Seleccionnar---</option>
+                        <option value="1"> Planilla Mensual</option>
+                        <option value="2"> Planilla Quicenal</option>
+                    </select>
+                    <span asp-validation-for="Planilla" class="text-danger"></span>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success shadow-sm px-4">💾 Guardar</button>
+                    <a asp-action="Index" class="btn btn-secondary shadow-sm px-4">🔙 Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
