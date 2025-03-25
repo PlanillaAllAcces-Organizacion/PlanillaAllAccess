@@ -1,0 +1,49 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Empleado
+   
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<br />
+<br />
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="card shadow-lg" style="border-radius: 1rem; background-color: #f8f9fa;">
+            <div class="row g-0">
+                <div class="col-md-6 col-lg-5 d-none d-md-block">
+                    <img src="" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                </div>
+
+                <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                    <div class="card-body p-4 p-lg-5 text-black">
+                        <form asp-action="Login">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="text-center mb-3 pb-1">
+                                <span class="h1 fw-bold mb-0" style="color: #007bff;">Iniciar Sesión</span>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label asp-for="Correo" class="form-label" style="font-weight: bold; color: #333;"></label>
+                                <input asp-for="Correo" class="form-control form-control-lg" />
+                                <span asp-validation-for="Correo" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label asp-for="Password" class="form-label" style="font-weight: bold; color: #333;"></label>
+                                <input asp-for="Password" class="form-control form-control-lg" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg btn-block" style="background-color: #007bff; border-color: #007bff;">
+                                Iniciar Sesión
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

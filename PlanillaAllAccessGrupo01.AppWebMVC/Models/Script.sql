@@ -1,5 +1,5 @@
 ﻿
-CREATE DATABASE PlanilaDB
+CREATE DATABASE PlanillaDB
 
 GO
 
