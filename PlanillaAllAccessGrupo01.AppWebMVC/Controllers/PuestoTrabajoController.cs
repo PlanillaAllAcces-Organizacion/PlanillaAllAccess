@@ -67,5 +67,29 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(puestoTrabajo);
         }
 
+        //HTTP GET
+        public async Task<IActionResult> Edit(int? id)
+        {
+            var estados = new List<SelectListItem>
+            {
+                new  SelectListItem{ Value="1",Text="Activo" },
+                new  SelectListItem{ Value="0",Text="Inactivo" }
+            };
+
+            ViewBag.Estados = estados;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(id);
+            if (puestoTrabajo == null)
+            {
+                return NotFound();
+            }
+            return View(puestoTrabajo);
+        }
+
+
     }
 }
