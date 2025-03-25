@@ -37,7 +37,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewBag.Estados = estados;
 
             ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
-            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos, "Id", "NombrePuesto");
+            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario");
             return View();
         }
