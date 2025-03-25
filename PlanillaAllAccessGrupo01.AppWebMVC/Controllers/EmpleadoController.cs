@@ -86,6 +86,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             if (ModelState.IsValid)
             {
+                empleado.Password = CalcularHashMD5(empleado.Password);
                 _context.Add(empleado);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -95,6 +96,27 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos, "Id", "NombrePuesto", empleado.PuestoTrabajoId);
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
             return View(empleado);
+        }
+
+        private string CalcularHashMD5(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return null;
+            }
+
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
         }
 
     }
