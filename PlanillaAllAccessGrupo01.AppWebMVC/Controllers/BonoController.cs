@@ -73,6 +73,16 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombreBono,Valor,Estado,FechaValidacion,FechaExpiracion,Operacion,Planilla")] Bono bono)
         {
+
+            // Validación manual en el controlador
+            if (bono.FechaValidacion != null && bono.FechaExpiracion != null)
+            {
+                if (bono.FechaExpiracion <= bono.FechaValidacion)
+                {
+                    ModelState.AddModelError("FechaExpiracion", "La fecha de expiración debe ser mayor que la fecha de validación.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(bono);
