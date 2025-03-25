@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Models;
@@ -56,11 +57,19 @@ public partial class Empleado
     public string? Usuario { get; set; }
 
     [Display(Name = "Contraseña")]
+    [DataType(DataType.Password)]
     [RegularExpression(@"^[A-Za-z\d]{8}$", ErrorMessage = "La contraseña debe tener exactamente 8 caracteres y estar compuesta solo por letras o números.")]
-    public string? Password { get; set; }
+    public string? Password { get; set; } = null;
 
     [Display(Name = "Puesto de Trabajo")]
     public int? PuestoTrabajoId { get; set; }
+
+    [NotMapped]
+    [StringLength(40, MinimumLength = 5, ErrorMessage = "El password debe tener entre 5 y 50 caracteres.")]
+    [Display(Name = "Confirm contraseña")]
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
+    public string? ConfirmarPassword { get; set; } = null!;
 
     public virtual ICollection<AsignacionBono> AsignacionBonos { get; set; } = new List<AsignacionBono>();
 
