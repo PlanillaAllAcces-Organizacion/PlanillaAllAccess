@@ -4,43 +4,47 @@
     ViewData["Title"] = "Puestos de Trabajo";
 }
 
-<h1 class="text-center text-dark">Puestos de Trabajo</h1>
+<h1 class="text-center text-primary mb-4"> Puestos de Trabajo</h1>
 
-<form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
-    <div class="row g-3">
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Nombre del Puesto</label>
-            <input type="text" name="nombrePuesto" class="form-control" placeholder="Ingrese el nombre" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Estado</label>
-            <select name="estado" class="form-select">
-                <option value="2">Todos</option>
-                <option value="1">Activo</option>
-                <option value="0">Inactivo</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Registros a mostrar</label>
-            <select name="top" class="form-select">
-                <option value="10">Mostrar 10</option>
-                <option value="20">Mostrar 20</option>
-                <option value="50">Mostrar 50</option>
-                <option value="100">Mostrar 100</option>
-            </select>
-        </div>
-    </div>
+<div class="card shadow-lg">
+    <div class="card-body bg-light">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Nombre del Puesto</label>
+                <input type="text" name="nombrePuesto" class="form-control" placeholder="Ingrese el nombre" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Estado</label>
+                <select name="estado" class="form-select">
+                    <option value="2">Todos</option>
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Registros a mostrar</label>
+                <select name="top" class="form-select">
+                    <option value="10">Mostrar 10</option>
+                    <option value="20">Mostrar 20</option>
+                    <option value="50">Mostrar 50</option>
+                    <option value="100">Mostrar 100</option>
+                </select>
+            </div>
 
-    <div class="row mt-3">
-        <div class="col-md-12 d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-            <a class="btn btn-success" asp-action="Create">Crear Puesto</a>
-        </div>
+            <div class="col-md-12 d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <a class="btn btn-success" asp-action="Create">
+                    <i class="fas fa-plus"></i> Crear Puesto
+                </a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 <div class="table-responsive mt-4">
-    <table class="table table-bordered table-striped table-hover" id="myTable">
+    <table class="table table-bordered table-hover shadow-sm" id="myTable">
         <thead class="table-dark text-center align-middle">
             <tr>
                 <th>@Html.DisplayNameFor(model => model.NombrePuesto)</th>
@@ -60,18 +64,16 @@
                     <td>$@Html.DisplayFor(modelItem => item.SalarioBase)</td>
                     <td>$@Html.DisplayFor(modelItem => item.ValorxHora)</td>
                     <td>$@Html.DisplayFor(modelItem => item.ValorExtra)</td>
-                    <td>
+                    <td class="text-center">
                         <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">
                             @ViewBag.Estados[item.Estado]
                         </span>
                     </td>
                     <td>@item.FechaCreacion.ToString("dd/MM/yyyy")</td>
                     <td class="text-center">
-                        <div class="btn-group" role="group">
-                            <a class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Detalles</a>
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-                        </div>
+                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
                     </td>
                 </tr>
             }
@@ -79,11 +81,10 @@
     </table>
 </div>
 
-
 @section Scripts {
     <script>
         $(document).ready(function() {
-            $('#bonosTable').DataTable({
+            $('#myTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
                 }
