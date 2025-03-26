@@ -172,6 +172,42 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var empleado = await _context.Empleados
+                .Include(e => e.JefeInmediato)
+                .Include(e => e.PuestoTrabajo)
+                .Include(e => e.TipoDeHorario)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+            return View(empleado);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var empleado = await _context.Empleados.FindAsync(id);
+            if (empleado != null)
+            {
+                _context.Empleados.Remove(empleado);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 
 }
