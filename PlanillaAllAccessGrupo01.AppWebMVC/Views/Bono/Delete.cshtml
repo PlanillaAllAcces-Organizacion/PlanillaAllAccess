@@ -1,0 +1,59 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Bono
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-danger text-white text-center">
+            <h3 class="mb-0"> Eliminar Bono</h3>
+        </div>
+        <div class="card-body">
+            <h4 class="text-center text-danger">¿Estás seguro de que deseas eliminar este bono?</h4>
+            <hr />
+
+            <dl class="row">
+                <dt class="col-sm-3 fw-bold">Nombre del Bono</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.NombreBono)</dd>
+
+                <dt class="col-sm-3 fw-bold">Valor</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Valor)</dd>
+
+                <dt class="col-sm-3 fw-bold">Estado</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Estado == 1)
+                    {
+                        <span class="text-success"> @Model.EstadoTexto</span>
+                    }
+                    else
+                    {
+                        <span class="text-secondary"> @Model.EstadoTexto</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3 fw-bold">Fecha de Validación</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaValidacion)</dd>
+
+                <dt class="col-sm-3 fw-bold">Fecha de Expiración</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaExpiracion)</dd>
+
+                <dt class="col-sm-3 fw-bold">Operación</dt>
+                <dd class="col-sm-9">@Model.OperacionTexto</dd>
+
+                <dt class="col-sm-3 fw-bold">Planilla</dt>
+                <dd class="col-sm-9">@Model.PlanillaTexto</dd>
+            </dl>
+
+            <form asp-action="Delete" class="text-center">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger shadow-sm px-4"> Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary shadow-sm px-4"> Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
