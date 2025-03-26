@@ -38,7 +38,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             if (topRegistro > 0)
                 query = query.Take(topRegistro);
 
-
+            
             return View(await query.ToListAsync());
         }
 
@@ -152,15 +152,27 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bono = await _context.Bonos.FindAsync(id);
-            if (bono != null)
+            // Incluimos las asignaciones para poder comprobar si existen
+            var bono = await _context.Bonos
+                .Include(b => b.AsignacionBonos)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (bono == null)
             {
-                _context.Bonos.Remove(bono);
+                return NotFound();
             }
 
+            if (bono.AsignacionBonos.Any())
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar este bono porque está asignado a uno o más empleados.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Bonos.Remove(bono);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool BonoExists(int id)
         {
