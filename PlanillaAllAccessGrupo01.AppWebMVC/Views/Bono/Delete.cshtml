@@ -4,56 +4,63 @@
     ViewData["Title"] = "Delete";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-lg border-0">
-        <div class="card-header bg-danger text-white text-center">
-            <h3 class="mb-0"> Eliminar Bono</h3>
-        </div>
-        <div class="card-body">
-            <h4 class="text-center text-danger">¿Estás seguro de que deseas eliminar este bono?</h4>
-            <hr />
+
+<h1 class="text-center"><i class="fas fa-trash-alt text-danger"></i> Eliminar Bono</h1>
+<h4 class="text-center text-muted">Confirmación de eliminación</h4>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center text-danger mb-4">¿Estás seguro de que deseas eliminar este bono?</h3>
 
             <dl class="row">
-                <dt class="col-sm-3 fw-bold">Nombre del Bono</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.NombreBono)</dd>
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.NombreBono)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.NombreBono)</dd>
 
-                <dt class="col-sm-3 fw-bold">Valor</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Valor)</dd>
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.Valor)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Valor)</dd>
 
-                <dt class="col-sm-3 fw-bold">Estado</dt>
-                <dd class="col-sm-9">
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.Estado)</dt>
+                <dd class="col-sm-8">
                     @if (Model.Estado == 1)
                     {
-                        <span class="text-success"> @Model.EstadoTexto</span>
+                        <span class="badge bg-success">@Model.EstadoTexto</span>
                     }
                     else
                     {
-                        <span class="text-secondary"> @Model.EstadoTexto</span>
+                        <span class="badge bg-secondary">@Model.EstadoTexto</span>
                     }
                 </dd>
 
-                <dt class="col-sm-3 fw-bold">Fecha de Validación</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaValidacion)</dd>
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.FechaValidacion)</dt>
+                <dd class="col-sm-8">@Model.FechaValidacion?.ToString("dd/MM/yyyy")</dd>
 
-                <dt class="col-sm-3 fw-bold">Fecha de Expiración</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaExpiracion)</dd>
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.FechaExpiracion)</dt>
+                <dd class="col-sm-8">@Model.FechaExpiracion?.ToString("dd/MM/yyyy")</dd>
 
-                <dt class="col-sm-3 fw-bold">Operación</dt>
-                <dd class="col-sm-9">@Model.OperacionTexto</dd>
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.Operacion)</dt>
+                <dd class="col-sm-8">@Model.OperacionTexto</dd>
 
-                <dt class="col-sm-3 fw-bold">Planilla</dt>
-                <dd class="col-sm-9">@Model.PlanillaTexto</dd>
+                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.Planilla)</dt>
+                <dd class="col-sm-8">@Model.PlanillaTexto</dd>
             </dl>
 
-            <form asp-action="Delete" class="text-center">
+            <form asp-action="Delete" class="d-flex justify-content-between mt-4">
                 <input type="hidden" asp-for="Id" />
-                <button type="submit" class="btn btn-danger shadow-sm px-4"> Eliminar</button>
-                <a asp-action="Index" class="btn btn-secondary shadow-sm px-4"> Cancelar</a>
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
             </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
