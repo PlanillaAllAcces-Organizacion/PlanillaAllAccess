@@ -11,41 +11,44 @@ public partial class Vacacion
 
     public int EmpleadosId { get; set; }
 
-    [DisplayName("Mes de la vacacion")]
-    [Required(ErrorMessage = "Es necesario el mes de la vacacion")]
-    public string MesVacaciones { get; set; } = null!;
+    [DisplayName("Mes de la vacación")]
+    [Required(ErrorMessage = "Es necesario seleccionar el mes de la vacación.")]
+    public string MesVacaciones { get; set; } = string.Empty;
 
+    [DisplayName("Año de la vacación")]
+    [Required(ErrorMessage = "Es necesario ingresar el año de la vacación.")]
+    [RegularExpression(@"^\d{4}$", ErrorMessage = "Debe ingresar un año válido (ej. 2025).")]
+    public string AnnoVacacion { get; set; } = string.Empty;
 
-    [DisplayName("Año de la vacacion")]
-    [Required(ErrorMessage = "Es necesario el año de la vacacion")]
-    public string AnnoVacacion { get; set; } = null!;
-
-    [DisplayName("Dia de inicio")]
-    [Required(ErrorMessage = "Es necesario el dia de inicio")]
+    [DisplayName("Día de inicio")]
+    [Required(ErrorMessage = "Es necesario ingresar el día de inicio.")]
+    [DisplayFormat(DataFormatString = "{0:MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime DiaInicio { get; set; }
 
-
-
-    [DisplayName("Dia fin")]
-    [Required(ErrorMessage = "Es necesario el dia de inicio")]
+    [DisplayName("Día de fin")]
+    [Required(ErrorMessage = "Es necesario ingresar el día de finalización.")]
+    [DisplayFormat(DataFormatString = "{0:MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime DiaFin { get; set; }
 
     [DisplayName("Estado")]
-    public byte? Estado { get; set; }
+    [Required(ErrorMessage = "Debe seleccionar un estado.")]
+    public byte? Estado { get; set; } = 1;
 
-    [DisplayName("¿Vacacion pagada?")]
-    public byte? VacacionPagada { get; set; }
+    [DisplayName("¿Vacación pagada?")]
+    [Required(ErrorMessage = "Debe indicar si la vacación es pagada.")]
+    public byte? VacacionPagada { get; set; } = 2;
 
-    [DisplayName("Pago de la vacacion")]
-    public decimal? PagoVacaciones { get; set; }
+    [DisplayName("Pago de la vacación")]
+    [Range(0, double.MaxValue, ErrorMessage = "El pago debe ser un número positivo.")]
+    public decimal? PagoVacaciones { get; set; } = 0;
 
-    [DisplayName("Fecha en la que se le pagara")]
-
+    [DisplayName("Fecha en la que se le pagará")]
+    [DataType(DataType.Date)]
     public DateTime? FechaPago { get; set; }
 
     public virtual ICollection<DevengoPlanilla> DevengoPlanillas { get; set; } = new List<DevengoPlanilla>();
 
     public virtual ICollection<EmpleadoPlanilla> EmpleadoPlanillas { get; set; } = new List<EmpleadoPlanilla>();
 
-    public virtual Empleado? Empleados { get; set; } = null!;
+    public virtual Empleado? Empleados { get; set; }
 }
