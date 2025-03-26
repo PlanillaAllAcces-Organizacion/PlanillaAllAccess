@@ -4,56 +4,75 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-lg border-0">
-        <div class="card-header bg-dark text-white text-center">
-            <h3 class="mb-0"> Detalles del Bono</h3>
-        </div>
-        <div class="card-body">
+
+<h1 class="text-center"><i class="fas fa-info-circle text-primary"></i> Detalles del Bono</h1>
+<h4 class="text-center text-muted">Información completa</h4>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg p-4">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold">Nombre del Bono:</label>
-                    <p class="form-control-plaintext">@Model.NombreBono</p>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.NombreBono)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.NombreBono</div>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold"> Valor:</label>
-                    <p class="form-control-plaintext">@Model.Valor.ToString("C")</p>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Valor)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.Valor.ToString("C")</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold"> Fecha de Validación:</label>
-                    <p class="form-control-plaintext">@Model.FechaValidacion?.ToString("dd/MM/yyyy")</p>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaValidacion)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.FechaValidacion?.ToString("dd/MM/yyyy")</div>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold"> Fecha de Expiración:</label>
-                    <p class="form-control-plaintext">@Model.FechaExpiracion?.ToString("dd/MM/yyyy")</p>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaExpiracion)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.FechaExpiracion?.ToString("dd/MM/yyyy")</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold"> Estado:</label>
-                    <p class="form-control-plaintext">@Model.EstadoTexto</p>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Estado)</label>
+                    <div class="form-control-plaintext border-bottom">
+                        @if (Model.Estado == 1)
+                        {
+                            <span class="badge bg-success">@Model.EstadoTexto</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@Model.EstadoTexto</span>
+                        }
+                    </div>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold"> Operación:</label>
-                    <p class="form-control-plaintext">@Model.OperacionTexto</p>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Operacion)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.OperacionTexto</div>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="fw-bold"> Planilla:</label>
-                <p class="form-control-plaintext">@Model.PlanillaTexto</p>
+                <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Planilla)</label>
+                <div class="form-control-plaintext border-bottom">@Model.PlanillaTexto</div>
             </div>
 
-            <div class="text-center">
-                <a asp-action="Index" class="btn btn-primary shadow-sm px-4"> Volver</a>
+            <div class="d-flex justify-content-center mt-4">
+                <a asp-action="Index" class="btn btn-primary px-4">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
