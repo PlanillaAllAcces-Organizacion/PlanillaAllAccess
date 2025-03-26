@@ -45,17 +45,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // GET: Bono/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var bono = await _context.Bonos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (bono == null)
-            {
-                return NotFound();
-            }
+            var bono = await _context.Bonos.FirstOrDefaultAsync(m => m.Id == id);
+            if (bono == null) return NotFound();
 
             return View(bono);
         }
