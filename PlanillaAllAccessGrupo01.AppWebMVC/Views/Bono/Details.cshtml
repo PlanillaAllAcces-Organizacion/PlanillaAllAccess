@@ -1,0 +1,59 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Bono
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-dark text-white text-center">
+            <h3 class="mb-0"> Detalles del Bono</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Nombre del Bono:</label>
+                    <p class="form-control-plaintext">@Model.NombreBono</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold"> Valor:</label>
+                    <p class="form-control-plaintext">@Model.Valor.ToString("C")</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold"> Fecha de Validación:</label>
+                    <p class="form-control-plaintext">@Model.FechaValidacion?.ToString("dd/MM/yyyy")</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold"> Fecha de Expiración:</label>
+                    <p class="form-control-plaintext">@Model.FechaExpiracion?.ToString("dd/MM/yyyy")</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold"> Estado:</label>
+                    <p class="form-control-plaintext">@Model.EstadoTexto</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold"> Operación:</label>
+                    <p class="form-control-plaintext">@Model.OperacionTexto</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-bold"> Planilla:</label>
+                <p class="form-control-plaintext">@Model.PlanillaTexto</p>
+            </div>
+
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-primary shadow-sm px-4"> Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
