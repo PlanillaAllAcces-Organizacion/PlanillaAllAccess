@@ -4,110 +4,148 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<br />
+<h1 class="text-center text-primary mb-4">Lista de Empleados</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Dui)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Apellido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Correo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalarioBase)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaContraInicial)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaContraFinal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Usuario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JefeInmediato)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PuestoTrabajo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoDeHorario)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dui)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Correo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalarioBase)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaContraInicial)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaContraFinal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Usuario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JefeInmediato.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PuestoTrabajo.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoDeHorario.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card shadow-lg">
+    <div class="card-body bg-light">
+        <form asp-action="Index">
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">DUI</label>
+                    <input type="text" name="Dui" class="form-control" placeholder="Ingrese el DUI" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Nombre</label>
+                    <input type="text" name="Nombre" class="form-control" placeholder="Ingrese el nombre" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Apellido</label>
+                    <input type="text" name="Apellido" class="form-control" placeholder="Ingrese el apellido" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Jefe Inmediato</label>
+                    <select type="text" name="JefeInmediatoId" class="form-control" class="form-control" asp-items="ViewBag.JefeInmediatoId"></select>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Puesto de trabajo</label>
+                    <select name="puestoTrabajoId" class="form-control" asp-items="ViewBag.PuestoTrabajoId">
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Tipo de horario</label>
+                    <select name="tipoDeHorarioId" class="form-control" asp-items="ViewBag.TipoDeHorarioId">
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Estado</label>
+                    <select name="estado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="1">Activo</option>
+                        <option value="2">Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Registros a mostrar</label>
+                    <select name="top" class="form-select">
+                        <option value="10">Mostrar 10</option>
+                        <option value="20">Mostrar 20</option>
+                        <option value="50">Mostrar 50</option>
+                        <option value="100">Mostrar 100</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="col-md-12 d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <a class="btn btn-success" asp-action="Create">
+                    <i class="fas fa-plus"></i> Crear Puesto
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-striped table-hover" id="bonosTable">
+        <thead class="table-dark text-center align-middle">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Dui)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Apellido)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Estado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JefeInmediato)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PuestoTrabajo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TipoDeHorario)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="align-middle">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Dui)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido)
+                    </td>
+                    <td class="text-center">
+                        <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">
+                            @(item.Estado == 1 ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.JefeInmediato.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PuestoTrabajo.NombrePuesto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TipoDeHorario.NombreHorario)
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
