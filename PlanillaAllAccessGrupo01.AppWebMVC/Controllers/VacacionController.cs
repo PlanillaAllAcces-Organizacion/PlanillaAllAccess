@@ -106,5 +106,61 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vacacion = await _context.Vacacions.FindAsync(id);
+            if (vacacion == null)
+            {
+                return NotFound();
+            }
+            ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre", vacacion.EmpleadosId);
+            return View(vacacion);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadosId,MesVacaciones,AnnoVacacion,DiaInicio,DiaFin,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion)
+        {
+            if (id != vacacion.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(vacacion);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!VacacionExists(vacacion.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre", vacacion.EmpleadosId);
+            return View(vacacion);
+        }
+
+
+        private bool VacacionExists(int id)
+        {
+            return _context.Vacacions.Any(e => e.Id == id);
+        }
+
+
     }
 }
