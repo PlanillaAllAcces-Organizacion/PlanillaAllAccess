@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
@@ -32,15 +33,15 @@ public partial class Vacacion
 
     [DisplayName("Estado")]
     [Required(ErrorMessage = "Debe seleccionar un estado.")]
-    public byte? Estado { get; set; } = 1;
+    public byte? Estado { get; set; }
 
     [DisplayName("¿Vacación pagada?")]
     [Required(ErrorMessage = "Debe indicar si la vacación es pagada.")]
-    public byte? VacacionPagada { get; set; } = 2;
+    public byte? VacacionPagada { get; set; }
 
     [DisplayName("Pago de la vacación")]
     [Range(0, double.MaxValue, ErrorMessage = "El pago debe ser un número positivo.")]
-    public decimal? PagoVacaciones { get; set; } = 0;
+    public decimal? PagoVacaciones { get; set; }
 
     [DisplayName("Fecha en la que se le pagará")]
     [DataType(DataType.Date)]
@@ -51,4 +52,42 @@ public partial class Vacacion
     public virtual ICollection<EmpleadoPlanilla> EmpleadoPlanillas { get; set; } = new List<EmpleadoPlanilla>();
 
     public virtual Empleado? Empleados { get; set; }
+
+
+
+    #region METODO PARA MOSTRAR EN TEXTO LAS OPCIONES BYTE
+    // ESTO ES EXCLUSIVAMENTE PARA MOSTRAR EN EL INDEX
+    [NotMapped]
+    public string EstadoTexto
+    {
+        get
+        {
+            return Estado switch
+            {
+                0 => "No definida",
+                1 => "Asignada",
+                2 => "Finalizada",
+                _ => "Desconocido"
+            };
+        }
+    }
+
+
+    
+    [NotMapped]
+    public string VacacionPagadaTxt
+    {
+        get
+        {
+            return VacacionPagada switch
+            {
+                0 => "No definida",
+                1 => "Si",
+                2 => "No",
+                _ => "Desconocida"
+            };
+        }
+    }
+
+    #endregion
 }

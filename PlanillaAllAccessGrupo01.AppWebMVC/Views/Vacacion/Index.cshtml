@@ -1,0 +1,145 @@
+﻿@model IEnumerable<PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<div class="card shadow-sm">
+
+	<div class="card-body">
+		<form asp-action="Index" method="get">
+			<!-- Primera fila de campos -->
+			<div class="row mb-3">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label fw-bold">Nombre del empleado</label> <!-- Etiqueta en negrita -->
+						<input type="text" name="Empleados.Nombre" class="form-control" placeholder="Ingrese el nombre" /> <!-- Placeholder para guiar al usuario -->
+					</div>
+				</div>
+
+				<div class="col-md-8">
+					<div class="form-group">
+						<label class="form-label fw-bold">Mes de la vacación</label>
+						<select name="mesVacaciones" class="form-control">
+							<option value="">Seleccionar opción</option>
+							<option value="Enero">Enero</option>
+							<option value="Febrero">Febrero</option>
+							<option value="Marzo">Marzo</option>
+							<option value="Abril">Abril</option>
+							<option value="Mayo">Mayo</option>
+							<option value="Junio">Junio</option>
+							<option value="Julio">Julio</option>
+							<option value="Agosto">Agosto</option>
+							<option value="Septiembre">Septiembre</option>
+							<option value="Octubre">Octubre</option>
+							<option value="Noviembre">Noviembre</option>
+							<option value="Diciembre">Diciembre</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<!-- Segunda fila de campos -->
+			<div class="row mb-3">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label fw-bold">Año de la vacación</label>
+						<input type="text" name="annoVacacion" class="form-control" placeholder="Ingrese el año" />
+					</div>
+				</div>
+
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label fw-bold">Estado de la vacación</label>
+						<select name="estado" class="form-control">
+							<option value="">Seleccionar opción</option>
+							<option value="1">Asignada</option>
+							<option value="2">Finalizada</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row mt-4">
+				<div class="col-12 d-flex justify-content-between">
+					<input type="hidden" name="buscar" value="true" />
+					<button type="submit" class="btn btn-primary btn-lg">
+
+						<i class="bi bi-search"></i> Buscar 
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="card-body">
+
+	<div class="table-responsive">
+
+			<table class="table table-striped table-hover">
+
+				<thead class="table-dark text-center">
+					<tr>
+						<th>
+						@Html.DisplayNameFor(model => model.Empleados)
+						</th>
+						<th>
+						@Html.DisplayNameFor(model => model.MesVacaciones)
+						</th>
+						<th>
+						@Html.DisplayNameFor(model => model.AnnoVacacion)
+						</th>
+						<th>
+						@Html.DisplayNameFor(model => model.Estado)
+						</th>
+						<th>
+						@Html.DisplayNameFor(model => model.VacacionPagada)
+						</th>
+						<th>
+						@Html.DisplayNameFor(model => model.PagoVacaciones)
+						</th>
+						<th class="text-center">
+							Acciones
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				@foreach (var item in Model)
+				{
+							<tr class="text-center">
+								<td>
+							@Html.DisplayFor(modelItem => item.Empleados.Nombre)
+								</td>
+								<td>
+							@Html.DisplayFor(modelItem => item.MesVacaciones)
+								</td>
+								<td>
+							@Html.DisplayFor(modelItem => item.AnnoVacacion)
+								</td>
+								<td>
+							@Html.DisplayFor(modelItem => item.EstadoTexto)
+								</td>
+								<td>
+							@Html.DisplayFor(modelItem => item.VacacionPagadaTxt)
+								</td>
+								<td>
+							@Html.DisplayFor(modelItem => item.PagoVacaciones)
+								</td>
+								<td class="text-end">
+									<div class="btn-group" role="group">
+									<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success"><i class="bi bi-pencil-square"></i> Editar</a>
+									<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-card-text"></i> Detalle</a>
+									<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Eliminar</a>
+									</div>
+								</td>
+							</tr>
+				}
+				</tbody>
+			</table>
+
+	</div>
+
+</div>
+

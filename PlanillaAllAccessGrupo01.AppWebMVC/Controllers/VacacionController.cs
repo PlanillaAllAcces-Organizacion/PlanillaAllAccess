@@ -18,6 +18,35 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Index(Vacacion vacacion, int topRegis = 10)
+        {
+            var query = _context.Vacacions
+                .Include(v => v.Empleados).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(vacacion.Empleados?.Nombre))
+                query = query.Where(s => s.Empleados.Nombre.Contains(vacacion.Empleados.Nombre));
+
+            if (!string.IsNullOrWhiteSpace(vacacion.MesVacaciones))
+                query = query.Where(v => v.MesVacaciones.Contains(vacacion.MesVacaciones));
+
+            if (!string.IsNullOrWhiteSpace(vacacion.AnnoVacacion))
+                query = query.Where(a => a.AnnoVacacion.Contains(vacacion.AnnoVacacion));
+
+            if (!string.IsNullOrWhiteSpace(vacacion.MesVacaciones))
+                query = query.Where(m => m.MesVacaciones.Contains(vacacion.MesVacaciones));
+
+            if (vacacion.Estado.HasValue)
+                query = query.Where(e => e.Estado == vacacion.Estado.Value);
+
+            query = query.OrderByDescending(e => e.Id);
+
+            if (topRegis != 0)
+                query = query.Take(topRegis);
+
+
+            return View(await query.ToListAsync());
+        }
+
         public IActionResult Create(int id)
         {
             var empleado = _context.Empleados.Find(id);
