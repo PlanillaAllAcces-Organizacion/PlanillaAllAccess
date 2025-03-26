@@ -59,6 +59,14 @@
     </div>
 </form>
 
+@if (TempData["ErrorMessage"] != null)
+{
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+}
+
 <div class="table-responsive mt-4">
     <table class="table table-bordered table-striped table-hover" id="bonosTable">
         <thead class="table-dark text-center align-middle">
