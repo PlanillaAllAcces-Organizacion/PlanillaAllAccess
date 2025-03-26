@@ -57,6 +57,7 @@ public partial class Vacacion
 
     #region METODO PARA MOSTRAR EN TEXTO LAS OPCIONES BYTE
     // ESTO ES EXCLUSIVAMENTE PARA MOSTRAR EN EL INDEX
+    [DisplayName("Estado")]
     [NotMapped]
     public string EstadoTexto
     {
@@ -73,7 +74,7 @@ public partial class Vacacion
     }
 
 
-    
+    [DisplayName("Vacaciones pagadas")]
     [NotMapped]
     public string VacacionPagadaTxt
     {
