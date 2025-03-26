@@ -87,6 +87,24 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(vacacion);
         }
 
-       
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vacacion = await _context.Vacacions
+                .Include(v => v.Empleados)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vacacion == null)
+            {
+                return NotFound();
+            }
+
+            return View(vacacion);
+        }
+
+
     }
 }
