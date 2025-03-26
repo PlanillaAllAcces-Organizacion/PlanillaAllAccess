@@ -1,1 +1,87 @@
-﻿
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion
+
+@{
+    ViewData["Title"] = "Detalles de Vacación";
+}
+
+<h1 class="text-center"><i class="fas fa-info-circle text-primary"></i> Detalles de la Vacación</h1>
+<h4 class="text-center text-muted">Información completa</h4>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg p-4">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.EmpleadosId)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.Empleados.Nombre</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.MesVacaciones)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.MesVacaciones</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.AnnoVacacion)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.AnnoVacacion</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.DiaInicio)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.DiaInicio.ToString("dd")</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.DiaFin)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.DiaFin.ToString("dd")</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Estado)</label>
+                    <div class="form-control-plaintext border-bottom">
+                        @if (Model.Estado == 1)
+                        {
+                            <span class="badge bg-success">Asignada</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Finalizada</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.VacacionPagada)</label>
+                    <div class="form-control-plaintext border-bottom">@(Model.VacacionPagada == 1 ? "Sí" : "No")</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.PagoVacaciones)</label>
+                    <div class="form-control-plaintext border-bottom">$@Model.PagoVacaciones?.ToString("")</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaPago)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.FechaPago?.ToString("dd/MM/yyyy")</div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                <a asp-action="Index" class="btn btn-primary px-4">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
