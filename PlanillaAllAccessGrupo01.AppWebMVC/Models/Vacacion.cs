@@ -47,5 +47,5 @@ public partial class Vacacion
 
     public virtual ICollection<EmpleadoPlanilla> EmpleadoPlanillas { get; set; } = new List<EmpleadoPlanilla>();
 
-    public virtual Empleado Empleados { get; set; } = null!;
+    public virtual Empleado? Empleados { get; set; } = null!;
 }

@@ -57,6 +57,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre", vacacion.EmpleadosId);
             return View(vacacion);
         }
-            
+
+       
     }
 }
