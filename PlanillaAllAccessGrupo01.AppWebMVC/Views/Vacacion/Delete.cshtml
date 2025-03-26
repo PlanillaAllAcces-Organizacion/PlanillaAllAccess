@@ -1,5 +1,50 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion
+
 @{
+    ViewData["Title"] = "Eliminar Vacación";
 }
+
+<h1 class="text-center"><i class="fas fa-trash-alt text-danger"></i> Eliminar Vacación</h1>
+<h4 class="text-center text-muted">Confirmación de eliminación</h4>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center text-danger mb-4">¿Estás seguro de que deseas eliminar esta vacación?</h3>
+
+            <dl class="row">
+                <dt class="col-sm-4 fw-bold">Empleado</dt>
+                <dd class="col-sm-8">@Model.Empleados?.Nombre</dd>
+
+                <dt class="col-sm-4 fw-bold">Período de Vacación</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.MesVacaciones) / @Html.DisplayFor(model => model.AnnoVacacion)</dd>
+
+                <dt class="col-sm-4 fw-bold">Días de Vacación</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.DiaInicio) - @Html.DisplayFor(model => model.DiaFin)</dd>
+
+                <dt class="col-sm-4 fw-bold">Estado</dt>
+                <dd class="col-sm-8">@Model.EstadoTexto</dd>
+
+                <dt class="col-sm-4 fw-bold">Vacación Pagada</dt>
+                <dd class="col-sm-8">@Model.VacacionPagadaTxt</dd>
+
+                <dt class="col-sm-4 fw-bold">Monto de Pago</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.PagoVacaciones)</dd>
+
+                <dt class="col-sm-4 fw-bold">Fecha de Pago</dt>
+                <dd class="col-sm-8">@Model.FechaPago?.ToString("dd/MM/yyyy")</dd>
+            </dl>
+
+            <form asp-action="Delete" class="d-flex justify-content-between mt-4">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
