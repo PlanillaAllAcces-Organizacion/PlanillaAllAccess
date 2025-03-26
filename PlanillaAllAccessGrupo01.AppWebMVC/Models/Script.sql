@@ -212,3 +212,18 @@ CREATE TABLE EmpleadoPlanilla (
     CONSTRAINT FK_EmpleadoPlanilla_Vacacion FOREIGN KEY (VacacionId) REFERENCES Vacacion(Id)
 
 );
+
+-- Modificar relacion de empleados y Puesto de trabajo
+ALTER TABLE Empleado
+DROP CONSTRAINT FK_Empleado_Puesto;
+ALTER TABLE Empleado
+ADD CONSTRAINT FK_Empleado_Puesto FOREIGN KEY (PuestoTrabajoId) REFERENCES PuestoTrabajo(Id)
+ON DELETE CASCADE;
+
+
+-- Modificar relacion de empleados y Tipo de horario
+ALTER TABLE Empleado
+DROP CONSTRAINT FK_Empleado_Horario;
+ALTER TABLE Empleado
+ADD CONSTRAINT FK_Empleado_Horario FOREIGN KEY (TipoDeHorarioId) REFERENCES TipoDeHorario(Id)
+ON DELETE CASCADE;

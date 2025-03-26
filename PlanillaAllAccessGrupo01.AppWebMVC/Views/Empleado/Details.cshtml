@@ -76,14 +76,14 @@
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.PuestoTrabajo)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.PuestoTrabajo.NombrePuesto</div>
+                    <div class="form-control-plaintext border-bottom">@Model.PuestoTrabajo?.NombrePuesto</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TipoDeHorario)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.TipoDeHorario.NombreHorario</div>
+                    <div class="form-control-plaintext border-bottom">@Model.TipoDeHorario?.NombreHorario</div>
                 </div>
 
                 <div class="col-md-6 mb-3">
