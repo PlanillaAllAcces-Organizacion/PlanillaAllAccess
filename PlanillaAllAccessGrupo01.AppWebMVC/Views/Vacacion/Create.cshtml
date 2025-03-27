@@ -1,5 +1,5 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Asignar Vacación";
 }
@@ -24,39 +24,35 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="MesVacaciones" class="form-label fw-bold"></label>
-                        <select asp-for="MesVacaciones" class="form-control">
-                            <option value="Enero">Enero</option>
-                            <option value="Febrero">Febrero</option>
-                            <option value="Marzo">Marzo</option>
-                            <option value="Abril">Abril</option>
-                            <option value="Mayo">Mayo</option>
-                            <option value="Junio">Junio</option>
-                            <option value="Julio">Julio</option>
-                            <option value="Agosto">Agosto</option>
-                            <option value="Septiembre">Septiembre</option>
-                            <option value="Octubre">Octubre</option>
-                            <option value="Noviembre">Noviembre</option>
-                            <option value="Diciembre">Diciembre</option>
+                        <select asp-for="MesVacaciones" class="form-control" id="mesVacaciones">
+                            <option value="">Seleccione un mes</option>
+                            @foreach (var mes in DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12))
+                            {
+                                <option value="@mes">@mes</option>
+                            }
                         </select>
                         <span asp-validation-for="MesVacaciones" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="AnnoVacacion" class="form-label fw-bold"></label>
-                        <input asp-for="AnnoVacacion" class="form-control" />
+                        <input asp-for="AnnoVacacion" class="form-control" id="annoVacacion"
+                               value="@DateTime.Now.Year" />
                         <span asp-validation-for="AnnoVacacion" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="DiaInicio" class="form-label fw-bold"></label>
-                        <input asp-for="DiaInicio" type="date" class="form-control" />
-                        <span asp-validation-for="DiaInicio" class="text-danger"></span>
+                        <label class="form-label fw-bold">Día de inicio</label>
+                        <input type="number" min="1" max="31" class="form-control"
+                               id="diaInicio" name="diaInicio" required />
+                        <span class="text-danger" id="diaInicioError"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label asp-for="DiaFin" class="form-label fw-bold"></label>
-                        <input asp-for="DiaFin" type="date" class="form-control" />
-                        <span asp-validation-for="DiaFin" class="text-danger"></span>
+                        <label class="form-label fw-bold">Día de fin</label>
+                        <input type="number" min="1" max="31" class="form-control"
+                               id="diaFin" name="diaFin" required />
+                        <span class="text-danger" id="diaFinError"></span>
                     </div>
                 </div>
 
@@ -102,7 +98,6 @@
     </div>
 </div>
 
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -110,23 +105,97 @@
 
     <script>
         $(document).ready(function () {
+            // Función para obtener días en un mes
+            function getDaysInMonth(monthName, year) {
+                const monthNumber = new Date(Date.parse(monthName + " 1, " + year)).getMonth() + 1;
+                return new Date(year, monthNumber, 0).getDate();
+            }
 
+            // Función para actualizar inputs de pago
             function actualizarInputs() {
-            if ($("#vacacionPagada").val() == "1") {
+                if ($("#vacacionPagada").val() == "1") {
                     $("#PagoVacaciones, #FechaPago").prop("disabled", false);
                 } else {
                     $("#PagoVacaciones, #FechaPago").prop("disabled", true);
                 }
             }
 
-            actualizarInputs();
+            // Función para validar días
+            function validateDays() {
+                const month = $('#MesVacaciones').val();
+                const year = parseInt($('#AnnoVacacion').val());
 
-        $("#vacacionPagada").change(function () {
-                actualizarInputs();
+                if (month && !isNaN(year)) {
+                    const daysInMonth = getDaysInMonth(month, year);
+
+                    // Actualizar máximos
+                    $('#diaInicio, #diaFin').attr('max', daysInMonth);
+
+                    // Validar valores actuales
+                    const diaInicio = parseInt($('#diaInicio').val());
+                    const diaFin = parseInt($('#diaFin').val());
+
+                    if (!isNaN(diaInicio) && (diaInicio < 1 || diaInicio > daysInMonth)) {
+                        $('#diaInicio').val('');
+                        $('#diaInicioError').text(`Debe estar entre 1 y ${daysInMonth}`);
+                    } else {
+                        $('#diaInicioError').text('');
+                    }
+
+                    if (!isNaN(diaFin) && (diaFin < 1 || diaFin > daysInMonth)) {
+                        $('#diaFin').val('');
+                        $('#diaFinError').text(`Debe estar entre 1 y ${daysInMonth}`);
+                    } else {
+                        $('#diaFinError').text('');
+                    }
+
+                    if (!isNaN(diaInicio) && !isNaN(diaFin) && diaInicio > diaFin) {
+                        $('#diaFinError').text('Debe ser mayor o igual al día inicio');
+                    } else if ($('#diaFinError').text().includes('mayor')) {
+                        $('#diaFinError').text('');
+                    }
+                }
+            }
+
+            // Eventos
+            $('#vacacionPagada').change(actualizarInputs);
+            $('#MesVacaciones, #AnnoVacacion').change(validateDays);
+            $('#diaInicio, #diaFin').change(validateDays);
+
+            // Validar antes de enviar
+            $('form').submit(function(e) {
+                const month = $('#MesVacaciones').val();
+                const year = parseInt($('#AnnoVacacion').val());
+                const diaInicio = parseInt($('#diaInicio').val());
+                const diaFin = parseInt($('#diaFin').val());
+
+                if (month && !isNaN(year)) {
+                    const daysInMonth = getDaysInMonth(month, year);
+
+                    if (isNaN(diaInicio) || diaInicio < 1 || diaInicio > daysInMonth) {
+                        $('#diaInicioError').text('Día inicio no válido');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (isNaN(diaFin) || diaFin < 1 || diaFin > daysInMonth) {
+                        $('#diaFinError').text('Día fin no válido');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (diaInicio > diaFin) {
+                        $('#diaFinError').text('Debe ser mayor o igual al día inicio');
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+
+                return true;
             });
+
+            // Inicializar
+            actualizarInputs();
         });
     </script>
-
-
 }
-

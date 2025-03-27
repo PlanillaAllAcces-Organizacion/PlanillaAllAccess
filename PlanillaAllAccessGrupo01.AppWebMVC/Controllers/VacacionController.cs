@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -60,29 +61,97 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EmpleadosId,MesVacaciones,AnnoVacacion,DiaInicio,DiaFin,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion)
+        public async Task<IActionResult> Create(
+       [Bind("EmpleadosId,MesVacaciones,AnnoVacacion,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion,
+       int diaInicio, int diaFin)
         {
-
-            vacacion.Id = 0;
-
-            if (vacacion.VacacionPagada == 1)
+            try
             {
-                if (vacacion.PagoVacaciones == null && vacacion.FechaPago == null)
+                // Validar que el año sea un número válido
+                if (!int.TryParse(vacacion.AnnoVacacion, out int year) || year < 1900 || year > 2100)
                 {
-                    ModelState.AddModelError("PagoVacaciones", "El campo Pago de Vacaciones es requerido.");
-                    ModelState.AddModelError("FechaPago", "El campo Fecha de Pago es requerido.");
+                    ModelState.AddModelError("AnnoVacacion", "El año debe ser un valor entre 1900 y 2100");
+                }
+
+                // Validar que el mes sea válido
+                if (string.IsNullOrEmpty(vacacion.MesVacaciones))
+                {
+                    ModelState.AddModelError("MesVacaciones", "Debe seleccionar un mes");
+                }
+
+                // Convertir mes a número
+                int monthNumber = 0;
+                try
+                {
+                    monthNumber = DateTime.ParseExact(vacacion.MesVacaciones, "MMMM", CultureInfo.CurrentCulture).Month;
+                }
+                catch
+                {
+                    ModelState.AddModelError("MesVacaciones", "Mes no válido");
+                }
+
+                // Validar días solo si mes y año son válidos
+                if (monthNumber > 0 && year > 0)
+                {
+                    int daysInMonth = DateTime.DaysInMonth(year, monthNumber);
+
+                    // Validar día de inicio
+                    if (diaInicio < 1 || diaInicio > daysInMonth)
+                    {
+                        ModelState.AddModelError("", $"El día de inicio debe estar entre 1 y {daysInMonth} para {vacacion.MesVacaciones}");
+                    }
+
+                    // Validar día de fin
+                    if (diaFin < 1 || diaFin > daysInMonth)
+                    {
+                        ModelState.AddModelError("", $"El día de fin debe estar entre 1 y {daysInMonth} para {vacacion.MesVacaciones}");
+                    }
+                    else if (diaInicio > diaFin)
+                    {
+                        ModelState.AddModelError("", "El día de fin debe ser mayor o igual al día de inicio");
+                    }
+
+                    // Solo intentar crear las fechas si todo es válido
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            vacacion.DiaInicio = new DateTime(year, monthNumber, diaInicio);
+                            vacacion.DiaFin = new DateTime(year, monthNumber, diaFin);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            ModelState.AddModelError("", "La combinación de día, mes y año no es válida");
+                        }
+                    }
+                }
+
+                // Validación adicional para vacaciones pagadas
+                if (vacacion.VacacionPagada == 1)
+                {
+                    if (vacacion.PagoVacaciones == null || vacacion.FechaPago == null)
+                    {
+                        if (vacacion.PagoVacaciones == null)
+                            ModelState.AddModelError("PagoVacaciones", "El campo Pago de Vacaciones es requerido.");
+                        if (vacacion.FechaPago == null)
+                            ModelState.AddModelError("FechaPago", "El campo Fecha de Pago es requerido.");
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(vacacion);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Empleado");
                 }
             }
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                _context.Add(vacacion);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Empleado");
+                ModelState.AddModelError("", $"Ocurrió un error inesperado: {ex.Message}");
             }
+
             ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre", vacacion.EmpleadosId);
             return View(vacacion);
         }
