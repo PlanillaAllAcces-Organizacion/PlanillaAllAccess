@@ -44,7 +44,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 descuentoItem.FechaValidacion = DateOnly.FromDateTime(DateTime.Now); // Asignar la fecha de validación
                 descuentoItem.FechaExpiracion = DateOnly.FromDateTime(DateTime.Now.AddMonths(1)); // Asignar la fecha de expiración
             }
-            return View(listaDescuentos);
+            return View(listaDescuentos); 
         }
 
         // GET: Descuento/Details/5
