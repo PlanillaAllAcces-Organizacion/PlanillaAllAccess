@@ -22,7 +22,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var planillaDbContext = _context.Empleados.Include(e => e.JefeInmediato).Include(e => e.PuestoTrabajo).Include(e => e.TipoDeHorario);
+            var planillaDbContext = _context.Empleados.Include(e => e.JefeInmediato).Include(e => e.PuestoTrabajo).Include(e => e.TipoDeHorario).Include(e => e.Vacacions);
             return View(await planillaDbContext.ToListAsync());
         }
 
