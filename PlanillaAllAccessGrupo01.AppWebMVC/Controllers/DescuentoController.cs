@@ -76,8 +76,17 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Valor,Estado,Operacion,Planilla")] Descuento descuento)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Valor,Estado,FechaValidacion,FechaExpiracion,Operacion,Planilla")] Descuento descuento)
         {
+
+            if (descuento.FechaValidacion != null && descuento.FechaExpiracion != null)
+            {
+                if (descuento.FechaExpiracion <= descuento.FechaValidacion)
+                {
+                    ModelState.AddModelError("FechaExpiracion", "La fecha de expiración debe ser mayor que la fecha de validación.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(descuento);
