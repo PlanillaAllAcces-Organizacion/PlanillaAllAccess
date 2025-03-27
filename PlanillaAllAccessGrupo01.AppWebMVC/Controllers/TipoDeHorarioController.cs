@@ -149,6 +149,25 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return _context.TipodeHorarios.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tipoDeHorario = await _context.TipodeHorarios
+                 .Include(h => h.Horarios)
+                .FirstOrDefaultAsync(h => h.Id == id);
+
+            if (tipoDeHorario == null)
+            {
+                return NotFound();
+            }
+
+            return View(tipoDeHorario);
+        }
+
 
     }
 }
