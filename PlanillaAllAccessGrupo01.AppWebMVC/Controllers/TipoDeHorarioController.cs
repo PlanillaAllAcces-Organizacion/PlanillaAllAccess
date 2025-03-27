@@ -168,6 +168,37 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(tipoDeHorario);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var tipoDeHorario = await _context.TipodeHorarios
+                .Include(h => h.Horarios)
+                .FirstOrDefaultAsync(h => h.Id == id);
+            if (tipoDeHorario == null)
+            {
+                return NotFound();
+            }
+
+            return View(tipoDeHorario);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var tipoDeHorario = await _context.TipodeHorarios.FindAsync(id);
+            if (tipoDeHorario != null)
+            {
+                _context.TipodeHorarios.Remove(tipoDeHorario);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
