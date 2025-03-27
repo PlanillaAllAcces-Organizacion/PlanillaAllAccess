@@ -61,75 +61,74 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
-     [HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(
-    [Bind("EmpleadosId,MesVacaciones,AnnoVacacion,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion,
-    int diaInicio, int diaFin)
-{
-    try
-    {
-        // Validar que el año sea un número válido
-        if (!int.TryParse(vacacion.AnnoVacacion, out int year) || year < 1900 || year > 2100)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("EmpleadosId,MesVacaciones,AnnoVacacion,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion,
+        int diaInicio, int diaFin)
         {
-            ModelState.AddModelError("AnnoVacacion", "El año debe ser un valor entre 1900 y 2100");
-        }
-
-        // Validar que el mes sea válido
-        if (string.IsNullOrEmpty(vacacion.MesVacaciones))
-        {
-            ModelState.AddModelError("MesVacaciones", "Debe seleccionar un mes");
-        }
-
-        // Convercion de string a int
-        int monthNumber = 0;
-        try
-        {
-            monthNumber = DateTime.ParseExact(vacacion.MesVacaciones, "MMMM", CultureInfo.CurrentCulture).Month;
-        }
-        catch
-        {
-            ModelState.AddModelError("MesVacaciones", "Mes no válido");
-        }
-
-        // valida días solo si mes y año son válidos
-        if (monthNumber > 0 && year > 0)
-        {
-            int daysInMonth = DateTime.DaysInMonth(year, monthNumber);
-
-            // valida que el dia de iuinisio este bien
-            if (diaInicio < 1 || diaInicio > daysInMonth)
+            try
             {
-                ModelState.AddModelError("", $"El día de inicio debe estar entre 1 y {daysInMonth} para {vacacion.MesVacaciones}");
-            }
+                // Validar que el año sea un número válido
+                if (!int.TryParse(vacacion.AnnoVacacion, out int year) || year < 1900 || year > 2100)
+                {
+                    ModelState.AddModelError("AnnoVacacion", "El año debe ser un valor entre 1900 y 2100");
+                }
 
-            // Validar día de fin
-            if (diaFin < 1 || diaFin > daysInMonth)
-            {
-                ModelState.AddModelError("", $"El día de fin debe estar entre 1 y {daysInMonth} para {vacacion.MesVacaciones}");
-            }
-            else if (diaInicio > diaFin)
-            {
-                ModelState.AddModelError("", "El día de fin debe ser mayor o igual al día de inicio");
-            }
+                // Validar que el mes sea válido
+                if (string.IsNullOrEmpty(vacacion.MesVacaciones))
+                {
+                    ModelState.AddModelError("MesVacaciones", "Debe seleccionar un mes");
+                }
 
-            // Solo intentar crear las fechas si todo es válido
-            if (ModelState.IsValid)
-            {
+                // Convercion de string a int
+                int monthNumber = 0;
                 try
                 {
-                    vacacion.DiaInicio = new DateTime(year, monthNumber, diaInicio);
-                    vacacion.DiaFin = new DateTime(year, monthNumber, diaFin);
+                    monthNumber = DateTime.ParseExact(vacacion.MesVacaciones, "MMMM", CultureInfo.CurrentCulture).Month;
                 }
-                catch (ArgumentOutOfRangeException)
+                catch
                 {
-                    ModelState.AddModelError("", "La combinación de día, mes y año no es válida");
+                    ModelState.AddModelError("MesVacaciones", "Mes no válido");
                 }
-            }
-        }
 
-        // Validación adicional para vacaciones pagadas
-        if (vacacion.VacacionPagada == 1)
+                // valida días solo si mes y año son válidos
+                if (monthNumber > 0 && year > 0)
+                {
+                    int daysInMonth = DateTime.DaysInMonth(year, monthNumber);
+
+                    // valida que el dia de iuinisio este bien
+                    if (diaInicio < 1 || diaInicio > daysInMonth)
+                    {
+                        ModelState.AddModelError("", $"El día de inicio debe estar entre 1 y {daysInMonth} para {vacacion.MesVacaciones}");
+                    }
+
+                    // Validar día de fin
+                    if (diaFin < 1 || diaFin > daysInMonth)
+                    {
+                        ModelState.AddModelError("", $"El día de fin debe estar entre 1 y {daysInMonth} para {vacacion.MesVacaciones}");
+                    }
+                    else if (diaInicio > diaFin)
+                    {
+                        ModelState.AddModelError("", "El día de fin debe ser mayor o igual al día de inicio");
+                    }
+
+                    // Solo intentar crear las fechas si todo es válido
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            vacacion.DiaInicio = new DateTime(year, monthNumber, diaInicio);
+                            vacacion.DiaFin = new DateTime(year, monthNumber, diaFin);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            ModelState.AddModelError("", "La combinación de día, mes y año no es válida");
+                        }
+                    }
+                }
+
+                // Validación adicional para vacaciones pagadas
+                if (vacacion.VacacionPagada == 1)
         {
             if (vacacion.PagoVacaciones == null || vacacion.FechaPago == null)
             {
