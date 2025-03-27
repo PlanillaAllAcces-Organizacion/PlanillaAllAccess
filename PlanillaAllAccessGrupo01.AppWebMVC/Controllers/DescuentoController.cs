@@ -35,6 +35,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             if (descuento.Operacion > 0)
                 query = query.Where(s => s.Operacion == descuento.Operacion);
 
+            query = query.OrderByDescending(e => e.Id);
+
             if (topRegistro > 0)
                 query = query.Take(topRegistro);
 
