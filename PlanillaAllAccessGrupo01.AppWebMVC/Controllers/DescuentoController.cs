@@ -109,6 +109,12 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             {
                 return NotFound();
             }
+
+
+            // Asignar valores temporales si las fechas están vacías
+            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now); // Asignar fecha de validación si es nula
+            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
+
             return View(descuento);
         }
 
@@ -117,11 +123,19 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Valor,Estado,Operacion,Planilla")] Descuento descuento)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Valor,Estado,FechaValidacion,FechaExpiracion,Operacion,Planilla")] Descuento descuento)
         {
             if (id != descuento.Id)
             {
                 return NotFound();
+            }
+
+            if (descuento.FechaValidacion != null && descuento.FechaExpiracion != null)
+            {
+                if (descuento.FechaExpiracion <= descuento.FechaValidacion)
+                {
+                    ModelState.AddModelError("FechaExpiracion", "La fecha de expiración debe ser mayor que la fecha de validación.");
+                }
             }
 
             if (ModelState.IsValid)
