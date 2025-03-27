@@ -179,6 +179,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return NotFound();
             }
 
+            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);
+            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
+
             return View(descuento);
         }
 
@@ -187,12 +190,23 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var descuento = await _context.Descuentos.FindAsync(id);
-            if (descuento != null)
+            // Incluimos las asignaciones para poder comprobar si existen
+            var descuento = await _context.Descuentos
+                .Include(b => b.AsignacionDescuentos)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (descuento == null)
             {
-                _context.Descuentos.Remove(descuento);
+                return NotFound();
             }
 
+            if (descuento.AsignacionDescuentos.Any())
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar este descuento porque está asignado a uno o más empleados.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Descuentos.Remove(descuento);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
