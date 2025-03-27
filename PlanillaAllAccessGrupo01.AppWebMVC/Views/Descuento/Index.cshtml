@@ -1,0 +1,125 @@
+﻿@model IEnumerable<PlanillaAllAccessGrupo01.AppWebMVC.Models.Descuento>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center text-dark">Buscar Descuentos</h1>
+
+<form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Nombre del Descuento</label>
+            <input type="text" name="nombreBono" class="form-control" placeholder="Ingrese el nombre" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Planilla</label>
+            <select name="planilla" class="form-select">
+                <option value="0">Seleccione...</option>
+                <option value="1">Planilla Mensual</option>
+                <option value="2">Planilla Quincenal</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Estado</label>
+            <select name="estado" class="form-select">
+                <option value="0">Seleccione...</option>
+                <option value="1">Activo</option>
+                <option value="2">Inactivo</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Operación</label>
+            <select name="operacion" class="form-select">
+                <option value="0">Seleccione...</option>
+                <option value="1">Operación Fija</option>
+                <option value="2">Operación No Fija</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Cant. Registros</label>
+            <select name="topRegistro" class="form-select">
+                <option selected value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="0">Todos</option>
+            </select>
+        </div>
+        <div class="col-md-9 d-flex align-items-end justify-content-between">
+            <div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+                <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nuevo Descuento</a>
+            </div>
+            @*<a class="btn btn-outline-dark" asp-controller="Descuento" asp-action="Index"><i class="fas fa-percent"></i> Gestion de Descuentos</a>*@        
+        </div>
+    </div>
+</form>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-striped table-hover" id="descuentosTable">
+        <thead class="table-dark text-center align-middle">
+            <tr>
+                <th>Nombre del Descuento</th>
+                <th>Valor</th>
+                <th>Estado</th>
+                <th>Fecha de Validación</th>
+                <th>Fecha de Expiración</th>
+                <th>Operación</th>
+                <th>Planilla</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+
+                <tr class="align-middle">
+                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                    <td>$@Html.DisplayFor(modelItem => item.Valor)</td>
+                    <td>
+                        <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">
+                            @item.EstadoTexto
+                        </span>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaValidacion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaExpiracion)</td>
+                    <td>@item.OperacionTexto</td>
+                    <td>@item.PlanillaTexto</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#descuentosTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
+}
