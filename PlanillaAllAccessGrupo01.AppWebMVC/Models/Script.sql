@@ -227,3 +227,17 @@ DROP CONSTRAINT FK_Empleado_Horario;
 ALTER TABLE Empleado
 ADD CONSTRAINT FK_Empleado_Horario FOREIGN KEY (TipoDeHorarioId) REFERENCES TipoDeHorario(Id)
 ON DELETE CASCADE;
+
+-- Modificar relacion de horario y Tipo de horario
+ALTER TABLE Horario
+DROP CONSTRAINT FK_Horarios_Tipo;
+ALTER TABLE Horario
+ADD CONSTRAINT FK_Horarios_Tipo FOREIGN KEY (TipoDeHorarioId) REFERENCES TipoDeHorario(Id)
+ON DELETE CASCADE;
+
+-- Modificar relacion de empleados y vacacion
+ALTER TABLE Vacacion
+DROP CONSTRAINT FK_Vacaciones_Empleados;
+ALTER TABLE Vacacion
+ADD CONSTRAINT FK_Vacaciones_Empleados FOREIGN KEY (EmpleadosId) REFERENCES Empleado(Id)
+ON DELETE CASCADE;
