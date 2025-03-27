@@ -62,6 +62,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return NotFound();
             }
 
+            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);
+            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
+
             return View(descuento);
         }
 
