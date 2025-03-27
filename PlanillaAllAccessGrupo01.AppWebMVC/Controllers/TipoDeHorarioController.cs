@@ -65,5 +65,90 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(tipoDeHorario);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, TipodeHorario tipoDeHorario)
+        {
+            if (id != tipoDeHorario.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var tipoDeHorarioActual = await _context.TipodeHorarios
+                        .Include(t => t.Horarios)
+                        .FirstOrDefaultAsync(t => t.Id == id);
+
+                    if (tipoDeHorarioActual == null)
+                    {
+                        return NotFound();
+                    }
+
+                    tipoDeHorarioActual.NombreHorario = tipoDeHorario.NombreHorario;
+
+
+                    foreach (var horario in tipoDeHorario.Horarios)
+                    {
+
+                        if (horario.Id > 0)
+                        {
+                            var horarioExistente = tipoDeHorarioActual.Horarios.FirstOrDefault(h => h.Id == horario.Id);
+                            if (horarioExistente != null)
+                            {
+                                horarioExistente.Dias = horario.Dias;
+                                horarioExistente.HorasxDia = horario.HorasxDia;
+                                horarioExistente.HorasEntrada = horario.HorasEntrada;
+                                horarioExistente.HorasSalida = horario.HorasSalida;
+                            }
+                        }
+                        else
+                        {
+
+                            tipoDeHorarioActual.Horarios.Add(horario);
+                        }
+                    }
+
+                    var horariosAEliminar = tipoDeHorarioActual.Horarios
+                        .Where(h => !tipoDeHorario.Horarios.Any(nh => nh.Id == h.Id))
+                        .ToList();
+
+                    foreach (var horario in horariosAEliminar)
+                    {
+                        _context.Horarios.Remove(horario);
+                    }
+
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TipoDeHorarioExists(tipoDeHorario.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+
+            ViewBag.TipoDeHorarioId = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", tipoDeHorario.Id);
+            return View(tipoDeHorario);
+        }
+
+
+        private bool TipoDeHorarioExists(int id)
+        {
+            return _context.TipodeHorarios.Any(e => e.Id == id);
+        }
+
+
     }
 }

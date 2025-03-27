@@ -15,5 +15,5 @@ public partial class TipodeHorario
 
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
 
-    public virtual ICollection<Horario> Horarios { get; set; } = new List<Horario>();
+    public virtual ICollection<Horario>? Horarios { get; set; } = new List<Horario>();
 }

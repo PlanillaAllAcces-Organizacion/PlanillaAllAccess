@@ -17,5 +17,5 @@ public partial class Horario
 
     public TimeOnly HorasSalida { get; set; }
 
-    public virtual TipodeHorario TipoDeHorario { get; set; } = null!;
+    public virtual TipodeHorario? TipoDeHorario { get; set; } = null!;
 }
