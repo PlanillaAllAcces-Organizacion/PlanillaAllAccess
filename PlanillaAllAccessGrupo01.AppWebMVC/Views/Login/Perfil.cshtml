@@ -1,0 +1,96 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Empleado
+
+@{
+	ViewData["Title"] = "Perfil";
+}
+
+
+<div class="row justify-content-center">
+
+	<h1 class="display-4 text-warning"><i class="bi bi-pencil"></i> Perfil</h1>
+	<hr class="bg-warning" style="height: 2px;" />
+
+	<div class="col-md-6">
+		<div class="card shadow-lg p-4">
+
+			<form asp-action="Perfil">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<input type="hidden" asp-for="Id" />
+
+				<div class=" col-md-12 mb-3">
+					<label asp-for="Dui" class="form-label fw-bold"></label>
+					<input asp-for="Dui" class="form-control" placeholder="Ingrese el dui del empleado" />
+					<span asp-validation-for="Dui" class="text-danger"></span>
+				</div>
+
+				<div class="row">
+
+					<div class="col-md-6 mb-4">
+						<label asp-for="Nombre" class="form-label fw-bold"></label>
+						<input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre" />
+						<span asp-validation-for="Nombre" class="text-danger"></span>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label asp-for="Apellido" class="form-label fw-bold"></label>
+						<input asp-for="Apellido" class="form-control" placeholder="Ingrese el apellido" />
+						<span asp-validation-for="Apellido" class="text-danger"></span>
+					</div>
+					<div class="col-md-6 mb-4">
+						<label asp-for="Telefono" class="form-label fw-bold"></label>
+						<input asp-for="Telefono" class="form-control" type="number" placeholder="Ingrese el telefono" />
+						<span asp-validation-for="Telefono" class="text-danger"></span>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label asp-for="Correo" class="form-label fw-bold"></label>
+						<input asp-for="Correo" class="form-control" placeholder="Ingrese el correo del empleado" />
+						<span asp-validation-for="Correo" class="text-danger"></span>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label asp-for="FechaContraInicial" class="form-label fw-bold"></label>
+						<input asp-for="FechaContraInicial" class="form-control" type="date" readonly />
+						<span asp-validation-for="FechaContraInicial" class="text-danger"></span>
+					</div>
+					<div class="col-md-6 mb-4">
+						<label asp-for="FechaContraFinal" class="form-label fw-bold"></label>
+						<input asp-for="FechaContraFinal" class="form-control" type="date" readonly />
+						<span asp-validation-for="FechaContraFinal" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 mb-3">
+						<label asp-for="Usuario" class="form-label fw-bold"></label>
+						<input asp-for="Usuario" class="form-control" />
+						<span asp-validation-for="Usuario" class="text-danger"></span>
+					</div>
+					<div class="col-md-4 mb-4">
+						<label asp-for="Password" class="form-label fw-bold"></label>
+						<input asp-for="Password" class="form-control" />
+						<span asp-validation-for="Password" class="text-danger"></span>
+					</div>
+					<div class="col-md-4 mb-4">
+						<label asp-for="ConfirmarPassword" class="form-label fw-bold"></label>
+						<input asp-for="ConfirmarPassword" class="form-control" />
+						<span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
+					</div>
+
+				</div>
+
+				<br />
+				<div class="d-flex justify-content-between mt-4">
+					<button type="submit" class="btn btn-success px-4">
+						<i class="fas fa-save"></i> Actualizar
+					</button>
+					<a asp-action="Index" asp-controller="Home" class="btn btn-danger px-4"> Volver</a>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

@@ -77,7 +77,69 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
+        public async Task<IActionResult> Perfil()
+        {
 
+            var idStr = User.FindFirst("Id")?.Value;
+            int id = int.Parse(idStr);
+            var user = await _context.Empleados.FindAsync(id);
+            return View(user);
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Perfil(int id, [Bind("Id,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,Usuario,Password,ConfirmarPassword,PuestoTrabajoId")] Empleado empleado)
+        {
+            if (id != empleado.Id)
+            {
+                return NotFound();
+            }
+
+            var EmpleadoUpdate = await _context.Empleados.FindAsync(id); // Usa FindAsync
+
+            if (EmpleadoUpdate == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                EmpleadoUpdate.Dui = empleado.Dui;
+                EmpleadoUpdate.Nombre = empleado.Nombre;
+                EmpleadoUpdate.Apellido = empleado.Apellido;
+                EmpleadoUpdate.Correo = empleado.Correo;
+
+                if (!string.IsNullOrEmpty(empleado.Password))
+                {
+                    EmpleadoUpdate.Password = CalcularHashMD5(empleado.Password);
+                }
+
+                EmpleadoUpdate.FechaContraInicial = empleado.FechaContraInicial;
+                EmpleadoUpdate.FechaContraFinal = empleado.FechaContraFinal;
+                EmpleadoUpdate.Usuario = empleado.Usuario;
+                
+
+                _context.Update(EmpleadoUpdate); 
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EmpleadoExists(empleado.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View(empleado);
+                }
+            }
+        }
+
+        private bool EmpleadoExists(int id)
+        {
+            return _context.Empleados.Any(e => e.Id == id);
+        }
     }
 }
