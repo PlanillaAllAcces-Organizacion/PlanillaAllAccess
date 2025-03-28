@@ -12,16 +12,32 @@
     <link rel="stylesheet" href="~/PlanillaAllAccessGrupo01.AppWebMVC.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; min-height: 100vh;">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <span class="fs-4"><i class="bi bi-table"></i> PlanillaAllAcess</span>
-            </a>
-            <hr>
+
+    <header class="barra-superior">
+        <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+        <div class="usuario">
+            <span class="text-white">Bienvenido, @User.Identity.Name</span>
+        </div>
+        <nav>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user"></i> usuario
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Perfil"><i class="fas fa-id-card"></i> Perfil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="@Url.Action("CerrarSesion", "Usuario")"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="contenedor-principal">
+        <nav class="d-flex flex-column flex-shrink-0 p-3 menu-lateral" id="menuLateral">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Index" class="nav-link active" aria-current="page">
-                        <i class="bi bi-house-door-fill"></i> Home
+                    <a class="nav-link active" aria-current="page">
+                        <i class="fa-solid fa-house"></i> Home
                     </a>
                 </li>
                 <li>
@@ -65,22 +81,8 @@
                     </a>
                 </li>
             </ul>
-            <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-                   data-bs-toggle="dropdown" aria-expanded="false">
-                    Opciones 
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                    <li><a class="dropdown-item" ><i class="bi bi-person-circle"></i> Perfil</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item"><i class="bi bi-escape"></i> Cerrar sesión</a></li>
-                </ul>
-            </div>
         </nav>
-    </header>
+
 
     <div class="container">
         <main role="main" class="pb-3">

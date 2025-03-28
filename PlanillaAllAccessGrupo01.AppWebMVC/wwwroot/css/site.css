@@ -1,29 +1,85 @@
-html {
-    font-size: 10px;
+body {
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 14px;
+.barra-superior {
+    background-color: rgb(56,60,68);
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+    .barra-superior .usuario {
+        font-weight: bold;
+        color: #383c44;
+    }
+
+.contenedor-principal {
+    display: flex;
+    flex: 1;
+}
+
+.menu-lateral {
+    width: 280px;
+    min-height: 100vh;
+    background-color: #343a40;
+    color: white;
+}
+
+    .menu-lateral a {
+        color: white;
+    }
+
+.contenido-principal {
+    flex: 1;
+    padding: 20px;
+}
+
+.menu-lateral .nav-link.active {
+    background-color: #0d6efd;
+}
+
+.menu-lateral .nav-link i {
+    margin-right: 8px;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        flex-direction: column;
+    }
+
+    .menu-lateral {
+        width: 100%;
+        min-height: auto;
+        position: fixed;
+        top: 60px; /* Ajusta la posición para que no se superponga con la barra superior */
+        left: 0;
+        z-index: 1000;
+        display: none; /* Oculta el menú lateral por defecto en móviles */
+    }
+
+    .contenido-principal {
+        margin-left: 0;
+    }
+
+    .menu-toggle {
+        display: block; /* Muestra el botón de toggle en móviles */
     }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-
-body {
-    margin: 0;
-    display: flex;
-}
-
-nav {
-    height: 150vh;
-    width: 200px;
+/* Estilos para el botón de toggle del menú */
+.menu-toggle {
+    display: none; /* Oculta el botón de toggle por defecto en pantallas grandes */
+    background: none;
+    border: none;
+    color: black;
+    font-size: 1.5em;
+    cursor: pointer;
 }
