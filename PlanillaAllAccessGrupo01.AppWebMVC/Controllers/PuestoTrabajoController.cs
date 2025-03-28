@@ -129,6 +129,23 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return _context.PuestoTrabajos.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var puestoTrabajo = await _context.PuestoTrabajos
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (puestoTrabajo == null)
+            {
+                return NotFound();
+            }
+
+            return View(puestoTrabajo);
+        }
+
 
     }
 }
