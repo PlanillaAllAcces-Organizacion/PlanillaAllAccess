@@ -102,17 +102,17 @@
 				<div class="row">
 					<div class="col-md-4 mb-3">
 						<label asp-for="Usuario" class="form-label fw-bold"></label>
-						<input asp-for="Usuario" class="form-control" id="usuarioInput" disabled />
+						<input asp-for="Usuario" class="form-control"/>
 						<span asp-validation-for="Usuario" class="text-danger"></span>
 					</div>
 					<div class="col-md-4 mb-4">
 						<label asp-for="Password" class="form-label fw-bold"></label>
-						<input asp-for="Password" class="form-control" id="contraseñaInput" type="password" disabled />
+						<input asp-for="Password" class="form-control"/>
 						<span asp-validation-for="Password" class="text-danger"></span>
 					</div>
 					<div class="col-md-4 mb-4">
 						<label asp-for="ConfirmarPassword" class="form-label fw-bold"></label>
-						<input asp-for="ConfirmarPassword" class="form-control" id="confirContraInput" type="password" disabled />
+						<input asp-for="ConfirmarPassword" class="form-control" />
 						<span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
 					</div>
 				</div>
@@ -139,45 +139,6 @@
 	}
 
 	<script>
-
-		 const rolesPermitidos = ["Gerente de Recursos Humanos", "Supervisor", "Administrador de Nómina"];
-
-		 document.getElementById("puestoTrabajoSelect").addEventListener("change", function () {
-			 const puestoTrabajoId = this.value;
-			 const usuarioInput = document.getElementById("usuarioInput");
-			 const contraseñaInput = document.getElementById("contraseñaInput");
-			 const confirContraInput = document.getElementById("confirContraInput");
-
-
-			 usuarioInput.value = "";
-			 contraseñaInput.value = "";
-			 confirContraInput.value = "";
-
-			 if (puestoTrabajoId) {
-
-				 fetch(`/Empleado/GetPuestoNombre?puestoTrabajoId=${puestoTrabajoId}`)
-					 .then(response => response.json())
-					 .then(data => {
-						 const nombrePuesto = data.nombrePuesto;
-
-						 if (rolesPermitidos.includes(nombrePuesto)) {
-							 usuarioInput.disabled = false;
-							 contraseñaInput.disabled = false;
-							 confirContraInput.disabled = false;
-						 } else {
-							 usuarioInput.disabled = true;
-							 contraseñaInput.disabled = true;
-							 confirContraInput.disabled = true;
-						 }
-					 })
-					 .catch(error => console.error("Error:", error));
-
-			 } else {
-				 usuarioInput.disabled = true;
-				 contraseñaInput.disabled = true;
-				 confirContraInput.disabled = true;
-			 }
-		 });
 
 		 const rolesSinJefeInmediato = ["Gerente de Recursos Humanos", "Supervisor", "Administrador de Nómina"];
 
