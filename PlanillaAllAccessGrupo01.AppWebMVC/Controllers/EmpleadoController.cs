@@ -47,6 +47,15 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,Usuario,Password,ConfirmarPassword,PuestoTrabajoId")] Empleado empleado)
         {
+            if (string.IsNullOrWhiteSpace(empleado.Usuario))
+            {
+                ModelState.AddModelError("Usuario", "El campo Usuario es obligatorio.");
+            }
+
+            if (string.IsNullOrWhiteSpace(empleado.Password))
+            {
+                ModelState.AddModelError("Password", "El campo Contraseña es obligatorio.");
+            }
 
             if (await _context.Empleados.AnyAsync(e => e.Dui == empleado.Dui))
             {
@@ -71,6 +80,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 }
             }
 
+            
+
             var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(empleado.PuestoTrabajoId);
 
             var rolesSinJefeInmediato = new[] { "Gerente de Recursos Humanos", "Supervisor", "Administrador de Nómina" };
@@ -93,7 +104,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }
 
             ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
-            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos, "Id", "NombrePuesto", empleado.PuestoTrabajoId);
+            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
             return View(empleado);
         }
@@ -205,6 +216,97 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool EmpleadoExists(int id)
+        {
+            return _context.Empleados.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+
+            var estados = new List<SelectListItem>
+        {
+            new  SelectListItem{ Value="1",Text="Activo" },
+            new  SelectListItem{ Value="0",Text="Inactivo" }
+        };
+
+            ViewBag.Estados = estados;
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var empleado = await _context.Empleados.FindAsync(id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+            ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
+            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
+            ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
+            return View(empleado);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,PuestoTrabajoId")] Empleado empleado)
+        {
+            if (id != empleado.Id)
+            {
+                return NotFound();
+            }
+
+            var empleadoExistente = await _context.Empleados.FindAsync(id);
+            if (empleadoExistente == null)
+            {
+                return NotFound();
+            }
+
+            empleado.Usuario = empleadoExistente.Usuario;
+            empleado.Password = empleadoExistente.Password;
+
+            var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(empleado.PuestoTrabajoId);
+            var rolesSinJefeInmediato = new[] { "Gerente de Recursos Humanos", "Supervisor", "Administrador de Nómina" };
+
+            if (puestoTrabajo != null && rolesSinJefeInmediato.Contains(puestoTrabajo.NombrePuesto))
+            {
+                if (empleado.JefeInmediatoId != null)
+                {
+                    ModelState.AddModelError("JefeInmediatoId", "El campo Jefe Inmediato no se puede asignar para este puesto.");
+                    empleado.JefeInmediatoId = null;
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    _context.Entry(empleadoExistente).CurrentValues.SetValues(empleado);
+
+                    empleadoExistente.Usuario = empleado.Usuario;
+                    empleadoExistente.Password = empleado.Password;
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmpleadoExists(empleado.Id))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+            }
+
+            ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
+            ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
+            ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
+            return View(empleado);
         }
 
 
