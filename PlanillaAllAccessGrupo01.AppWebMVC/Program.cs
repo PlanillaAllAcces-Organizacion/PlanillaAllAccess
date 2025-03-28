@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
@@ -9,6 +10,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PlanillaDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Conn"));
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie((o) =>
+{
+    o.LoginPath = new PathString("/login/login");
+    o.AccessDeniedPath = new PathString("/login/login");
+    o.SlidingExpiration = true;
+    o.Cookie.HttpOnly = true;
 });
 
 var app = builder.Build();
@@ -26,10 +35,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=login}/{action=login}/{id?}");
 
 app.Run();

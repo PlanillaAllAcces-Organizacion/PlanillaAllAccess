@@ -70,13 +70,13 @@ body {
     }
 
     .menu-toggle {
-        display: block; /* Muestra el botón de toggle en móviles */
+
     }
 }
 
 /* Estilos para el botón de toggle del menú */
 .menu-toggle {
-    display: none; /* Oculta el botón de toggle por defecto en pantallas grandes */
+
     background: none;
     border: none;
     color: black;
