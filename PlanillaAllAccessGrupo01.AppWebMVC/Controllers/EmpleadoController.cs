@@ -84,7 +84,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(empleado.PuestoTrabajoId);
 
-            var rolesSinJefeInmediato = new[] { "Gerente de Recursos Humanos", "Supervisor", "Administrador de Nómina" };
+            var rolesSinJefeInmediato = new[] { "Recursos Humanos", "Supervisor", "Administrador de Nómina" };
             if (puestoTrabajo != null && rolesSinJefeInmediato.Contains(puestoTrabajo.NombrePuesto))
             {
                 if (empleado.JefeInmediatoId != null)
@@ -269,7 +269,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             empleado.Password = empleadoExistente.Password;
 
             var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(empleado.PuestoTrabajoId);
-            var rolesSinJefeInmediato = new[] { "Gerente de Recursos Humanos", "Supervisor", "Administrador de Nómina" };
+            var rolesSinJefeInmediato = new[] { "Recursos Humanos", "Supervisor", "Administrador de Nómina" };
 
             if (puestoTrabajo != null && rolesSinJefeInmediato.Contains(puestoTrabajo.NombrePuesto))
             {
