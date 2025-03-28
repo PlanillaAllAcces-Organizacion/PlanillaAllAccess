@@ -81,10 +81,13 @@ public partial class Empleado
 
     public virtual ICollection<Empleado> InverseJefeInmediato { get; set; } = new List<Empleado>();
 
+    [Display(Name = "Jefe Inmediato")]
     public virtual Empleado? JefeInmediato { get; set; }
 
+    [Display(Name = "Puesto")]
     public virtual PuestoTrabajo? PuestoTrabajo { get; set; }
 
+    [Display(Name = "Horario")]
     public virtual TipodeHorario? TipoDeHorario { get; set; }
 
     public virtual ICollection<Vacacion> Vacacions { get; set; } = new List<Vacacion>();

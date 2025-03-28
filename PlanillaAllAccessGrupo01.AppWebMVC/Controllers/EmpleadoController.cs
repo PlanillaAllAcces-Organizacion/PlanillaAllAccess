@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,10 +21,64 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Empleado empleado, int topRegistro = 10, int? mesInicioContrato = null, int? mesFinContrato = null)
         {
-            var planillaDbContext = _context.Empleados.Include(e => e.JefeInmediato).Include(e => e.PuestoTrabajo).Include(e => e.TipoDeHorario).Include(e => e.Vacacions);
-            return View(await planillaDbContext.ToListAsync());
+            var query = _context.Empleados.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(empleado.Dui))
+                query = query.Where(s => s.Dui.Contains(empleado.Dui));
+            if (!string.IsNullOrWhiteSpace(empleado.Nombre))
+                query = query.Where(s => s.Nombre.Contains(empleado.Nombre));
+            if (!string.IsNullOrWhiteSpace(empleado.Apellido))
+                query = query.Where(s => s.Apellido.Contains(empleado.Apellido));
+
+            if (empleado.Estado >= 0)
+                query = query.Where(s => s.Estado.ToString().Contains(empleado.Estado.ToString()));
+
+            if (empleado.PuestoTrabajoId > 0)
+                query = query.Where(s => s.PuestoTrabajoId == empleado.PuestoTrabajoId);
+            if (empleado.TipoDeHorarioId > 0)
+                query = query.Where(s => s.TipoDeHorarioId == empleado.TipoDeHorarioId);
+            if (empleado.JefeInmediatoId > 0)
+                query = query.Where(s => s.JefeInmediatoId == empleado.JefeInmediatoId);
+
+            if (mesInicioContrato.HasValue && mesInicioContrato > 0)
+                query = query.Where(s => s.FechaContraInicial.Month == mesInicioContrato.Value);
+
+            if (mesFinContrato.HasValue && mesFinContrato > 0)
+                query = query.Where(s => s.FechaContraFinal.Month == mesFinContrato.Value);
+
+            if (topRegistro > 0)
+                query = query.Take(topRegistro);
+            query = query
+                .Include(p => p.TipoDeHorario).Include(p => p.PuestoTrabajo).Include(p => p.JefeInmediato);
+
+            var puestotrabajos = _context.PuestoTrabajos.ToList();
+            puestotrabajos.Add(new PuestoTrabajo { NombrePuesto = "SELECCIONAR", Id = 0 });
+
+            var tipodehorario = _context.TipodeHorarios.ToList();
+            tipodehorario.Add(new TipodeHorario { NombreHorario = "SELECCIONAR", Id = 0 });
+
+            var jefesInmediatos = await _context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto.Contains("Supervisor")).Select(e => new { e.Id, e.Nombre }).ToListAsync();
+
+            jefesInmediatos.Insert(0, new { Id = 0, Nombre = "SELECCIONAR" });
+
+
+            var meses = Enumerable.Range(1, 12)
+                .Select(m => new { Id = m, Nombre = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m) })
+                .ToList();
+            meses.Insert(0, new { Id = 0, Nombre = "SELECCIONAR" });
+
+
+
+            ViewData["TipoDeHorarioId"] = new SelectList(tipodehorario, "Id", "NombreHorario", 0);
+            ViewData["PuestoTrabajoId"] = new SelectList(puestotrabajos, "Id", "NombrePuesto", 0);
+            ViewData["JefeInmediatoId"] = new SelectList(items: jefesInmediatos, dataValueField: "Id", dataTextField: "Nombre", selectedValue: 0);
+            ViewData["Meses"] = new SelectList(meses, "Id", "Nombre");
+            ViewData["MesInicioContratoSeleccionado"] = mesInicioContrato;
+            ViewData["MesFinContratoSeleccionado"] = mesFinContrato;
+
+
+            return View(await query.ToListAsync());
         }
 
         public IActionResult Create()
