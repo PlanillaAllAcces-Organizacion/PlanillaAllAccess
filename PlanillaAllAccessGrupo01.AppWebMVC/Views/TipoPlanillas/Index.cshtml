@@ -1,0 +1,67 @@
+﻿@model IEnumerable<PlanillaAllAccessGrupo01.AppWebMVC.Models.TipoPlanilla>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<h1 class="text-center text-dark">Buscar Tipo de Planilla</h1>
+
+<form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Nombre de la Planilla</label>
+            <input type="text" name="NombreTipo" class="form-control" placeholder="Ingrese el nombre" />
+        </div>
+        <div class="col-md-9 d-flex align-items-end justify-content-between">
+            <div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+                <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nuevo Tipo de Planilla</a>
+            </div>
+            <a class="btn btn-outline-dark" asp-controller="Bono" asp-action="Index"><i class="fas fa-percent"></i> Generar Planilla</a>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-striped table-hover" id="tipoplanillaTable">
+        <thead class="table-dark text-center align-middle">
+            <tr>
+                <th>Nombre de Planilla</th>
+                <th>Fecha de Creación</th>
+                <th>Fecha de Modificación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="align-middle">
+                    <td>@Html.DisplayFor(modelItem => item.NombreTipo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaCreacion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaModificacion)</td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
+                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tipoplanillaTable').DataTable({
+                ordering: false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+                }
+            });
+        });
+    </script>
+}
+
