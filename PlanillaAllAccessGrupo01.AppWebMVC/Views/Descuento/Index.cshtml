@@ -4,8 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
+@* Vista Principal que se mostrará en el apartado de descuentos*@
+
 <h1 class="text-center text-dark">Buscar Descuentos</h1>
 
+@*Contendrá un formulario de búsqueda donde se podrán buscar los registros por los siguientes filtros:*@
 <form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
     <div class="row g-3">
         <div class="col-md-3">
@@ -49,6 +52,7 @@
                 <option value="0">Todos</option>
             </select>
         </div>
+        @*Funcionalidad de botones para buscar el registro y para poder crear un nuevo registro*@
         <div class="col-md-9 d-flex align-items-end justify-content-between">
             <div>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
@@ -59,6 +63,7 @@
     </div>
 </form>
 
+@*Tabla dinámica que se mostrará con los registros creados*@
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -100,6 +105,7 @@
                     <td>@item.OperacionTexto</td>
                     <td>@item.PlanillaTexto</td>
                     <td class="text-center">
+                        @*Funcionalidad de botones para editar, ver o eliminar y los dirigirá a cada vista correspondiente, perteneciente a Descuentos*@
                         <div class="btn-group" role="group">
                             <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
                             <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
@@ -111,11 +117,13 @@
         </tbody>
     </table>
 </div>
-
+@*Funcionalidad para paginación*@
 @section Scripts {
     <script>
         $(document).ready(function() {
             $('#descuentosTable').DataTable({
+                 ordering: false,
+                 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
                 }
