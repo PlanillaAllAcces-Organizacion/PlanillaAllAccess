@@ -15,6 +15,8 @@ public partial class TipoPlanilla
     public string NombreTipo { get; set; } = null!;
 
     [NotMapped]
+    public bool Activo { get; set; } = true;
+
     public DateTime FechaCreacion { get; set; }  = DateTime.Now;
 
     public DateTime? FechaModificacion { get; set; }
