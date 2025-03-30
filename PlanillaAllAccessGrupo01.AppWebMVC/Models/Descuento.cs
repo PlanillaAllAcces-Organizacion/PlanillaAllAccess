@@ -16,6 +16,7 @@ public partial class Descuento
     [Display(Name = "Valor")]
     [Required(ErrorMessage = "El valor del descuento es obligatorio")]
     [Range(0.01, double.MaxValue, ErrorMessage = "El valor debe ser mayor a 0")]
+    [RegularExpression(@"^\d{1,10}(\.\d{1,4})?$", ErrorMessage = "El valor debe tener hasta 10 dígitos antes del punto y hasta 4 decimales.")]
     public decimal Valor { get; set; }
     [Display(Name = "Estado")]
     [Required]
