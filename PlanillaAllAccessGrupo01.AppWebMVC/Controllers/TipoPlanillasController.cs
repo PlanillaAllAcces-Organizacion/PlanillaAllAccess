@@ -47,11 +47,15 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(tipoPlanilla);
         }
 
+        // Acción que devuelve la vista para crear un nuevo tipo de planilla (GET)
         public IActionResult Create()
         {
-            return View();
+            return View(); // Devuelve la vista "Create" sin ningún dato predefinido
         }
 
+        // Acción que maneja la solicitud POST para crear un nuevo tipo de planilla
+        // Utiliza [HttpPost] para indicar que se ejecuta cuando se envían datos a través de un formulario
+        // [ValidateAntiForgeryToken] se utiliza para prevenir ataques CSRF (Cross-Site Request Forgery)        
         // POST: TipoPlanillas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -59,12 +63,15 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombreTipo")] TipoPlanilla tipoPlanilla)
         {
+            // Verifica si el modelo que contiene los datos del formulario es válido
+            // ModelState.IsValid es una propiedad que comprueba las validaciones de datos del modelo
             if (ModelState.IsValid)
             {
-                _context.Add(tipoPlanilla);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.Add(tipoPlanilla);// Agrega el nuevo objeto tipoPlanilla al contexto para guardar en la base de datos
+                await _context.SaveChangesAsync();// Guarda los cambios en la base de datos de manera asíncrona
+                return RedirectToAction(nameof(Index));// Redirige a la acción "Index" para mostrar todos los tipos de planillas
             }
+            // Si el modelo no es válido, retorna a la vista "Create" con los datos del formulario para corregirlos
             return View(tipoPlanilla);
         }
 
