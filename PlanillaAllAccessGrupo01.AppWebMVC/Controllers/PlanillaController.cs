@@ -81,10 +81,17 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombrePlanilla,TipoPlanillaId,FechaInicio,FechaFin,Autorizacion,TotalPago")] Planilla planilla)
         {
+            if (planilla.FechaFin <= planilla.FechaInicio)
+            {
+                ModelState.AddModelError("FechaFin", "La fecha de fin debe ser posterior a la fecha de inicio.");
+            }
+
             if (ModelState.IsValid)
             {
+                planilla.Autorizacion = 0;
                 _context.Add(planilla);
                 await _context.SaveChangesAsync();
+                TempData["Mensaje"] = "Planilla creada con éxito.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", planilla.TipoPlanillaId);
