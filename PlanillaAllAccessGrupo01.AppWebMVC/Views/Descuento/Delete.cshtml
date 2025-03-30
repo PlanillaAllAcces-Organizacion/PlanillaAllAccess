@@ -4,6 +4,9 @@
     ViewData["Title"] = "Delete";
 }
 
+@* Vista que mostrará los datos de cada descuento*@
+@*Esta vista solo permitirá la visualización de los datos y podrá eliminar el descuento*@
+
 <h1 class="text-center"><i class="fas fa-trash-alt text-danger"></i> Eliminar Descuento</h1>
 <h4 class="text-center text-muted">Confirmación de eliminación</h4>
 <hr />
@@ -45,6 +48,8 @@
                 <dd class="col-sm-8">@Model.PlanillaTexto</dd>
             </dl>
 
+            @*Funcionalidad del botón Cancelar, que dirigirá a la pantalla principal Index de Descuentos, sin eliminar nada.*@
+            ¨@*Funcionalidad del botón de Eliminar que eliminará el descuento seleccionado*@
             <form asp-action="Delete" class="d-flex justify-content-between mt-4">
                 <input type="hidden" asp-for="Id" />
                 <button type="submit" class="btn btn-danger px-4">
