@@ -3,29 +3,37 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<!-- Importación de FontAwesome para iconos -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
+<!-- Título de la página centrado -->
 <h1 class="text-center text-dark">Buscar Tipo de Planilla</h1>
 
+<!-- Formulario para buscar un tipo de planilla -->
 <form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
     <div class="row g-3">
+        <!-- Campo de entrada para el nombre de la planilla -->
         <div class="col-md-3">
             <label class="form-label fw-bold">Nombre de la Planilla</label>
             <input type="text" name="NombreTipo" class="form-control" placeholder="Ingrese el nombre" />
         </div>
+        <!-- Contenedor de botones de acción -->
         <div class="col-md-9 d-flex align-items-end justify-content-between">
             <div>
+                <!-- Botón para buscar planillas -->
                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+                <!-- Botón para crear una nueva planilla -->
                 <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nuevo Tipo de Planilla</a>
             </div>
+            <!-- Botón para generar planilla, redirige a la acción "Index" del controlador "Bono" -->
             <a class="btn btn-outline-dark" asp-controller="Bono" asp-action="Index"><i class="fas fa-percent"></i> Generar Planilla</a>
         </div>
     </div>
 </form>
 
+<!-- Tabla para mostrar los tipos de planilla -->
 <div class="table-responsive mt-4">
     <table class="table table-bordered table-striped table-hover" id="tipoplanillaTable">
+        <!-- Encabezado de la tabla con estilos oscuros -->
         <thead class="table-dark text-center align-middle">
             <tr>
                 <th>Nombre de Planilla</th>
@@ -35,12 +43,17 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Se recorre la lista de planillas en el modelo -->
             @foreach (var item in Model)
             {
                 <tr class="align-middle">
+                    <!-- Mostrar el nombre de la planilla -->
                     <td>@Html.DisplayFor(modelItem => item.NombreTipo)</td>
+                    <!-- Mostrar la fecha de creación -->
                     <td>@Html.DisplayFor(modelItem => item.FechaCreacion)</td>
+                    <!-- Mostrar la fecha de última modificación -->
                     <td>@Html.DisplayFor(modelItem => item.FechaModificacion)</td>
+                    <!-- Botones de acción (Editar, Ver, Eliminar) -->
                     <td class="text-center">
                         <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
                         <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
@@ -52,11 +65,12 @@
     </table>
 </div>
 
+<!-- Script para inicializar la tabla con DataTables -->
 @section Scripts {
     <script>
         $(document).ready(function () {
             $('#tipoplanillaTable').DataTable({
-                ordering: false,
+                ordering: false, // Desactiva la opción de ordenar columnas
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
                 }
@@ -64,4 +78,3 @@
         });
     </script>
 }
-
