@@ -158,21 +158,29 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }
             return View(tipoPlanilla);// Si el modelo no es válido, regresa a la vista con los errores
         }
+
+        // Acción que maneja la eliminación de un tipo de planilla.
+        // Recibe un parámetro "id" para identificar el registro a eliminar.
+        // Si el "id" es nulo, retorna un error 404 (NotFound).
+        // Busca en la base de datos el tipo de planilla con el "id" proporcionado.
+        // Si no se encuentra, retorna un error 404.
+        // Si se encuentra, envía la información a la vista de confirmación antes de eliminarlo.
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound(); // Retorna un error 404 si el ID es nulo.
             }
 
             var tipoPlanilla = await _context.TipoPlanillas
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id); // Busca el tipo de planilla con el ID proporcionado.
+
             if (tipoPlanilla == null)
             {
-                return NotFound();
+                return NotFound(); // Retorna un error 404 si el tipo de planilla no se encuentra.
             }
 
-            return View(tipoPlanilla);
+            return View(tipoPlanilla); // Envía la información del tipo de planilla a la vista de confirmación.
         }
 
         // POST: TipoPlanillas/Delete/5
