@@ -4,29 +4,45 @@
     ViewData["Title"] = "Edit";
 }
 
+<!-- Importación de FontAwesome para usar iconos -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+<!-- Título principal con icono de edición en color azul -->
 <h1 class="text-center"><i class="fas fa-edit text-primary"></i> Editar Tipo de Planilla</h1>
+
+<!-- Subtítulo con mensaje informativo -->
 <h4 class="text-center text-muted">Detalles del Tipo de Planilla</h4>
 <hr />
 
+<!-- Contenedor principal con una fila centrada -->
 <div class="row justify-content-center">
+    <!-- Columna de 6 espacios en dispositivos medianos -->
     <div class="col-md-6">
+        <!-- Tarjeta con sombra y padding para contener el formulario -->
         <div class="card shadow-lg p-4">
+            <!-- Formulario para editar un tipo de planilla -->
             <form asp-action="Edit">
+                <!-- Sección de validaciones de modelo, muestra errores en rojo si hay fallos -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Campo oculto para almacenar el ID del tipo de planilla -->
                 <input type="hidden" asp-for="Id" />
 
+                <!-- Campo para ingresar/modificar el nombre del tipo de planilla -->
                 <div class="mb-3">
                     <label asp-for="NombreTipo" class="form-label fw-bold">Nombre del Tipo de Planilla</label>
                     <input asp-for="NombreTipo" class="form-control" placeholder="Ingrese el nombre del tipo de planilla" />
+                    <!-- Mensaje de error si el campo no es válido -->
                     <span asp-validation-for="NombreTipo" class="text-danger"></span>
                 </div>
 
+                <!-- Contenedor de botones alineados a los extremos -->
                 <div class="d-flex justify-content-between mt-4">
+                    <!-- Botón para guardar los cambios -->
                     <button type="submit" class="btn btn-success px-4">
                         <i class="fas fa-save"></i> Guardar Cambios
                     </button>
+                    <!-- Botón para volver a la lista de planillas sin modificar nada -->
                     <a asp-action="Index" class="btn btn-danger px-4">
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
@@ -36,6 +52,7 @@
     </div>
 </div>
 
+<!-- Sección de scripts para validaciones del lado del cliente -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
