@@ -4,29 +4,42 @@
     ViewData["Title"] = "Create";
 }
 
+<!-- Importación de FontAwesome para usar iconos -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+<!-- Contenedor principal con una fila centrada -->
 <div class="row justify-content-center">
+    <!-- Título principal con icono y estilo en color verde -->
     <h1 class="display-4 text-success text-center">
         <i class="fas fa-plus-circle"></i> Crear Tipo de Planilla
     </h1>
+    <!-- Línea divisoria con color verde -->
     <hr class="bg-success" style="height: 2px;" />
 
+    <!-- Columna para el formulario (6 columnas de ancho en dispositivos medianos) -->
     <div class="col-md-6">
+        <!-- Tarjeta con sombra y padding para el formulario -->
         <div class="card shadow-lg p-4">
+            <!-- Formulario para crear un nuevo tipo de planilla -->
             <form asp-action="Create">
+                <!-- Sección de validaciones de modelo, muestra errores en rojo si hay fallos -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                <!-- Campo para ingresar el nombre del tipo de planilla -->
                 <div class="mb-3">
                     <label asp-for="NombreTipo" class="form-label fw-bold">Nombre del Tipo de Planilla</label>
                     <input asp-for="NombreTipo" class="form-control" placeholder="Ingrese el nombre del tipo de planilla" />
+                    <!-- Mensaje de error si el campo no es válido -->
                     <span asp-validation-for="NombreTipo" class="text-danger"></span>
                 </div>
 
+                <!-- Contenedor de botones alineados a los extremos -->
                 <div class="d-flex justify-content-between mt-4">
+                    <!-- Botón para guardar el nuevo tipo de planilla -->
                     <button type="submit" class="btn btn-success px-4">
                         <i class="fas fa-save"></i> Guardar
                     </button>
+                    <!-- Botón para volver a la lista de planillas -->
                     <a asp-action="Index" class="btn btn-danger px-4">
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
@@ -36,6 +49,7 @@
     </div>
 </div>
 
+<!-- Sección de scripts para validaciones del lado del cliente -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
