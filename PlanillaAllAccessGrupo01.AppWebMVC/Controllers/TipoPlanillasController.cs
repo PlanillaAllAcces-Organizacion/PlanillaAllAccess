@@ -18,15 +18,22 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             _context = context;
         }
 
-
+        // Acción para mostrar la lista de tipos de planilla con la opción de filtrado por nombre.
+        // Recibe un objeto tipoPlanilla para obtener el valor de filtrado (NombreTipo) desde el formulario.
+        // Si se especifica un nombre de tipo de planilla, filtra los resultados que contengan ese nombre.
+        // Los resultados se ordenan en orden descendente por el campo "Id".
+        // Finalmente, la lista de resultados se devuelve a la vista.
         public async Task<IActionResult> Index(TipoPlanilla tipoPlanila)
         {
-            var query = _context.TipoPlanillas.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(tipoPlanila.NombreTipo))
-                query = query.Where(s => s.NombreTipo.Contains(tipoPlanila.NombreTipo));
-                
-            query = query.OrderByDescending(s => s.Id);
+            var query = _context.TipoPlanillas.AsQueryable(); // Se crea una consulta base de todos los tipos de planilla
 
+            // Si el campo NombreTipo no está vacío o nulo, se agrega un filtro para buscar por nombre
+            if (!string.IsNullOrWhiteSpace(tipoPlanila.NombreTipo))
+                query = query.Where(s => s.NombreTipo.Contains(tipoPlanila.NombreTipo)); // Filtra los registros donde el NombreTipo contiene el valor ingresado
+
+            query = query.OrderByDescending(s => s.Id); // Ordena los resultados en orden descendente por el campo "Id"
+
+            // Ejecuta la consulta, la convierte en una lista y la pasa a la vista
             return View(await query.ToListAsync());
         }
 
