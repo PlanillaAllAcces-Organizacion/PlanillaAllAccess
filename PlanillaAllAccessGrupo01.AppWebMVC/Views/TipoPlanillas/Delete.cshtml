@@ -4,38 +4,59 @@
     ViewData["Title"] = "Delete";
 }
 
+<!-- Importación de FontAwesome para iconos -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+<!-- Título principal con icono de eliminación en color rojo -->
 <h1 class="text-center my-4">
     <i class="fas fa-trash-alt text-danger"></i> Eliminar Tipo de Planilla
 </h1>
+
+<!-- Subtítulo con mensaje de confirmación -->
 <h4 class="text-center text-muted">Confirmación de eliminación</h4>
 <hr />
 
+<!-- Contenedor principal con una fila centrada -->
 <div class="row justify-content-center">
+    <!-- Columna de 8 espacios en dispositivos medianos -->
     <div class="col-md-8">
+        <!-- Tarjeta con sombra y padding para contener la información -->
         <div class="card shadow-lg p-4">
+            <!-- Mensaje de advertencia en color rojo -->
             <h3 class="text-center text-danger mb-4">¿Estás seguro de que deseas eliminar este tipo de planilla?</h3>
 
+            <!-- Lista de detalles de la planilla que se eliminará -->
             <dl class="row">
+                <!-- Mostrar el nombre del tipo de planilla -->
                 <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.NombreTipo)</dt>
                 <dd class="col-sm-8">@Html.DisplayFor(model => model.NombreTipo)</dd>
 
+                <!-- Mostrar el estado de la planilla (Activo/Inactivo) con una insignia de color -->
                 <dt class="col-sm-4 fw-bold">Estado</dt>
-                <dd class="col-sm-8">@Html.Raw(Model.Activo ? "<span class='badge bg-success'>Activo</span>" : "<span class='badge bg-secondary'>Inactivo</span>")</dd>
+                <dd class="col-sm-8">
+                    @Html.Raw(Model.Activo ? "<span class='badge bg-success'>Activo</span>" : "<span class='badge bg-secondary'>Inactivo</span>")
+                </dd>
 
+                <!-- Mostrar la fecha de creación -->
                 <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.FechaCreacion)</dt>
                 <dd class="col-sm-8">@Html.DisplayFor(model => model.FechaCreacion)</dd>
 
+                <!-- Mostrar la fecha de última modificación -->
                 <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.FechaModificacion)</dt>
                 <dd class="col-sm-8">@Html.DisplayFor(model => model.FechaModificacion)</dd>
             </dl>
 
+            <!-- Formulario para confirmar la eliminación -->
             <form asp-action="Delete" class="d-flex justify-content-between mt-4">
+                <!-- Campo oculto para enviar el ID del registro a eliminar -->
                 <input type="hidden" asp-for="Id" />
+
+                <!-- Botón para confirmar la eliminación -->
                 <button type="submit" class="btn btn-danger px-4">
                     <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
+
+                <!-- Botón para cancelar y regresar a la lista de planillas -->
                 <a asp-action="Index" class="btn btn-secondary px-4">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
