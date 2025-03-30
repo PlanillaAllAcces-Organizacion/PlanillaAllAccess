@@ -18,13 +18,18 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             _context = context;
         }
 
-        // GET: TipoPlanillas
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Index(TipoPlanilla tipoPlanila)
         {
-            return View(await _context.TipoPlanillas.ToListAsync());
+            var query = _context.TipoPlanillas.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(tipoPlanila.NombreTipo))
+                query = query.Where(s => s.NombreTipo.Contains(tipoPlanila.NombreTipo));
+                
+            query = query.OrderByDescending(s => s.Id);
+
+            return View(await query.ToListAsync());
         }
 
-        // GET: TipoPlanillas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
