@@ -75,21 +75,29 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(tipoPlanilla);
         }
 
+
+        // Acción GET para editar un tipo de planilla.
+        // Verifica si el parámetro id es nulo. Si es nulo, devuelve un error 404 (NotFound).
+        // Si el tipo de planilla no se encuentra, también devuelve NotFound.
+        // Si el tipo de planilla es encontrado, devuelve la vista con el modelo (tipoPlanilla) para ser editado.
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound();// Si id es nulo, retorna NotFound
             }
 
-            var tipoPlanilla = await _context.TipoPlanillas.FindAsync(id);
+            var tipoPlanilla = await _context.TipoPlanillas.FindAsync(id); // Busca el tipo de planilla por id
             if (tipoPlanilla == null)
             {
-                return NotFound();
+                return NotFound(); // Si no se encuentra el tipo de planilla, retorna NotFound
             }
-            return View(tipoPlanilla);
+            return View(tipoPlanilla); // Retorna la vista con los datos del tipo de planilla encontrado
         }
 
+        // Acción POST para guardar los cambios de edición de un tipo de planilla.
+        // Se utiliza [HttpPost] para manejar las solicitudes POST que envían datos desde un formulario.
+        // Se utiliza [ValidateAntiForgeryToken] para proteger contra ataques CSRF (Cross-Site Request Forgery).
         // POST: TipoPlanillas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -97,37 +105,43 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,NombreTipo")] TipoPlanilla tipoPlanilla)
         {
+            // Verifica si el id proporcionado en la URL coincide con el id del objeto tipoPlanilla
+            // Si no coinciden, retorna NotFound.
             if (id != tipoPlanilla.Id)
             {
                 return NotFound();
             }
+            // Si el estado del modelo es válido, procede a intentar guardar los cambios
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Busca el tipo de planilla existente en la base de datos
                     var existingTipoPlanilla = await _context.TipoPlanillas.FindAsync(id);
                     if (existingTipoPlanilla != null)
                     {
+                        // Actualiza las propiedades del tipo de planilla con los nuevos valores
                         existingTipoPlanilla.NombreTipo = tipoPlanilla.NombreTipo;
-                        existingTipoPlanilla.FechaModificacion = DateTime.Now;
-                        _context.Update(existingTipoPlanilla);
-                        await _context.SaveChangesAsync();
+                        existingTipoPlanilla.FechaModificacion = DateTime.Now;// Establece la fecha de modificación
+                        _context.Update(existingTipoPlanilla); // Marca el objeto para actualizar en el contexto
+                        await _context.SaveChangesAsync(); // Guarda los cambios en la base de datos
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Si ocurre una excepción de concurrencia, verifica si el tipo de planilla aún existe
                     if (!TipoPlanillaExists(tipoPlanilla.Id))
                     {
-                        return NotFound();
+                        return NotFound();// Si no existe, retorna NotFound
                     }
                     else
                     {
-                        throw;
+                        throw;// Si hay otro tipo de error, vuelve a lanzar la excepción
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));// Redirige a la acción Index tras guardar los cambios
             }
-            return View(tipoPlanilla);
+            return View(tipoPlanilla);// Si el modelo no es válido, regresa a la vista con los errores
         }
         public async Task<IActionResult> Delete(int? id)
         {
