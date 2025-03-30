@@ -7,6 +7,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 public partial class Planilla
 {
+    //Asignación de atributos que tendrá el modelo de Planilla
+    //Colocación de validaciones por cada campo, para que sea un sistema con funcionalidad segura y aceptable.
+
     public int Id { get; set; }
     [Required(ErrorMessage = "El nombre de la planilla es obligatorio.")]
     [StringLength(100, ErrorMessage = "El nombre no puede tener más de 100 caracteres.")]
@@ -30,11 +33,13 @@ public partial class Planilla
     [Display(Name = "Total de Pago")]
     [Column(TypeName = "decimal(18, 2)")]
     public decimal? TotalPago { get; set; }
-
+    //Listado para asignar EmpleadoPlanillas
     public virtual ICollection<EmpleadoPlanilla> EmpleadoPlanillas { get; set; } = new List<EmpleadoPlanilla>();
+    //Llave fóranea de TipoPlanilla
     [ForeignKey("TipoPlanillaId")]
     public virtual TipoPlanilla TipoPlanilla { get; set; } = null!;
 
+    //Atributos No mapeados, que tendrán funcionalidad en los metódos del controlador
     [NotMapped]
     [Display(Name = "Cantidad de Empleados")]
     public int CantidadEmpleados => EmpleadoPlanillas?.Count ?? 0;
