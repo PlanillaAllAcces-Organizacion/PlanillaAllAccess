@@ -47,7 +47,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(tipoPlanilla);
         }
 
-        // GET: TipoPlanillas/Create
         public IActionResult Create()
         {
             return View();
@@ -69,7 +68,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(tipoPlanilla);
         }
 
-        // GET: TipoPlanillas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,19 +88,24 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NombreTipo,FechaCreacion,FechaModificacion")] TipoPlanilla tipoPlanilla)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NombreTipo")] TipoPlanilla tipoPlanilla)
         {
             if (id != tipoPlanilla.Id)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(tipoPlanilla);
-                    await _context.SaveChangesAsync();
+                    var existingTipoPlanilla = await _context.TipoPlanillas.FindAsync(id);
+                    if (existingTipoPlanilla != null)
+                    {
+                        existingTipoPlanilla.NombreTipo = tipoPlanilla.NombreTipo;
+                        existingTipoPlanilla.FechaModificacion = DateTime.Now;
+                        _context.Update(existingTipoPlanilla);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,8 +122,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }
             return View(tipoPlanilla);
         }
-
-        // GET: TipoPlanillas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
