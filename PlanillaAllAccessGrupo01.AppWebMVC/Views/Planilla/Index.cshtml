@@ -3,11 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
+@* Vista Principal que se mostrará en el apartado de Gestión de Planillas*@
 
+@* Link utilizado para la funcionalida dde los íconos de la vista*@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <h1 class="text-center text-dark">Buscar Planillas</h1>
 
+@*Contendrá un formulario de búsqueda donde se podrán buscar los registros por los siguientes filtros:*@
 <form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
     <div class="row g-3">
         <div class="col-md-4">
@@ -44,6 +47,7 @@
                 <option value="0">Todos</option>
             </select>
         </div>
+        @*Funcionalidad de botones para buscar el registro y para poder crear un nuevo registro*@
         <div class="col-md-9 d-flex align-items-end justify-content-between">
             <div>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
@@ -52,7 +56,7 @@
         </div>
     </div>
 </form>
-
+@*Alerta para poder eliminar un registro*@
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -61,6 +65,7 @@
     </div>
 }
 
+@*Tabla dinámica que se mostrará con los registros creados*@
 <div class="table-responsive mt-4">
 <table class="table table-bordered table-striped table-hover" id="planillasTable">
     <thead class="table-dark text-center align-middle">
@@ -88,6 +93,8 @@
                     </td>
                     <td>$@Html.DisplayFor(modelItem => item.TotalPago)</td>
                     <td>@item.TipoPlanilla?.NombreTipo</td>
+                    @*Funcionalidad de botones para editar, ver o eliminar y los dirigirá a cada vista correspondiente, perteneciente a Planilla*@
+                    @*Botón de asignar planilla, para colocar los empleados que pertenecen a esa planilla*@
                     <td class="text-center">
                         <a class="btn btn-sm btn-warning me-2" asp-action="Edit" asp-route-id="@item.Id">
                             <i class="fas fa-edit"></i> Editar
@@ -107,7 +114,7 @@
     </tbody>
 </table>
 </div>
-
+@*Funcionalidad para paginación*@
 @section Scripts {
     <script>
         $(document).ready(function () {
