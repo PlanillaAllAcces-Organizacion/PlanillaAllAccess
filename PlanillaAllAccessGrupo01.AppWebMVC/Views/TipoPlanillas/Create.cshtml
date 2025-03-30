@@ -1,0 +1,43 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.TipoPlanilla
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<div class="row justify-content-center">
+    <h1 class="display-4 text-success text-center">
+        <i class="fas fa-plus-circle"></i> Crear Tipo de Planilla
+    </h1>
+    <hr class="bg-success" style="height: 2px;" />
+
+    <div class="col-md-6">
+        <div class="card shadow-lg p-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="NombreTipo" class="form-label fw-bold">Nombre del Tipo de Planilla</label>
+                    <input asp-for="NombreTipo" class="form-control" placeholder="Ingrese el nombre del tipo de planilla" />
+                    <span asp-validation-for="NombreTipo" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <a asp-action="Index" class="btn btn-danger px-4">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
