@@ -4,6 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
+@* Vista que mostrará los datos de cada descuento*@
+@*Esta vista solo permitirá la visualización de los datos y podrá regresar a la pantalla principal de descuento*@
+
 <h1 class="text-center"><i class="fas fa-info-circle text-primary"></i> Detalles del Descuento</h1>
 <h4 class="text-center text-muted">Información completa</h4>
 <hr />
@@ -60,7 +63,7 @@
                 <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Planilla)</label>
                 <div class="form-control-plaintext border-bottom">@Model.PlanillaTexto</div>
             </div>
-
+            @*Funcionalidad del botón Volver, que dirigirá a la pantalla principal Index de Descuentos*@
             <div class="d-flex justify-content-center mt-4">
                 <a asp-action="Index" class="btn btn-primary px-4">
                     <i class="fas fa-arrow-left"></i> Volver
