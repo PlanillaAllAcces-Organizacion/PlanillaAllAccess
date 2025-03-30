@@ -19,10 +19,33 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
         // GET: Planilla
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string nombrePlanilla, int tipoPlanilla, byte? autorizacion, int topRegistro = 10)
         {
-            var planillaDbContext = _context.Planillas.Include(p => p.TipoPlanilla);
-            return View(await planillaDbContext.ToListAsync());
+            var query = _context.Planillas.Include(p => p.TipoPlanilla).AsQueryable();
+
+            if (!string.IsNullOrEmpty(nombrePlanilla))
+            {
+                query = query.Where(p => p.NombrePlanilla.Contains(nombrePlanilla));
+            }
+
+            if (tipoPlanilla > 0)
+            {
+                query = query.Where(p => p.TipoPlanillaId == tipoPlanilla);
+            }
+
+            // Filtrar por estado de autorización si se proporciona un valor válido (1 o 2)
+            if (autorizacion.HasValue && (autorizacion == 1 || autorizacion == 2))
+            {
+                query = query.Where(p => p.Autorizacion == autorizacion.Value);
+            }
+
+            query = query.OrderByDescending(e => e.Id);
+
+            if (topRegistro > 0)
+                query = query.Take(topRegistro);
+
+            var planillas = await query.ToListAsync();
+            return View(planillas);
         }
 
         // GET: Planilla/Details/5
