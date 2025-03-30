@@ -37,20 +37,28 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(await query.ToListAsync());
         }
 
+        // Acción que devuelve los detalles de un tipo de planilla específico.
+        // Recibe un parámetro "id" para identificar cuál tipo de planilla mostrar.
+        // Si el parámetro "id" es nulo, retorna un error 404 (NotFound).
+        // Si no se encuentra un tipo de planilla con el id especificado, también retorna NotFound.
+        // Si se encuentra el tipo de planilla, se pasa a la vista para mostrar los detalles.
         public async Task<IActionResult> Details(int? id)
         {
+            // Verifica si el id es nulo. Si es nulo, retorna NotFound.
             if (id == null)
             {
                 return NotFound();
             }
-
+            // Busca el tipo de planilla en la base de datos utilizando el id proporcionado.
+            // Utiliza FirstOrDefaultAsync para obtener el primer resultado o nulo si no lo encuentra.
             var tipoPlanilla = await _context.TipoPlanillas
                 .FirstOrDefaultAsync(m => m.Id == id);
+            // Si no se encuentra el tipo de planilla con el id especificado, retorna NotFound.
             if (tipoPlanilla == null)
             {
                 return NotFound();
             }
-
+            // Si se encuentra el tipo de planilla, se pasa a la vista para mostrar los detalles.
             return View(tipoPlanilla);
         }
 
