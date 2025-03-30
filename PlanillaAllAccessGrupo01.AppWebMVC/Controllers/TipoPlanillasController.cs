@@ -58,7 +58,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NombreTipo,FechaCreacion,FechaModificacion")] TipoPlanilla tipoPlanilla)
+        public async Task<IActionResult> Create([Bind("Id,NombreTipo")] TipoPlanilla tipoPlanilla)
         {
             if (ModelState.IsValid)
             {
