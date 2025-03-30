@@ -7,6 +7,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 public partial class Descuento
 {
+
+    //Asignación de atributos que tendrá el modelo Descuento
+    //Colocación de validaciones por cada campo, para que sea un sistema con funcionalidad segura.
+
     [Display(Name = "Id")]
     public int Id { get; set; }
     [Display(Name = "Nombre")]
@@ -31,8 +35,11 @@ public partial class Descuento
     [Range(0, 2, ErrorMessage = "La planilla debe ser 0 (No definida), 1 (Planilla Mensual) o 2 (Planilla Quincenal)")]
     public byte Planilla { get; set; }
 
+    //Listado para asignar descuentos
     public virtual ICollection<AsignacionDescuento> AsignacionDescuentos { get; set; } = new List<AsignacionDescuento>();
 
+
+    //Atributos No mapeados, que tendrán funcionalidad en los metódos del controlador
     #region METODO PARA MOSTRAR EN TEXTO LAS OPCIONES BYTE
     //ESTO ES EXCLUSIVAMENTE PARA MOSTERAR EN EL INDEX
     [NotMapped]

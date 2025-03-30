@@ -10,6 +10,7 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
+    //Autorización para tener acceso a este apartado de Descuentos
     [Authorize]
     public class DescuentoController : Controller
     {
@@ -20,6 +21,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             _context = context;
         }
 
+        //Modificación del método Index para que la funcionalidad de los filtros de la vista Index se cumplan.
         // GET: Descuento
         public async Task<IActionResult> Index(Descuento descuento, int topRegistro = 10)
         {
@@ -66,8 +68,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return NotFound();
             }
 
-            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);
-            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
+            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);// Asignar la fecha de validación
+            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));// Asignar la fecha de expiración
 
             return View(descuento);
         }
@@ -78,6 +80,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View();
         }
 
+        //Moddificación del metódo de Crear de Descuentos para que valide la fecha de validación y de expiración y para que guarde los registros que se han creado.
         // POST: Descuento/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -103,6 +106,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(descuento);
         }
 
+        //Modificación de los metódos de editar para que valide las fechas y me las muestre y guarde si el registro fue modificado.
         // GET: Descuento/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -189,6 +193,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(descuento);
         }
 
+        //Modificación del metódo de Eliminar empleado solo si no esta asignado a un empleado.
         // POST: Descuento/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
