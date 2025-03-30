@@ -1,0 +1,123 @@
+﻿@model IEnumerable<PlanillaAllAccessGrupo01.AppWebMVC.Models.Planilla>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<h1 class="text-center text-dark">Buscar Planillas</h1>
+
+<form asp-action="Index" method="get" class="mt-4 border rounded p-4 bg-light shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Nombre de la Planilla</label>
+            <input type="text" name="nombrePlanilla" class="form-control" placeholder="Ingrese el nombre" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Tipo de Planilla</label>
+            <select name="tipoPlanilla" class="form-select">
+                <option value="0">Seleccione...</option>
+                <option value="1">Mensual</option>
+                <option value="2">Quincenal</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Estado de Autorización</label>
+            <select name="autorizacion" class="form-select">
+                <option value="0">Seleccione...</option>
+                <option value="1">Autorizado</option>
+                <option value="2">No Autorizada</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Cant. Registros</label>
+            <select name="topRegistro" class="form-select">
+                <option selected value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="0">Todos</option>
+            </select>
+        </div>
+        <div class="col-md-9 d-flex align-items-end justify-content-between">
+            <div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+                <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nueva Planilla</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="table-responsive mt-4">
+<table class="table table-bordered table-striped table-hover" id="planillasTable">
+    <thead class="table-dark text-center align-middle">
+        <tr>
+            <th>Nombre de la Planilla</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Estado de Autorización</th>
+            <th>Total Pago</th>
+            <th>Tipo de Planilla</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="align-middle">
+                    <td>@Html.DisplayFor(modelItem => item.NombrePlanilla)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
+                    <td>
+                        <span class="badge @(item.Autorizacion == 1 ? "bg-success" : "bg-danger")">
+                            @item.EstadoAutorizacion
+                        </span>
+                    </td>
+                    <td>$@Html.DisplayFor(modelItem => item.TotalPago)</td>
+                    <td>@item.TipoPlanilla?.NombreTipo</td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning me-2" asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a class="btn btn-sm btn-info me-2" asp-action="Details" asp-route-id="@item.Id">
+                            <i class="fas fa-eye"></i> Ver
+                        </a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                        <a class="btn btn-sm btn-secondary" asp-action="Asignar" asp-route-id="@item.Id">
+                            <i class="fas fa-user-check"></i> Asignar Planilla
+                        </a>
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#planillasTable').DataTable({
+                ordering: false,
+                 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+                }
+            });
+        });
+    </script>
+}
