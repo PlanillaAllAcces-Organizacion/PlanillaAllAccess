@@ -4,9 +4,10 @@
     ViewData["Title"] = "Create";
 }
 
-
+@* Link utilizado para la funcionalida dde los íconos de la vista*@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+@*Contendrá un formulario para crear nuevos registros donde podrá llenar cada uno de los campos solicitados y cumpliendo con las validaciones*@
 <div class="row justify-content-center">
     <h1 class="display-4 text-success"><i class="fas fa-plus-circle"></i> Crear Planilla</h1>
     <hr class="bg-success" style="height: 2px;" />
@@ -48,7 +49,7 @@
                         <span asp-validation-for="FechaFin" class="text-danger"></span>
                     </div>
                 </div>
-
+                @*Funcionalidad de botones para guardar el registro creado y para poder Volver a la pantalla principal*@
                 <div class="d-flex justify-content-between mt-4">
                     <button type="submit" class="btn btn-success px-4">
                         <i class="fas fa-save"></i> Guardar
