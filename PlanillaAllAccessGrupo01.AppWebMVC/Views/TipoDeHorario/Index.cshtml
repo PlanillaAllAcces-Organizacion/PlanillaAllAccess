@@ -3,9 +3,14 @@
 @{
 	ViewData["Tittle"] = "Index";
 }
+
+
+@* Vista Principal que se mostrará en el apartado de Tipo de horarios*@
 <br />
 <h1 class="text-center text-primary mb-4">Horarios</h1>
 
+
+@*Contendrá un formulario de búsqueda donde se podrán buscar los registros por el siguiente filtro:*@
 <div class="card shadow-lg">
 	<div class="card-header">
 		<form asp-action="Index" class="row g-3">
@@ -16,6 +21,7 @@
 				<input type="text" name="NombreHorario" class="form-control" />
 			</div>
 
+			@*Funcionalidad de botones para buscar el registro y para poder crear un nuevo registro*@
 			<div class="col-md-12 d-flex justify-content-between mt-3">
 				<button type="submit" class="btn btn-primary">
 					<i class="fas fa-search"></i> Buscar
@@ -33,9 +39,10 @@
 <br />
 <div class="card-body">
 
+	@*Tabla dinámica que se mostrará con los registros creados*@
 	<div class="table-responsive">
 		<table class="table table-bordered table-striped table-hover">
-			<thead class="table-dark align-middle">
+			<thead class="table-dark align-middle" id="TipoDehorarioTable">
 				<tr>
 					<th class="text-center">
 						@Html.DisplayNameFor(model => model.NombreHorario)
@@ -65,3 +72,18 @@
 		</table>
 	</div>
 </div>
+
+@*Funcionalidad para paginación*@
+@section Scripts {
+	<script>
+		$(document).ready(function() {
+			$('#TipoDehorarioTable').DataTable({
+				 ordering: false,
+				 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
+				"language": {
+					"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+				}
+			});
+		});
+	</script>
+}

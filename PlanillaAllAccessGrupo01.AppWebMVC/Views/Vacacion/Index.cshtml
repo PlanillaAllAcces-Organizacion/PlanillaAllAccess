@@ -64,7 +64,7 @@
 </div>
 
 <div class="table-responsive mt-4">
-    <table class="table table-bordered table-striped table-hover">
+    <table class="table table-bordered table-striped table-hover" id="VacaccionTable">
         <thead class="table-dark text-center align-middle">
             <tr>
                 @* Encabezados de la tabla, mostrando los nombres de las propiedades del modelo. *@
@@ -110,3 +110,18 @@
         </tbody>
     </table>
 </div>
+
+@*Funcionalidad para paginación*@
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#VacaccionTable').DataTable({
+                 ordering: false,
+                 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
+}
