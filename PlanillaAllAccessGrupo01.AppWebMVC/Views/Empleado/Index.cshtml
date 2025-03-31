@@ -155,9 +155,9 @@
                     <td class="text-center">
                         @* Funcionalidad de botones para editar, ver o eliminar y los dirigirá a cada vista correspondiente*@
                         <div class="btn-group" role="group">
-                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
-                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i></a>
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id" title="Detalles"><i class="fas fa-eye"></i></a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id" title="Eliminar"><i class="fas fa-trash"></i></a>
 
                             @* Botón de vacaciones *@
                             @if (item.Vacacions.Any(v => v.Estado == 1))
