@@ -49,6 +49,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(planillas);
         }
 
+        //La funcionalidad del metlódo es poder visualizar el detalle de la planilla que se  seleccione
         // GET: Planilla/Details/5
         public async Task<IActionResult> Details(int? id)
         {
