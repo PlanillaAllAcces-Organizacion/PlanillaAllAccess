@@ -23,7 +23,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
         //Modificación del metódo Index para que permita buscar mediannte los diferentes filtros, los registros que se vayan guardando
         // GET: Planilla
-        public async Task<IActionResult> Index(string nombrePlanilla, int tipoPlanilla, byte? autorizacion, int topRegistro = 10)
+        public async Task<IActionResult> Index(string nombrePlanilla, string tipoPlanilla, byte? autorizacion, int topRegistro = 10)
         {
             var query = _context.Planillas.Include(p => p.TipoPlanilla).AsQueryable();
 
@@ -32,9 +32,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 query = query.Where(p => p.NombrePlanilla.Contains(nombrePlanilla));
             }
 
-            if (tipoPlanilla > 0)//Busqueda por Tipo de planilla.
+            if (!string.IsNullOrEmpty(tipoPlanilla))//Busqueda por Tipo de planilla.
             {
-                query = query.Where(p => p.TipoPlanillaId == tipoPlanilla);
+                query = query.Where(p => p.TipoPlanilla.NombreTipo == tipoPlanilla);
             }
 
             // Filtrar por estado de autorización si se proporciona un valor válido (1 o 2)
