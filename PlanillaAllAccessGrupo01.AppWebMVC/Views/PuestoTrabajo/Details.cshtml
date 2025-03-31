@@ -1,6 +1,7 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.PuestoTrabajo
 
 @{
+    @* Establece el título de la página en "Detalles del Puesto de Trabajo". *@
     ViewData["Title"] = "Detalles del Puesto de Trabajo";
 }
 
@@ -13,30 +14,40 @@
         <div class="card shadow-lg p-4">
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo NombrePuesto. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.NombrePuesto)</label>
+                    @* Muestra el nombre del puesto. *@
                     <div class="form-control-plaintext border-bottom">@Model.NombrePuesto</div>
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo SalarioBase. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.SalarioBase)</label>
+                    @* Muestra el salario base del puesto. *@
                     <div class="form-control-plaintext border-bottom">$@Model.SalarioBase.ToString("0.00")</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo ValorxHora. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.ValorxHora)</label>
+                    @* Muestra el valor por hora del puesto. *@
                     <div class="form-control-plaintext border-bottom">$@Model.ValorxHora.ToString("0.00")</div>
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo ValorExtra. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.ValorExtra)</label>
+                    @* Muestra el valor extra del puesto. *@
                     <div class="form-control-plaintext border-bottom">$@Model.ValorExtra</div>
                 </div>
             </div>
 
             <div class="mb-3">
+                @* Etiqueta para el campo Estado. *@
                 <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Estado)</label>
+                @* Muestra el estado del puesto. *@
                 <div class="form-control-plaintext border-bottom">
                     @if (Model.Estado == 1)
                     {
@@ -50,9 +61,11 @@
             </div>
 
             <div class="d-flex justify-content-center mt-4">
+                @* Enlace para editar el puesto de trabajo. *@
                 <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning px-4">
                     <i class="fas fa-edit"></i> Editar
                 </a>
+                @* Enlace para volver a la lista de puestos de trabajo. *@
                 <a asp-action="Index" class="btn btn-secondary px-4">
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>

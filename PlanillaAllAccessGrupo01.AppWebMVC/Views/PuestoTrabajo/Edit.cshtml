@@ -1,6 +1,7 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.PuestoTrabajo
 
 @{
+    @* Establece el título de la página en "Editar Puesto de Trabajo". *@
     ViewData["Title"] = "Editar Puesto de Trabajo";
 }
 
@@ -11,48 +12,68 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow-lg p-4">
+            @* Inicio del formulario para editar el puesto de trabajo. *@
             <form asp-action="Edit">
+                @* Muestra los errores de validación del modelo. *@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @* Campo oculto para el Id del puesto de trabajo. *@
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
+                    @* Etiqueta para el campo NombrePuesto. *@
                     <label asp-for="NombrePuesto" class="form-label fw-bold"></label>
+                    @* Campo de entrada para el nombre del puesto. *@
                     <input asp-for="NombrePuesto" class="form-control" placeholder="Ingrese el nombre del puesto" />
+                    @* Muestra el error de validación para el campo NombrePuesto. *@
                     <span asp-validation-for="NombrePuesto" class="text-danger"></span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo SalarioBase. *@
                         <label asp-for="SalarioBase" class="form-label fw-bold"></label>
+                        @* Campo de entrada numérico para el salario base. *@
                         <input asp-for="SalarioBase" class="form-control" type="number" placeholder="Ingrese el salario base" />
+                        @* Muestra el error de validación para el campo SalarioBase. *@
                         <span asp-validation-for="SalarioBase" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo ValorxHora. *@
                         <label asp-for="ValorxHora" class="form-label fw-bold"></label>
+                        @* Campo de entrada numérico para el valor por hora. *@
                         <input asp-for="ValorxHora" class="form-control" type="number" placeholder="Ingrese el valor por hora" />
+                        @* Muestra el error de validación para el campo ValorxHora. *@
                         <span asp-validation-for="ValorxHora" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo ValorExtra. *@
                         <label asp-for="ValorExtra" class="form-label fw-bold"></label>
+                        @* Campo de entrada numérico para el valor extra. *@
                         <input asp-for="ValorExtra" class="form-control" type="number" placeholder="Ingrese el valor extra" />
+                        @* Muestra el error de validación para el campo ValorExtra. *@
                         <span asp-validation-for="ValorExtra" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo Estado. *@
                         <label asp-for="Estado" class="form-label fw-bold"></label>
+                        @* Menú desplegable para seleccionar el estado del puesto. *@
                         <select asp-for="Estado" class="form-control" asp-items="ViewBag.Estados">
                             <option value="">Seleccione un estado</option>
                         </select>
+                        @* Muestra el error de validación para el campo Estado. *@
                         <span asp-validation-for="Estado" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
+                    @* Botón para guardar los cambios. *@
                     <button type="submit" class="btn btn-success px-4">
                         <i class="fas fa-save"></i> Guardar
                     </button>
+                    @* Enlace para volver a la lista de puestos de trabajo. *@
                     <a asp-action="Index" class="btn btn-danger px-4">Volver</a>
                 </div>
             </form>
@@ -62,6 +83,7 @@
 
 @section Scripts {
     @{
+        @* Renderiza los scripts de validación parciales. *@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

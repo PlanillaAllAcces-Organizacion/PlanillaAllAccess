@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<PlanillaAllAccessGrupo01.AppWebMVC.Models.PuestoTrabajo>
 
 @{
+    @* Establece el título de la página en "Puestos de Trabajo". *@
     ViewData["Title"] = "Puestos de Trabajo";
 }
 
@@ -8,13 +9,18 @@
 
 <div class="card shadow-lg">
     <div class="card-body bg-light">
+        @* Formulario para filtrar y buscar puestos de trabajo. *@
         <form asp-action="Index" method="get" class="row g-3">
             <div class="col-md-4">
+                @* Etiqueta para el campo de búsqueda por nombre de puesto. *@
                 <label class="form-label fw-bold">Nombre del Puesto</label>
+                @* Campo de entrada para el nombre del puesto. *@
                 <input type="text" name="nombrePuesto" class="form-control" placeholder="Ingrese el nombre" />
             </div>
             <div class="col-md-4">
+                @* Etiqueta para el campo de selección de estado. *@
                 <label class="form-label fw-bold">Estado</label>
+                @* Menú desplegable para seleccionar el estado del puesto. *@
                 <select name="estado" class="form-select">
                     <option value="2">Todos</option>
                     <option value="1">Activo</option>
@@ -22,7 +28,9 @@
                 </select>
             </div>
             <div class="col-md-4">
+                @* Etiqueta para el campo de selección de registros a mostrar. *@
                 <label class="form-label fw-bold">Registros a mostrar</label>
+                @* Menú desplegable para seleccionar la cantidad de registros a mostrar. *@
                 <select name="top" class="form-select">
                     <option value="10">Mostrar 10</option>
                     <option value="20">Mostrar 20</option>
@@ -32,9 +40,11 @@
             </div>
 
             <div class="col-md-12 d-flex justify-content-between mt-3">
+                @* Botón para realizar la búsqueda. *@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Buscar
                 </button>
+                @* Enlace para crear un nuevo puesto de trabajo. *@
                 <a class="btn btn-success" asp-action="Create">
                     <i class="fas fa-plus"></i> Crear Puesto
                 </a>
@@ -47,6 +57,7 @@
     <table class="table table-bordered table-hover shadow-sm" id="myTable">
         <thead class="table-dark text-center align-middle">
             <tr>
+                @* Encabezados de la tabla. *@
                 <th>@Html.DisplayNameFor(model => model.NombrePuesto)</th>
                 <th>@Html.DisplayNameFor(model => model.SalarioBase)</th>
                 <th>@Html.DisplayNameFor(model => model.ValorxHora)</th>
@@ -57,6 +68,7 @@
             </tr>
         </thead>
         <tbody>
+            @* Itera sobre la lista de puestos de trabajo para mostrar los datos. *@
             @foreach (var item in Model)
             {
                 <tr class="align-middle">
@@ -65,15 +77,16 @@
                     <td>$@Html.DisplayFor(modelItem => item.ValorxHora)</td>
                     <td>$@Html.DisplayFor(modelItem => item.ValorExtra)</td>
                     <td class="text-center">
+                        @* Muestra el estado del puesto con un badge. *@
                         <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">
                             @ViewBag.Estados[item.Estado]
                         </span>
                     </td>
                     <td>@item.FechaCreacion.ToString("dd/MM/yyyy")</td>
                     <td class="text-center">
+                        @* Enlaces para editar y ver los detalles del puesto. *@
                         <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
                         <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
-
                     </td>
                 </tr>
             }
@@ -84,8 +97,9 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+    @* Inicializa la tabla con DataTables y configura las opciones. *@
             $('#myTable').DataTable({
-                 ordering: false,
+                ordering: false,
                 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
