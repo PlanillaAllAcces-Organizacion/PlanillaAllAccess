@@ -37,7 +37,7 @@ public partial class Planilla
     public virtual ICollection<EmpleadoPlanilla> EmpleadoPlanillas { get; set; } = new List<EmpleadoPlanilla>();
     //Llave fóranea de TipoPlanilla
     [ForeignKey("TipoPlanillaId")]
-    public virtual TipoPlanilla TipoPlanilla { get; set; } = null!;
+    public virtual TipoPlanilla? TipoPlanilla { get; set; } = null!;
 
     //Atributos No mapeados, que tendrán funcionalidad en los metódos del controlador
     [NotMapped]
