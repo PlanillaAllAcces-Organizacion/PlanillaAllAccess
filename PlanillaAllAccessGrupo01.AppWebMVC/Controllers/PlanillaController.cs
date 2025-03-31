@@ -131,12 +131,19 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return NotFound();
             }
 
+            if (planilla.FechaFin <= planilla.FechaInicio)
+            {
+                ModelState.AddModelError("FechaFin", "La fecha de fin debe ser posterior a la fecha de inicio.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(planilla);
                     await _context.SaveChangesAsync();
+                    TempData["Mensaje"] = "Planilla actualizada con éxito.";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
