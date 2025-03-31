@@ -198,6 +198,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Mensaje"] = "Planilla eliminada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
