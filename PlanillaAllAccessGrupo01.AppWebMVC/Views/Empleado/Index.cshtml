@@ -3,14 +3,15 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<br />
+<!-- Vista para mostrarár el apartado de empleados-->
 <h1 class="text-center text-primary mb-4">Lista de Empleados</h1>
 
+<!--  Tarjeta que contiene el formulario de búsqueda -->
 <div class="card shadow-lg">
 	<div class="card-body bg-light">
 		<form asp-action="Index">
 
+            <!-- Primera fila de filtros -->
 			<div class="row g-3">
 				<div class="col-md-3">
 					<label class="form-label fw-bold">DUI</label>
@@ -30,6 +31,7 @@
 				</div>
 			</div>
 
+            <!-- Segunda fila de filtros -->
 			<div class="row g-3">
 				<div class="col-md-3">
 					<label class="form-label fw-bold">Puesto de trabajo</label>
@@ -60,10 +62,13 @@
 				</div>
 			</div>
 
+            <!-- Filtros de Mes de contrato -->
 			<div class="row g-3">
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="form-label fw-bold" for="mesInicioContrato">Mes de Inicio de Contrato:</label>
+
+                        <!-- Contiene una lista de meses en formato SelectList para que sean mostrados en la lista desplegable. -->
 						<select name="mesInicioContrato" asp-items="@ViewData["Meses"] as SelectList" class="form-control">
 						</select>
 					</div>
@@ -77,12 +82,13 @@
 				</div>
 			</div>
 
+            <!-- Funcionalidad de botones para buscar el registro y para poder crear un nuevo registro -->
 			<div class="col-md-12 d-flex justify-content-between mt-3">
 				<button type="submit" class="btn btn-primary">
 					<i class="fas fa-search"></i> Buscar
 				</button>
 				<a class="btn btn-success" asp-action="Create">
-					<i class="fas fa-plus"></i> Crear Puesto
+					<i class="fas fa-plus"></i> Crear Empleado
 				</a>
 			</div>
 		</form>
@@ -90,7 +96,7 @@
 </div>
 
 <div class="table-responsive mt-4">
-    <table class="table table-bordered table-striped table-hover" id="bonosTable">
+    <table class="table table-bordered table-striped table-hover" id="EmpleadoTable">
         <thead class="table-dark text-center align-middle">
             <tr>
                 <th>
@@ -131,6 +137,8 @@
                         @Html.DisplayFor(modelItem => item.Apellido)
                     </td>
                     <td class="text-center">
+
+                        <!-- Badge dinámico que muestra "Activo" (verde) si Estado=1, o "Inactivo" (rojo) para otros valores -->
                         <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">
                             @(item.Estado == 1 ? "Activo" : "Inactivo")
                         </span>
@@ -145,16 +153,20 @@
                         @Html.DisplayFor(modelItem => item.TipoDeHorario.NombreHorario)
                     </td>
                     <td class="text-center">
+                        @* Funcionalidad de botones para editar, ver o eliminar y los dirigirá a cada vista correspondiente*@
                         <div class="btn-group" role="group">
                             <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
                             <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i></a>
                             <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
 
+                            @* Si tiene vacaciones no aprobadas (Estado != 2) *@
                             @if(item.Vacacions.Any(v => v.Estado != 2))
                             {
+                                   @* Botón DESACTIVADO para solicitar vacaciones (porque ya tiene) *@
                                    <a asp-controller="Vacacion" asp-action="Create" asp-route-id="@item.Id" class="btn btn-sm btn-success disabled"><i class="fas fa-umbrella-beach"></i></a>
 
                             }else{
+                                 @* Botón ACTIVO para solicitar nuevas vacaciones *@
                                     <a asp-controller="Vacacion" asp-action="Create" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="fas fa-umbrella-beach"></i></a>
 
                             }
@@ -166,6 +178,21 @@
         </tbody>
     </table>
 </div>
+
+<!-- Funcionalidad para paginación  -->
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#EmpleadoTable').DataTable({
+                 ordering: false,
+                 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
+}
 
 
 
