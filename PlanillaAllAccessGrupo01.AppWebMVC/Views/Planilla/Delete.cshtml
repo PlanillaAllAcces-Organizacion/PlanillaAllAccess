@@ -3,9 +3,11 @@
 @{
     ViewData["Title"] = "Delete";
 }
-
+@* Link utilizado para la funcionalida dde los íconos de la vista*@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+@* Vista que mostrará los datos de cada planilla*@
+@*Esta vista  permitirá la visualización de los datos y podrá eliminar el registro de planilla seleccionado si lo desea*@
 <h1 class="text-center"><i class="fas fa-trash-alt text-danger"></i> Eliminar Planilla</h1>
 <h4 class="text-center text-muted">Confirmación de eliminación</h4>
 <hr />
@@ -43,7 +45,7 @@
                 <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.TipoPlanilla)</dt>
                 <dd class="col-sm-8">@Model.TipoPlanilla?.NombreTipo</dd>
             </dl>
-
+            @*Funcionalidad del botónEliminar para eliminar el registro seleccionado y el botón Cancelar, que dirigirá a la pantalla principal Index de Planilla*@
             <form asp-action="Delete" class="d-flex justify-content-between mt-4">
                 <input type="hidden" asp-for="Id" />
                 <button type="submit" class="btn btn-danger px-4">
