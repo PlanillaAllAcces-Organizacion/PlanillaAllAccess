@@ -241,3 +241,15 @@ DROP CONSTRAINT FK_Vacaciones_Empleados;
 ALTER TABLE Vacacion
 ADD CONSTRAINT FK_Vacaciones_Empleados FOREIGN KEY (EmpleadosId) REFERENCES Empleado(Id)
 ON DELETE CASCADE;
+
+
+
+----Modificar la relacion de empleado planilla con Tipo planilla
+
+
+ALTER TABLE Empleado
+ADD TipoPlanillaId INT NULL;
+
+ALTER TABLE Empleado
+ADD CONSTRAINT FK_Empleado_TipoPlanilla FOREIGN KEY (TipoPlanillaId) 
+REFERENCES TipoPlanilla(Id);
