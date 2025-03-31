@@ -87,7 +87,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         //En el metódo de Crear POST, se valida la fecha fin y cada uno de los campos que se vayan a ingresar para que pueda guardar el registro.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NombrePlanilla,TipoPlanillaId,FechaInicio,FechaFin,Autorizacion,TotalPago")] Planilla planilla)
+        public async Task<IActionResult> Create(Planilla planilla)
         {
             if (planilla.FechaFin <= planilla.FechaInicio)
             {
@@ -96,12 +96,20 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                planilla.Autorizacion = 0;
-                _context.Add(planilla);
-                await _context.SaveChangesAsync();
-                TempData["Mensaje"] = "Planilla creada con éxito.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    planilla.Autorizacion = 0;
+                    _context.Add(planilla);
+                    await _context.SaveChangesAsync();
+                    TempData["Mensaje"] = "Planilla creada con éxito.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al guardar la planilla: " + ex.Message);
+                }
             }
+
             ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", planilla.TipoPlanillaId);
             return View(planilla);
         }
