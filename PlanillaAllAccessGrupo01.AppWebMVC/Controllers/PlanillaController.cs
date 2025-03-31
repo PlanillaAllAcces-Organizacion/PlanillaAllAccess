@@ -68,6 +68,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(planilla);
         }
 
+        //En el metódo GET de Crear, se manda el ViewData de Tipo de Planilla para que lo muestre en la vista
         // GET: Planilla/Create
         public IActionResult Create()
         {
@@ -78,6 +79,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // POST: Planilla/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        //En el metódo de Crear POST, se valida la fecha fin y cada uno de los campos que se vayan a ingresar para que pueda guardar el registro.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombrePlanilla,TipoPlanillaId,FechaInicio,FechaFin,Autorizacion,TotalPago")] Planilla planilla)
