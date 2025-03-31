@@ -55,7 +55,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 // Inicia sesión del usuario utilizando la identidad de claims y el esquema de autenticación de cookies.
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity))
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
                 // Redirige al usuario a la acción "Index" del controlador "Home".
                 return RedirectToAction("Index", "Home");

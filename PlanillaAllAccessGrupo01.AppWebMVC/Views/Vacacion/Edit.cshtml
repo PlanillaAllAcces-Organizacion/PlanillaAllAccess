@@ -16,45 +16,81 @@
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
-                    <label asp-for="EmpleadosId" class="form-label fw-bold"></label>
+                    <label asp-for="EmpleadosId" class="form-label fw-bold">Empleado</label>
                     <select asp-for="EmpleadosId" class="form-control" asp-items="ViewBag.EmpleadosId" disabled></select>
+                    <input type="hidden" asp-for="EmpleadosId" />
                     <span asp-validation-for="EmpleadosId" class="text-danger"></span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="MesVacaciones" class="form-label fw-bold"></label>
-                        <input asp-for="MesVacaciones" class="form-control" placeholder="Ingrese el mes" />
+                        <label asp-for="MesVacaciones" class="form-label fw-bold">Mes de Vacaciones</label>
+                        <select asp-for="MesVacaciones" class="form-control">
+                            <option value="">Seleccione un mes</option>
+                            @{
+                                var months = System.Globalization.DateTimeFormatInfo.CurrentInfo.MonthNames;
+                                foreach (var month in months)
+                                {
+                                    if (!string.IsNullOrEmpty(month))
+                                    {
+                                        <option value="@month" selected="@(month == Model.MesVacaciones)">@month</option>
+                                    }
+                                }
+                            }
+                        </select>
                         <span asp-validation-for="MesVacaciones" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label asp-for="AnnoVacacion" class="form-label fw-bold"></label>
-                        <input asp-for="AnnoVacacion" class="form-control" placeholder="Ingrese el año" />
+                        <label asp-for="AnnoVacacion" class="form-label fw-bold">Año de Vacaciones</label>
+                        <input asp-for="AnnoVacacion" class="form-control" placeholder="Ej: 2023" />
                         <span asp-validation-for="AnnoVacacion" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="DiaInicio" class="form-label fw-bold"></label>
-                        <input asp-for="DiaInicio" type="date" class="form-control" />
+                        <label asp-for="DiaInicio" class="form-label fw-bold">Fecha de Inicio</label>
+                        <input asp-for="DiaInicio" type="date" class="form-control"
+                               value="@Model.DiaInicio.ToString("yyyy-MM-dd")" />
                         <span asp-validation-for="DiaInicio" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label asp-for="DiaFin" class="form-label fw-bold"></label>
-                        <input asp-for="DiaFin" type="date" class="form-control" />
+                        <label asp-for="DiaFin" class="form-label fw-bold">Fecha de Fin</label>
+                        <input asp-for="DiaFin" type="date" class="form-control"
+                               value="@Model.DiaFin.ToString("yyyy-MM-dd")" />
                         <span asp-validation-for="DiaFin" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Estado" class="form-label fw-bold"></label>
+                    <label asp-for="Estado" class="form-label fw-bold">Estado</label>
                     <select asp-for="Estado" class="form-control">
-                        <option value="0">Seleccione un estado</option>
-                        <option value="1">Asignada</option>
-                        <option value="2">Finalizada</option>
+                        <option value="1" selected="@(Model.Estado == 1)">Asignada</option>
+                        <option value="2" selected="@(Model.Estado == 2)">Finalizada</option>
                     </select>
                     <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="VacacionPagada" class="form-label fw-bold">Vacación Pagada</label>
+                    <select asp-for="VacacionPagada" class="form-control">
+                        <option value="0" selected="@(Model.VacacionPagada == 0)">No Pagada</option>
+                        <option value="1" selected="@(Model.VacacionPagada == 1)">Pagada</option>
+                    </select>
+                    <span asp-validation-for="VacacionPagada" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" id="pagoVacacionesGroup" style="@(Model.VacacionPagada == 1 ? "display:block" : "display:none")">
+                    <label asp-for="PagoVacaciones" class="form-label fw-bold">Monto de Pago</label>
+                    <input asp-for="PagoVacaciones" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="PagoVacaciones" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" id="fechaPagoGroup" style="@(Model.VacacionPagada == 1 ? "display:block" : "display:none")">
+                    <label asp-for="FechaPago" class="form-label fw-bold">Fecha de Pago</label>
+                    <input asp-for="FechaPago" type="date" class="form-control"
+                           value="@(Model.FechaPago?.ToString("yyyy-MM-dd"))" />
+                    <span asp-validation-for="FechaPago" class="text-danger"></span>
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
@@ -69,3 +105,34 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Mostrar/ocultar campos de pago según selección
+            $('#VacacionPagada').change(function() {
+                if ($(this).val() == '1') {
+                    $('#pagoVacacionesGroup, #fechaPagoGroup').show();
+                } else {
+                    $('#pagoVacacionesGroup, #fechaPagoGroup').hide();
+                }
+            });
+
+            // Validación de fechas
+            $('form').submit(function() {
+                const inicio = new Date($('#DiaInicio').val());
+                const fin = new Date($('#DiaFin').val());
+
+                if (fin < inicio) {
+                    alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+}

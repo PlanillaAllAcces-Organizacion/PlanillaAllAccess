@@ -159,16 +159,19 @@
                             <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i></a>
                             <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
 
-                            @* Si tiene vacaciones no aprobadas (Estado != 2) *@
-                            @if(item.Vacacions.Any(v => v.Estado != 2))
+                            @* Botón de vacaciones *@
+                            @if (item.Vacacions.Any(v => v.Estado == 1))
                             {
-                                   @* Botón DESACTIVADO para solicitar vacaciones (porque ya tiene) *@
-                                   <a asp-controller="Vacacion" asp-action="Create" asp-route-id="@item.Id" class="btn btn-sm btn-success disabled"><i class="fas fa-umbrella-beach"></i></a>
-
-                            }else{
-                                 @* Botón ACTIVO para solicitar nuevas vacaciones *@
-                                    <a asp-controller="Vacacion" asp-action="Create" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="fas fa-umbrella-beach"></i></a>
-
+                                <a class="btn btn-sm btn-success disabled" title="El empleado ya tiene vacaciones asignadas">
+                                    <i class="fas fa-umbrella-beach"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Vacacion" asp-action="Create" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-success" title="Solicitar vacaciones">
+                                    <i class="fas fa-umbrella-beach"></i>
+                                </a>
                             }
                       
                         </div>
@@ -189,6 +192,17 @@
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
                 }
+            });
+        });
+
+          $(document).ready(function() {
+            // Tooltip para botones desactivados
+            $('[title]').tooltip();
+
+            // Alternativa: Cambiar estilo de botones desactivados
+            $('.btn.disabled').css({
+                'opacity': '0.5',
+                'cursor': 'not-allowed'
             });
         });
     </script>

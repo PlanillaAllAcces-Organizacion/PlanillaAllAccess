@@ -56,7 +56,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             // Limitar resultados y cargar relaciones
             if (topRegistro > 0)
                 query = query.Take(topRegistro);
-            query = query
+            query = query.
+                Include(e => e.Vacacions) // Asegúrate de incluir las vacaciones
                 .Include(p => p.TipoDeHorario).Include(p => p.PuestoTrabajo).Include(p => p.JefeInmediato);
 
             // 2. Preparar datos para dropdowns
