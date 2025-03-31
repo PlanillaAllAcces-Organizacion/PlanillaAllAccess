@@ -85,6 +85,8 @@
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable({
+                 ordering: false,
+                "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
                 }
