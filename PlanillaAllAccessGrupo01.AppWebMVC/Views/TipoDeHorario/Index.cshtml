@@ -42,7 +42,7 @@
 	@*Tabla dinámica que se mostrará con los registros creados*@
 	<div class="table-responsive">
 		<table class="table table-bordered table-striped table-hover">
-			<thead class="table-dark align-middle" id="TipoDehorarioTable">
+			<thead class="table-dark align-middle" id="tipoDehorarioTable">
 				<tr>
 					<th class="text-center">
 						@Html.DisplayNameFor(model => model.NombreHorario)
@@ -77,7 +77,7 @@
 @section Scripts {
 	<script>
 		$(document).ready(function() {
-			$('#TipoDehorarioTable').DataTable({
+			$('#tipoDehorarioTable').DataTable({
 				 ordering: false,
 				 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
 				"language": {
