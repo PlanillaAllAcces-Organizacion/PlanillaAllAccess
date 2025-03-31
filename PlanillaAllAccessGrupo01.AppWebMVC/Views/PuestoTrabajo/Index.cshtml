@@ -54,7 +54,7 @@
 </div>
 
 <div class="table-responsive mt-4">
-    <table class="table table-bordered table-hover shadow-sm" id="myTable">
+    <table class="table table-bordered table-hover shadow-sm" id="PuestoTable">
         <thead class="table-dark text-center align-middle">
             <tr>
                 @* Encabezados de la tabla. *@
@@ -98,7 +98,7 @@
     <script>
         $(document).ready(function() {
     @* Inicializa la tabla con DataTables y configura las opciones. *@
-            $('#myTable').DataTable({
+            $('#PuestoTable').DataTable({
                 ordering: false,
                 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
                 "language": {
