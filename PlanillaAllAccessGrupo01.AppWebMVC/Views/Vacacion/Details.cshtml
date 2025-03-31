@@ -1,6 +1,7 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion
 
 @{
+    @* Establece el título de la página en "Detalles de Vacación". *@
     ViewData["Title"] = "Detalles de Vacación";
 }
 
@@ -13,33 +14,45 @@
         <div class="card shadow-lg p-4">
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo EmpleadosId. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.EmpleadosId)</label>
+                    @* Muestra el nombre del empleado. *@
                     <div class="form-control-plaintext border-bottom">@Model.Empleados.Nombre</div>
                 </div>
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo MesVacaciones. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.MesVacaciones)</label>
+                    @* Muestra el mes de la vacación. *@
                     <div class="form-control-plaintext border-bottom">@Model.MesVacaciones</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo AnnoVacacion. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.AnnoVacacion)</label>
+                    @* Muestra el año de la vacación. *@
                     <div class="form-control-plaintext border-bottom">@Model.AnnoVacacion</div>
                 </div>
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo DiaInicio. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.DiaInicio)</label>
+                    @* Muestra el día de inicio de la vacación. *@
                     <div class="form-control-plaintext border-bottom">@Model.DiaInicio.ToString("dd")</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo DiaFin. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.DiaFin)</label>
+                    @* Muestra el día de fin de la vacación. *@
                     <div class="form-control-plaintext border-bottom">@Model.DiaFin.ToString("dd")</div>
                 </div>
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo Estado. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Estado)</label>
+                    @* Muestra el estado de la vacación. *@
                     <div class="form-control-plaintext border-bottom">
                         @if (Model.Estado == 1)
                         {
@@ -55,23 +68,30 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo VacacionPagada. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.VacacionPagada)</label>
+                    @* Muestra si la vacación fue pagada. *@
                     <div class="form-control-plaintext border-bottom">@(Model.VacacionPagada == 1 ? "Sí" : "No")</div>
                 </div>
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo PagoVacaciones. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.PagoVacaciones)</label>
+                    @* Muestra el monto de pago de la vacación. *@
                     <div class="form-control-plaintext border-bottom">$@Model.PagoVacaciones?.ToString("")</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    @* Etiqueta para el campo FechaPago. *@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaPago)</label>
+                    @* Muestra la fecha de pago de la vacación. *@
                     <div class="form-control-plaintext border-bottom">@Model.FechaPago?.ToString("dd/MM/yyyy")</div>
                 </div>
             </div>
 
             <div class="d-flex justify-content-center mt-4">
+                @* Enlace para volver a la lista de vacaciones. *@
                 <a asp-action="Index" class="btn btn-primary px-4">
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>
@@ -82,6 +102,7 @@
 
 @section Scripts {
     @{
+        @* Renderiza los scripts de validación parciales. *@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

@@ -1,6 +1,7 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion
 
 @{
+    @* Establece el título de la página en "Editar Vacación". *@
     ViewData["Title"] = "Editar Vacación";
 }
 
@@ -11,20 +12,29 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card shadow-lg p-4">
+            @* Inicio del formulario para editar la vacación. *@
             <form asp-action="Edit">
+                @* Muestra los errores de validación del modelo. *@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @* Campo oculto para el Id de la vacación. *@
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
+                    @* Etiqueta para el campo EmpleadosId. *@
                     <label asp-for="EmpleadosId" class="form-label fw-bold">Empleado</label>
+                    @* Menú desplegable para seleccionar el empleado (deshabilitado). *@
                     <select asp-for="EmpleadosId" class="form-control" asp-items="ViewBag.EmpleadosId" disabled></select>
+                    @* Campo oculto para el EmpleadosId. *@
                     <input type="hidden" asp-for="EmpleadosId" />
+                    @* Muestra el error de validación para el campo EmpleadosId. *@
                     <span asp-validation-for="EmpleadosId" class="text-danger"></span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo MesVacaciones. *@
                         <label asp-for="MesVacaciones" class="form-label fw-bold">Mes de Vacaciones</label>
+                        @* Menú desplegable para seleccionar el mes de la vacación. *@
                         <select asp-for="MesVacaciones" class="form-control">
                             <option value="">Seleccione un mes</option>
                             @{
@@ -38,65 +48,89 @@
                                 }
                             }
                         </select>
+                        @* Muestra el error de validación para el campo MesVacaciones. *@
                         <span asp-validation-for="MesVacaciones" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo AnnoVacacion. *@
                         <label asp-for="AnnoVacacion" class="form-label fw-bold">Año de Vacaciones</label>
+                        @* Campo de entrada para el año de la vacación. *@
                         <input asp-for="AnnoVacacion" class="form-control" placeholder="Ej: 2023" />
+                        @* Muestra el error de validación para el campo AnnoVacacion. *@
                         <span asp-validation-for="AnnoVacacion" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo DiaInicio. *@
                         <label asp-for="DiaInicio" class="form-label fw-bold">Fecha de Inicio</label>
+                        @* Campo de entrada de fecha para la fecha de inicio. *@
                         <input asp-for="DiaInicio" type="date" class="form-control"
                                value="@Model.DiaInicio.ToString("yyyy-MM-dd")" />
+                        @* Muestra el error de validación para el campo DiaInicio. *@
                         <span asp-validation-for="DiaInicio" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo DiaFin. *@
                         <label asp-for="DiaFin" class="form-label fw-bold">Fecha de Fin</label>
+                        @* Campo de entrada de fecha para la fecha de fin. *@
                         <input asp-for="DiaFin" type="date" class="form-control"
                                value="@Model.DiaFin.ToString("yyyy-MM-dd")" />
+                        @* Muestra el error de validación para el campo DiaFin. *@
                         <span asp-validation-for="DiaFin" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="mb-3">
+                    @* Etiqueta para el campo Estado. *@
                     <label asp-for="Estado" class="form-label fw-bold">Estado</label>
+                    @* Menú desplegable para seleccionar el estado de la vacación. *@
                     <select asp-for="Estado" class="form-control">
                         <option value="1" selected="@(Model.Estado == 1)">Asignada</option>
                         <option value="2" selected="@(Model.Estado == 2)">Finalizada</option>
                     </select>
+                    @* Muestra el error de validación para el campo Estado. *@
                     <span asp-validation-for="Estado" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
+                    @* Etiqueta para el campo VacacionPagada. *@
                     <label asp-for="VacacionPagada" class="form-label fw-bold">Vacación Pagada</label>
+                    @* Menú desplegable para indicar si la vacación fue pagada. *@
                     <select asp-for="VacacionPagada" class="form-control">
                         <option value="0" selected="@(Model.VacacionPagada == 0)">No Pagada</option>
                         <option value="1" selected="@(Model.VacacionPagada == 1)">Pagada</option>
                     </select>
+                    @* Muestra el error de validación para el campo VacacionPagada. *@
                     <span asp-validation-for="VacacionPagada" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3" id="pagoVacacionesGroup" style="@(Model.VacacionPagada == 1 ? "display:block" : "display:none")">
+                    @* Etiqueta para el campo PagoVacaciones. *@
                     <label asp-for="PagoVacaciones" class="form-label fw-bold">Monto de Pago</label>
+                    @* Campo de entrada para el monto de pago. *@
                     <input asp-for="PagoVacaciones" class="form-control" type="number" step="0.01" />
+                    @* Muestra el error de validación para el campo PagoVacaciones. *@
                     <span asp-validation-for="PagoVacaciones" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3" id="fechaPagoGroup" style="@(Model.VacacionPagada == 1 ? "display:block" : "display:none")">
+                    @* Etiqueta para el campo FechaPago. *@
                     <label asp-for="FechaPago" class="form-label fw-bold">Fecha de Pago</label>
+                    @* Campo de entrada de fecha para la fecha de pago. *@
                     <input asp-for="FechaPago" type="date" class="form-control"
                            value="@(Model.FechaPago?.ToString("yyyy-MM-dd"))" />
+                    @* Muestra el error de validación para el campo FechaPago. *@
                     <span asp-validation-for="FechaPago" class="text-danger"></span>
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
+                    @* Botón para guardar los cambios. *@
                     <button type="submit" class="btn btn-success px-4">
                         <i class="fas fa-save"></i> Guardar Cambios
                     </button>
+                    @* Enlace para volver a la lista de vacaciones. *@
                     <a asp-action="Index" class="btn btn-danger px-4">
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
@@ -108,6 +142,7 @@
 
 @section Scripts {
     @{
+        @* Renderiza los scripts de validación parciales. *@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 

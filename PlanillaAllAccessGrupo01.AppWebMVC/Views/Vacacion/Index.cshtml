@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion>
 
 @{
+    @* Establece el título de la página en "Lista de Vacaciones". *@
     ViewData["Title"] = "Lista de Vacaciones";
 }
 
@@ -8,42 +9,55 @@
 
 <div class="card shadow-lg">
     <div class="card-body bg-light">
+        @* Inicio de un formulario que envía datos a la acción "Index" del controlador. *@
         <form asp-action="Index">
             <div class="row g-3">
                 <div class="col-md-3">
+                    @* Etiqueta para el campo de nombre del empleado. *@
                     <label class="form-label fw-bold">Nombre del empleado</label>
+                    @* Campo de entrada de texto para filtrar por nombre del empleado. *@
                     <input type="text" name="Empleados.Nombre" class="form-control" placeholder="Ingrese el nombre" />
                 </div>
                 <div class="col-md-3">
+                    @* Etiqueta para el campo de mes de la vacación. *@
                     <label class="form-label fw-bold">Mes de la vacación</label>
+                    @* Menú desplegable para seleccionar el mes de la vacación. *@
                     <select name="mesVacaciones" class="form-control">
+                        @* Opción por defecto para no filtrar por mes. *@
                         <option value="">Seleccionar</option>
+                        @* Bucle para generar opciones para cada mes del año. *@
                         @foreach (var mes in new[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" })
                         {
+                            @* Genera una opción para cada mes. *@
                             <option value="@mes">@mes</option>
                         }
                     </select>
                 </div>
                 <div class="col-md-3">
+                    @* Etiqueta para el campo de año de la vacación. *@
                     <label class="form-label fw-bold">Año de la vacación</label>
+                    @* Campo de entrada de texto para filtrar por año de la vacación. *@
                     <input type="text" name="annoVacacion" class="form-control" placeholder="Ingrese el año" />
                 </div>
                 <div class="col-md-3">
+                    @* Etiqueta para el campo de estado de la vacación. *@
                     <label class="form-label fw-bold">Estado de la vacación</label>
+                    @* Menú desplegable para seleccionar el estado de la vacación. *@
                     <select name="estado" class="form-select">
+                        @* Opción por defecto para no filtrar por estado. *@
                         <option value="">Todos</option>
+                        @* Opción para filtrar por vacaciones asignadas. *@
                         <option value="1">Asignada</option>
+                        @* Opción para filtrar por vacaciones finalizadas. *@
                         <option value="2">Finalizada</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-12 d-flex justify-content-between mt-3">
+                @* Botón para enviar el formulario y realizar la búsqueda. *@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Buscar
                 </button>
-                <a class="btn btn-success" asp-action="Create">
-                    <i class="fas fa-plus"></i> Crear Vacación
-                </a>
             </div>
         </form>
     </div>
@@ -53,6 +67,7 @@
     <table class="table table-bordered table-striped table-hover">
         <thead class="table-dark text-center align-middle">
             <tr>
+                @* Encabezados de la tabla, mostrando los nombres de las propiedades del modelo. *@
                 <th>@Html.DisplayNameFor(model => model.Empleados)</th>
                 <th>@Html.DisplayNameFor(model => model.MesVacaciones)</th>
                 <th>@Html.DisplayNameFor(model => model.AnnoVacacion)</th>
@@ -63,12 +78,15 @@
             </tr>
         </thead>
         <tbody>
+            @* Bucle para iterar a través de cada elemento en el modelo. *@
             @foreach (var item in Model)
             {
                 <tr class="align-middle">
+                    @* Muestra los valores de las propiedades del modelo en cada celda de la fila. *@
                     <td>@Html.DisplayFor(modelItem => item.Empleados.Nombre)</td>
                     <td>@Html.DisplayFor(modelItem => item.MesVacaciones)</td>
                     <td>@Html.DisplayFor(modelItem => item.AnnoVacacion)</td>
+                    @* Muestra el estado de la vacación con un badge de color según el estado. *@
                     <td class="text-center">
                         <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">
                             @(item.Estado == 1 ? "Asignada" : "Finalizada")
@@ -77,9 +95,13 @@
                     <td>@Html.DisplayFor(modelItem => item.VacacionPagadaTxt)</td>
                     <td>$@Html.DisplayFor(modelItem => item.PagoVacaciones)</td>
                     <td class="text-center">
+                        @* Grupo de botones para realizar acciones en cada elemento. *@
                         <div class="btn-group" role="group">
+                            @* Botón para editar la vacación. *@
                             <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
+                            @* Botón para ver los detalles de la vacación. *@
                             <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
+                            @* Botón para eliminar la vacación. *@
                             <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Eliminar</a>
                         </div>
                     </td>

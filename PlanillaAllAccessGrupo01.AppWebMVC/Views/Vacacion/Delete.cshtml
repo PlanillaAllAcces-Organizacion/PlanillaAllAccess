@@ -1,6 +1,7 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Vacacion
 
 @{
+    @* Establece el título de la página en "Eliminar Vacación". *@
     ViewData["Title"] = "Eliminar Vacación";
 }
 
@@ -36,11 +37,15 @@
                 <dd class="col-sm-8">@Model.FechaPago?.ToString("dd/MM/yyyy")</dd>
             </dl>
 
+            @* Inicio del formulario para eliminar la vacación. *@
             <form asp-action="Delete" class="d-flex justify-content-between mt-4">
+                @* Campo oculto para el Id de la vacación. *@
                 <input type="hidden" asp-for="Id" />
+                @* Botón para confirmar la eliminación. *@
                 <button type="submit" class="btn btn-danger px-4">
                     <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
+                @* Enlace para cancelar la eliminación y volver a la lista. *@
                 <a asp-action="Index" class="btn btn-secondary px-4">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
