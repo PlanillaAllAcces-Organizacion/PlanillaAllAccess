@@ -4,7 +4,7 @@
 	ViewData["Title"] = "Create";
 }
 
-
+@* Vista que se mostrará para crear nuevos empleados, cumpliendo con las validaciones del modelo, esta vista guardará cada registro ingresado y lo mostrará en el index.*@
 <div class="row justify-content-center">
 
 	<h1 class="display-4 text-success"><i class="fas fa-plus-circle"></i> Crear Empleado</h1>
@@ -118,7 +118,7 @@
 				</div>
 
 				
-
+				@*Funcionalidad de botones para guardar el registro y regresar a la pantalla principal*@
 				<br />
 				<div class="d-flex justify-content-between mt-4">
 					<button type="submit" class="btn btn-success px-4">
@@ -140,19 +140,22 @@
 
 	<script>
 
+		// Roles que no requieren jefe inmediato
 		 const rolesSinJefeInmediato = ["Recursos Humanos", "Supervisor", "Administrador de Nómina"];
 
+		  // Evento al cambiar el puesto de trabajo
 		 document.getElementById("puestoTrabajoSelect").addEventListener("change", function () {
 			 const puestoTrabajoId = this.value;
 			 const jefeInmediatoSelect = document.getElementById("jefeInmediatoSelect");
 
 			 if (puestoTrabajoId) {
-
+				 // Obtener nombre del puesto desde el servidor
 			   fetch(`/Empleado/GetPuestoNombre?puestoTrabajoId=${puestoTrabajoId}`)
 			         .then(response => response.json())
 			         .then(data => {
 				     const nombrePuesto = data.nombrePuesto;
 
+					 // Deshabilitar selector de jefe si el puesto está en la lista
 				     if (rolesSinJefeInmediato.includes(nombrePuesto)) {
 
 										 jefeInmediatoSelect.disabled = true;
@@ -165,15 +168,17 @@
 				 .catch(error => console.error("Error:", error));
 
 			 } else {
-
+				 // Si no hay puesto seleccionado, deshabilitar jefe
 				 jefeInmediatoSelect.disabled = true;
 				 jefeInmediatoSelect.value = "";
 			 }
 		 });
 
+		  // Segundo evento para obtener salario base
 		document.getElementById("puestoTrabajoSelect").addEventListener("change", function () {
 		     var puestoId = this.value;
 			 if (puestoId) {
+				 // Obtener salario base desde el servidor
 				 fetch(`/Empleado/GetSalarioBase?puestoTrabajoId=${puestoId}`)
 				 .then(response => response.json())
 				 .then(data => {
@@ -181,6 +186,7 @@
 				 })
 					 .catch(error => console.error("Error:", error));
 			 } else {
+					// Limpiar campo si no hay puesto seleccionado
 				 document.getElementById("salarioBaseInput").value = "";
 			 }
 		});
