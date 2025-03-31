@@ -10,10 +10,12 @@
 
     <div class="col-lg-10 col-xl-8">
         <div class="card shadow-lg p-4">
+            <!-- Formulario con validación de días repetidos -->
             <form asp-action="Edit" method="post" onsubmit="return validarDiasRepetidos()">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
 
+                <!-- Contenedor para mensajes de error -->
                 <div id="mensaje-error" class="alert alert-danger mb-4" style="display: none;"></div>
 
                 <div class="form-group">
@@ -21,27 +23,45 @@
                     <span asp-validation-for="NombreHorario" class="text-danger"></span>
                 </div>
                 <br />
+                <!-- Botón para añadir nuevos días -->
                 <div class="text-center mb-4">
                     <button type="button" id="add-horario" class="btn btn-success">
                         <i class="fas fa-plus"></i> Añadir día
                     </button>
                 </div>
 
+                <!-- Contenedor dinámico para los horarios -->
                 <div id="horarios-container">
                     @{
                         int i = 0;
                     }
+                    <!-- Iteración sobre los horarios existentes -->
                     @foreach (var horario in Model.Horarios)
                     {
+                        <!-- Estructura de cada día de horario -->
                         <div class="horario-item">
                             <div class="row align-items-center text-center">
 
+                                <!-- Campos para día, horas, entrada y salida -->
                                 <div class="col-md-3 mb-1">
+
+                                    <!--
+                                      Input para selección/ingreso del día de la semana en el horario laboral
+                                      - Se renderiza dinámicamente para cada día en la colección Horarios
+                                      - El formato del name permite el model binding automático con ASP.NET Core
+                                    -->
                                     <div class="form-group">
                                         <label class="form-label fw-bold">Día</label>
-                                        <input name="Horarios[@i].Dias" value="@horario.Dias"
-                                               class="form-control text-center" required />
+
+                                        <!-- Nombre estructurado para binding con colección -->
+                                        <!-- Valor actual del día (ej: "Lunes", "Martes") -->
+                                        <input name="Horarios[@i].Dias" value="@horario.Dias" class="form-control text-center" required />
                                     </div>
+                                    <!--
+                                      1. @*i*@ es el contador del loop que garantiza índices únicos para cada horario
+                                      2. El formato Horarios[index].Propiedad permite reconstruir la colección completa al enviar
+                                      3. El binding automático mapeará estos valores al modelo Horario en el controlador
+                                    -->
                                 </div>
                                 <div class="col-md-2 mb-1">
                                     <div class="form-group">
@@ -66,6 +86,7 @@
                                                class="form-control text-center" required />
                                     </div>
                                 </div>
+                                <!-- Botón para eliminar el día -->
                                 <div class="col-md-1 text-center">
                                     <button type="button" class="remove-horario btn btn-danger btn-sm">
                                         <i class="fas fa-trash-alt"></i>
@@ -76,7 +97,7 @@
                         i++;
                     }
                 </div>
-
+                <!-- Boton para guardar los horarios asignados al tipo de horario -->
                 <div class="d-flex justify-content-between mt-4">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Guardar
@@ -94,22 +115,24 @@
 
 @section Scripts {
     <script>
+        // Cuando el DOM está completamente cargado
         document.addEventListener("DOMContentLoaded", function () {
-            let index = @Model.Horarios.Count;
-            const maxInputs = 7;
+            let index = @Model.Horarios.Count; // Índice basado en horarios existentes
+            const maxInputs = 7;  // Límite máximo de días
             const container = document.getElementById("horarios-container");
             const addButton = document.getElementById("add-horario");
 
-            // Agregar nuevo horario
+            // Evento para añadir nuevo horario
             addButton.addEventListener("click", function () {
                 if (index >= maxInputs) {
                     alert("No puedes agregar más de 7 horarios.");
                     return;
                 }
 
+                // Crear nuevo elemento de horario con los campos necesarios
                 let newHorario = document.createElement("div");
                 newHorario.classList.add("horario-item");
-                newHorario.innerHTML = `
+                newHorario.innerHTML = ` 
 
                    <div class="horario-item">
                             <div class="row align-items-center text-center">
@@ -150,7 +173,7 @@
                         </div>
 
 
-                `;
+                `; // Plantilla HTML para nuevos días
 
                 container.appendChild(newHorario);
                 index++;
@@ -159,7 +182,7 @@
                 addButton.disabled = (index >= maxInputs);
             });
 
-            // Eliminar horario
+            // Evento delegado para eliminar horarios
             container.addEventListener("click", function (e) {
                 if (e.target.classList.contains("remove-horario")) {
                     e.target.closest(".horario-item").remove();
@@ -169,23 +192,26 @@
             });
         });
 
-        // Validar días repetidos
+        // Validar que no haya días repetidos
         function validarDiasRepetidos() {
             let mensajeError = document.getElementById("mensaje-error");
             let inputs = document.querySelectorAll('input[name$="Dias"]');
-            let dias = new Set();
+            let dias = new Set(); // Usamos Set para detectar duplicados
 
+             // Resetear mensajes de error
             mensajeError.style.display = "none";
             mensajeError.textContent = "";
 
+              // Validar cada campo
             for (let input of inputs) {
                 let dia = input.value.trim();
 
+                  // Validar campo vacío
                 if (!dia) {
                     mostrarError("Por favor, ingresa un día en todos los campos.");
                     return false;
                 }
-
+                // Validar día repetido
                 if (dias.has(dia)) {
                     mostrarError(`El día "${dia}" está repetido. Por favor, corrige los datos.`);
                     return false;
@@ -197,7 +223,7 @@
             return true;
         }
 
-        // Mostrar error
+        // Mostrar mensajes de error
         function mostrarError(mensaje) {
             let mensajeError = document.getElementById("mensaje-error");
             mensajeError.textContent = mensaje;
