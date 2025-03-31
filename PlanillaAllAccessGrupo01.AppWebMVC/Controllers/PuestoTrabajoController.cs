@@ -67,26 +67,47 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NombrePuesto,SalarioBase,ValorxHora,ValorExtra,Estado")] PuestoTrabajo puestoTrabajo)
+        public async Task<IActionResult> Create([Bind("NombrePuesto,SalarioBase,ValorxHora,ValorExtra,Estado")] PuestoTrabajo puestoTrabajo)
         {
-            // Verifica si el modelo es válido (validaciones de datos)
-            if (ModelState.IsValid)
+            try
             {
-                // Establece la fecha de creación actual
-                puestoTrabajo.FechaCreacion = DateTime.Now;
+                if (ModelState.IsValid)
+                {
+                    // Validación adicional para valores positivos
+                    if (puestoTrabajo.SalarioBase <= 0 || puestoTrabajo.ValorxHora <= 0 || puestoTrabajo.ValorExtra <= 0)
+                    {
+                        ModelState.AddModelError("", "Los valores numéricos deben ser mayores a cero");
+                        ViewBag.Estados = GetEstadosList();
+                        return View(puestoTrabajo);
+                    }
 
-                // Agrega el nuevo puesto de trabajo al contexto
-                _context.Add(puestoTrabajo);
+                    puestoTrabajo.FechaCreacion = DateTime.Now;
+                    _context.Add(puestoTrabajo);
+                    await _context.SaveChangesAsync();
 
-                // Guarda los cambios en la base de datos
-                await _context.SaveChangesAsync();
-
-                // Redirige al listado principal
-                return RedirectToAction(nameof(Index));
+                    TempData["SuccessMessage"] = $"Puesto '{puestoTrabajo.NombrePuesto}' creado exitosamente";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log del error
+                Console.WriteLine($"Error al crear puesto: {ex.Message}");
+                ModelState.AddModelError("", "No se pudo guardar. Verifique los datos e intente nuevamente.");
             }
 
-            // Si hay errores, muestra nuevamente el formulario con los datos ingresados
+            ViewBag.Estados = GetEstadosList();
             return View(puestoTrabajo);
+        }
+
+        // Método auxiliar para cargar los estados
+        private List<SelectListItem> GetEstadosList()
+        {
+            return new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Activo" },
+        new SelectListItem { Value = "0", Text = "Inactivo" }
+    };
         }
 
         public async Task<IActionResult> Edit(int? id)

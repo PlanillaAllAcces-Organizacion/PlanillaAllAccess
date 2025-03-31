@@ -1,80 +1,58 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.PuestoTrabajo
 
 @{
-    @* Establece el título de la página en "Editar Puesto de Trabajo". *@
-    ViewData["Title"] = "Editar Puesto de Trabajo";
+    ViewData["Title"] = "Crear Nuevo Puesto de Trabajo";
 }
 
-<h1 class="text-center">Editar Puesto de Trabajo</h1>
-<h4 class="text-center text-muted">Detalles del Puesto</h4>
+<h1 class="text-center">Crear Nuevo Puesto</h1>
+<h4 class="text-center text-muted">Complete los detalles del puesto</h4>
 <hr />
 
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow-lg p-4">
-            @* Inicio del formulario para editar el puesto de trabajo. *@
-            <form asp-action="Edit">
-                @* Muestra los errores de validación del modelo. *@
+            <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                @* Campo oculto para el Id del puesto de trabajo. *@
-                <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
-                    @* Etiqueta para el campo NombrePuesto. *@
                     <label asp-for="NombrePuesto" class="form-label fw-bold"></label>
-                    @* Campo de entrada para el nombre del puesto. *@
-                    <input asp-for="NombrePuesto" class="form-control" placeholder="Ingrese el nombre del puesto" />
-                    @* Muestra el error de validación para el campo NombrePuesto. *@
+                    <input asp-for="NombrePuesto" class="form-control" placeholder="Ej: Desarrollador Senior" />
                     <span asp-validation-for="NombrePuesto" class="text-danger"></span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        @* Etiqueta para el campo SalarioBase. *@
                         <label asp-for="SalarioBase" class="form-label fw-bold"></label>
-                        @* Campo de entrada numérico para el salario base. *@
-                        <input asp-for="SalarioBase" class="form-control" type="number" placeholder="Ingrese el salario base" />
-                        @* Muestra el error de validación para el campo SalarioBase. *@
+                        <input asp-for="SalarioBase" class="form-control" type="number" step="0.01" placeholder="Ej: 1500.00" />
                         <span asp-validation-for="SalarioBase" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        @* Etiqueta para el campo ValorxHora. *@
                         <label asp-for="ValorxHora" class="form-label fw-bold"></label>
-                        @* Campo de entrada numérico para el valor por hora. *@
-                        <input asp-for="ValorxHora" class="form-control" type="number" placeholder="Ingrese el valor por hora" />
-                        @* Muestra el error de validación para el campo ValorxHora. *@
+                        <input asp-for="ValorxHora" class="form-control" type="number" step="0.01" placeholder="Ej: 12.50" />
                         <span asp-validation-for="ValorxHora" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        @* Etiqueta para el campo ValorExtra. *@
                         <label asp-for="ValorExtra" class="form-label fw-bold"></label>
-                        @* Campo de entrada numérico para el valor extra. *@
-                        <input asp-for="ValorExtra" class="form-control" type="number" placeholder="Ingrese el valor extra" />
-                        @* Muestra el error de validación para el campo ValorExtra. *@
+                        <input asp-for="ValorExtra" class="form-control" type="number" step="0.01" placeholder="Ej: 18.75" />
                         <span asp-validation-for="ValorExtra" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        @* Etiqueta para el campo Estado. *@
                         <label asp-for="Estado" class="form-label fw-bold"></label>
-                        @* Menú desplegable para seleccionar el estado del puesto. *@
                         <select asp-for="Estado" class="form-control" asp-items="ViewBag.Estados">
-                            <option value="">Seleccione un estado</option>
+                            <option value="">Seleccione estado</option>
                         </select>
-                        @* Muestra el error de validación para el campo Estado. *@
                         <span asp-validation-for="Estado" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
-                    @* Botón para guardar los cambios. *@
-                    <button type="submit" class="btn btn-success px-4">
-                        <i class="fas fa-save"></i> Guardar
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-plus-circle"></i> Crear
                     </button>
-                    @* Enlace para volver a la lista de puestos de trabajo. *@
-                    <a asp-action="Index" class="btn btn-danger px-4">Volver</a>
+                    <a asp-action="Index" class="btn btn-secondary px-4">Cancelar</a>
                 </div>
             </form>
         </div>
@@ -83,7 +61,24 @@
 
 @section Scripts {
     @{
-        @* Renderiza los scripts de validación parciales. *@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function() {
+            // Configuración para campos numéricos
+            $('input[type="number"]').on('keydown', function(e) {
+                // Permite: números, punto decimal, teclas de control
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode >= 35 && e.keyCode <= 40)) {
+                    return;
+                }
+                // Asegura que es un número
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 }
