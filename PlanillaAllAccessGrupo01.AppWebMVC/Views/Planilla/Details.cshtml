@@ -4,9 +4,11 @@
     ViewData["Title"] = "Details";
 }
 
-
+@* Link utilizado para la funcionalida dde los íconos de la vista*@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+@* Vista que mostrará los datos de cada planilla*@
+@*Esta vista solo permitirá la visualización de los datos y podrá regresar a la pantalla principal de planilla*@
 <h1 class="text-center"><i class="fas fa-info-circle text-primary"></i> Detalles de la Planilla</h1>
 <h4 class="text-center text-muted">Información completa</h4>
 <hr />
@@ -58,7 +60,7 @@
                     <div class="form-control-plaintext border-bottom">@Model.TipoPlanilla?.NombreTipo</div>
                 </div>
             </div>
-
+            @*Funcionalidad del botón Volver, que dirigirá a la pantalla principal Index de Planilla*@
             <div class="d-flex justify-content-center mt-4">
                 <a asp-action="Index" class="btn btn-primary px-4">
                     <i class="fas fa-arrow-left"></i> Volver
