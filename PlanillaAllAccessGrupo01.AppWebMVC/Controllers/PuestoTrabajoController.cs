@@ -22,96 +22,129 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
         public async Task<IActionResult> Index(string nombrePuesto, byte estado = 2, int top = 10)
         {
+            // Crea un diccionario para mapear estados (1: Activo, 0: Inactivo)
             var estados = new Dictionary<byte, string>
-            {
-                  { 1, "Activo" },
-                  { 0, "Inactivo" }
-             };
+    {
+        { 1, "Activo" },
+        { 0, "Inactivo" }
+    };
 
+            // Pasa los estados a la vista mediante ViewBag
             ViewBag.Estados = estados;
 
+            // Obtiene la consulta base de puestos de trabajo
             var query = _context.PuestoTrabajos.AsQueryable();
 
+            // Filtra por nombre de puesto si se proporcionó
             if (!string.IsNullOrWhiteSpace(nombrePuesto))
                 query = query.Where(p => p.NombrePuesto.Contains(nombrePuesto));
 
+            // Filtra por estado (2 significa "Todos" por defecto)
             if (estado != 2) // 2 indica "Todos los estados"
                 query = query.Where(p => p.Estado == estado);
 
+            // Limita el número de resultados
             query = query.Take(top);
 
+            // Ejecuta la consulta y devuelve la vista con los resultados
             return View(await query.ToListAsync());
         }
         public IActionResult Create()
         {
+            // Prepara una lista de estados para el dropdown (Activo/Inactivo)
             var estados = new List<SelectListItem>
             {
-                new  SelectListItem{ Value="1",Text="Activo" },
-                new  SelectListItem{ Value="0",Text="Inactivo" }
+                 new SelectListItem{ Value="1",Text="Activo" },
+                 new SelectListItem{ Value="0",Text="Inactivo" }
             };
 
+            // Pasa los estados a la vista
             ViewBag.Estados = estados;
+
+            // Devuelve la vista de creación
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombrePuesto,SalarioBase,ValorxHora,ValorExtra,Estado")] PuestoTrabajo puestoTrabajo)
         {
+            // Verifica si el modelo es válido (validaciones de datos)
             if (ModelState.IsValid)
             {
+                // Establece la fecha de creación actual
                 puestoTrabajo.FechaCreacion = DateTime.Now;
+
+                // Agrega el nuevo puesto de trabajo al contexto
                 _context.Add(puestoTrabajo);
+
+                // Guarda los cambios en la base de datos
                 await _context.SaveChangesAsync();
+
+                // Redirige al listado principal
                 return RedirectToAction(nameof(Index));
             }
+
+            // Si hay errores, muestra nuevamente el formulario con los datos ingresados
             return View(puestoTrabajo);
         }
 
-        //HTTP GET
         public async Task<IActionResult> Edit(int? id)
         {
+            // Prepara la lista de estados para el dropdown
             var estados = new List<SelectListItem>
-            {
-                new  SelectListItem{ Value="1",Text="Activo" },
-                new  SelectListItem{ Value="0",Text="Inactivo" }
-            };
+    {
+        new SelectListItem{ Value="1",Text="Activo" },
+        new SelectListItem{ Value="0",Text="Inactivo" }
+    };
 
+            // Pasa los estados a la vista
             ViewBag.Estados = estados;
+
+            // Verifica si se proporcionó un ID
             if (id == null)
             {
                 return NotFound();
             }
 
+            // Busca el puesto de trabajo por ID
             var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(id);
+
+            // Si no se encuentra, devuelve NotFound
             if (puestoTrabajo == null)
             {
                 return NotFound();
             }
+
+            // Devuelve la vista de edición con los datos del puesto
             return View(puestoTrabajo);
         }
 
 
-        //HTTP POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,NombrePuesto,SalarioBase,ValorxHora,ValorExtra,Estado")] PuestoTrabajo puestoTrabajo)
         {
+            // Verifica que el ID coincida con el modelo
             if (id != puestoTrabajo.Id)
             {
                 return NotFound();
             }
 
+            // Verifica si el modelo es válido
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Actualiza el puesto de trabajo en el contexto
                     _context.Update(puestoTrabajo);
+
+                    // Guarda los cambios en la base de datos
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Maneja errores de concurrencia
                     if (!PuestoTrabajoExists(puestoTrabajo.Id))
                     {
                         return NotFound();
@@ -121,30 +154,38 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                         throw;
                     }
                 }
+
+                // Redirige al listado principal después de editar
                 return RedirectToAction(nameof(Index));
             }
+
+            // Si hay errores, muestra nuevamente el formulario con los datos
             return View(puestoTrabajo);
         }
-
         private bool PuestoTrabajoExists(int id)
         {
+            // Verifica si existe un puesto de trabajo con el ID especificado
             return _context.PuestoTrabajos.Any(e => e.Id == id);
         }
-
         public async Task<IActionResult> Details(int? id)
         {
+            // Verifica si se proporcionó un ID
             if (id == null)
             {
                 return NotFound();
             }
 
+            // Busca el puesto de trabajo por ID
             var puestoTrabajo = await _context.PuestoTrabajos
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            // Si no se encuentra, devuelve NotFound
             if (puestoTrabajo == null)
             {
                 return NotFound();
             }
 
+            // Devuelve la vista de detalles con los datos del puesto
             return View(puestoTrabajo);
         }
 
