@@ -1,0 +1,130 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Planilla
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<h1 class="text-center"><i class="fas fa-info-circle text-primary"></i> Detalles de la Planilla</h1>
+<h4 class="text-center text-muted">Información completa</h4>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg p-4">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.NombrePlanilla)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.NombrePlanilla</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaInicio)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.FechaInicio.ToString("dd/MM/yyyy")</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaFin)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.FechaFin.ToString("dd/MM/yyyy")</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Autorizacion)</label>
+                    <div class="form-control-plaintext border-bottom">
+                        @if (Model.Autorizacion == 1)
+                        {
+                            <span class="badge bg-success">Autorizada</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">No Autorizada</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TotalPago)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.TotalPago/* .ToString("C") */</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TipoPlanilla)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.TipoPlanilla?.NombreTipo</div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                <a asp-action="Index" class="btn btn-primary px-4">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+
+@* <h1>Details</h1>
+
+<div>
+    <h4>Planilla</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombrePlanilla)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombrePlanilla)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaFin)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaFin)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Autorizacion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Autorizacion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalPago)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TotalPago)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TipoPlanilla)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TipoPlanilla.NombreTipo)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+ *@
