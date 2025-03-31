@@ -102,6 +102,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(planilla);
         }
 
+        //En el metódo de Editar GETT se colocá el ViewData para que en la vista me mustre los ttipos de planilla. 
+        //Tambien me busca el registro que se editara y actualizará mediante el id.
         // GET: Planilla/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -122,6 +124,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // POST: Planilla/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //Se colocó la funcionalidad para que pudiera actualizar registros si se modificaban.
+        //Se le colocó también la validación de la fecha fin.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,NombrePlanilla,TipoPlanillaId,FechaInicio,FechaFin,Autorizacion,TotalPago")] Planilla planilla)
