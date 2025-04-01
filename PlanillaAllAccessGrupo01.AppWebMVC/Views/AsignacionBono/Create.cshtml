@@ -1,41 +1,84 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.AsignacionBono
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Asignar Bonos";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Asignar Bonos a @ViewBag.EmpleadoNombre</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h5 class="text-secondary">Detalles del Empleado</h5>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Nombre:</strong> @ViewBag.EmpleadoNombre</li>
+                    <li class="list-group-item"><strong>DUI:</strong> @ViewBag.EmpleadoDUI</li>
+                    <li class="list-group-item"><strong>Puesto de Trabajo:</strong> @ViewBag.EmpleadoPuesto</li>
+                    <li class="list-group-item"><strong>Salario Base:</strong> @ViewBag.EmpleadoSalario</li>
 
-<h4>AsignacionBono</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EmpleadosId" class="control-label"></label>
-                <select asp-for="EmpleadosId" class ="form-control" asp-items="ViewBag.EmpleadosId"></select>
+                </ul>
             </div>
-            <div class="form-group">
-                <label asp-for="BonosId" class="control-label"></label>
-                <select asp-for="BonosId" class ="form-control" asp-items="ViewBag.BonosId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                </div>
+            }
+
+            <form asp-action="Create" method="post">
+                <input type="hidden" name="empleadoId" value="@ViewBag.EmpleadoId" />
+
+                <div class="mb-4">
+                    <h5 class="text-secondary">Bonos Disponibles</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Seleccionar</th>
+                                    <th>Nombre del Bono</th>
+                                    <th>Valor</th>
+                                    <th>Operación</th>
+                                    <th>Planilla</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.Bonos != null && ((List<Bono>)ViewBag.Bonos).Any())
+                                {
+                                    foreach (var bono in (List<Bono>)ViewBag.Bonos)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="bonosSeleccionados" value="@bono.Id" class="form-check-input" />
+                                            </td>
+
+                                            <td>@bono.NombreBono</td>
+                                            <td>@bono.Valor.ToString("$0.00")</td>
+                                            <td>@bono.OperacionTexto</td>
+                                            <td>@bono.PlanillaTexto</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">No hay descuentos disponibles.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success me-2"><i></i> Asignar Bonos</button>
+                    <a asp-controller="Empleado" asp-action="Index" class="btn btn-secondary">
+                        <i></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
