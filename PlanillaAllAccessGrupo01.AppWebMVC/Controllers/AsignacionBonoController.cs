@@ -121,7 +121,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         //    return View(asignacionBono);
         //}
 
-        // GET: AsignacionBono/Edit/5
+
+
+
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -129,13 +132,29 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return NotFound();
             }
 
-            var asignacionBono = await _context.AsignacionBonos.FindAsync(id);
+            var asignacionBono = await _context.AsignacionBonos
+                .Include(a => a.Bonos)
+                .Include(a => a.Empleados)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (asignacionBono == null)
             {
                 return NotFound();
             }
-            ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
-            ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
+
+            // Obtener todos los bonos disponibles
+            var bonosDisponibles = _context.Bonos.ToList();
+
+            // Obtener bonos ya asignados al empleado
+            var bonosAsignados = _context.AsignacionBonos
+                .Where(a => a.EmpleadosId == asignacionBono.EmpleadosId)
+                .Select(a => a.BonosId)
+                .ToList();
+
+            ViewBag.BonosDisponibles = bonosDisponibles;
+            ViewBag.BonosAsignados = bonosAsignados;
+            ViewBag.EmpleadoNombre = $"{asignacionBono.Empleados.Nombre} {asignacionBono.Empleados.Apellido}";
+
             return View(asignacionBono);
         }
 
@@ -144,37 +163,95 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadosId,BonosId,Estado")] AsignacionBono asignacionBono)
+        public async Task<IActionResult> Edit(int id, List<int> bonosSeleccionados)
         {
-            if (id != asignacionBono.Id)
+            var asignacionBono = await _context.AsignacionBonos
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (asignacionBono == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // Eliminar los bonos previamente asignados
+            var bonosPrevios = _context.AsignacionBonos
+                .Where(a => a.EmpleadosId == asignacionBono.EmpleadosId)
+                .ToList();
+
+            _context.AsignacionBonos.RemoveRange(bonosPrevios);
+
+            // Agregar los bonos nuevos seleccionados
+            foreach (var bonoId in bonosSeleccionados)
             {
-                try
+                _context.AsignacionBonos.Add(new AsignacionBono
                 {
-                    _context.Update(asignacionBono);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AsignacionBonoExists(asignacionBono.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    EmpleadosId = asignacionBono.EmpleadosId,
+                    BonosId = bonoId,
+                    Estado = asignacionBono.Estado
+                });
             }
-            ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
-            ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
-            return View(asignacionBono);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Empleado");
         }
+
+
+
+
+
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var asignacionBono = await _context.AsignacionBonos.FindAsync(id);
+        //    if (asignacionBono == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
+        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
+        //    return View(asignacionBono);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadosId,BonosId,Estado")] AsignacionBono asignacionBono)
+        //{
+        //    if (id != asignacionBono.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(asignacionBono);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!AsignacionBonoExists(asignacionBono.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
+        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
+        //    return View(asignacionBono);
+        //}
+
+
 
         // GET: AsignacionBono/Delete/5
         public async Task<IActionResult> Delete(int? id)
