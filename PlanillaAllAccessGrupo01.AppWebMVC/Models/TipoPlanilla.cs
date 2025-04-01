@@ -30,5 +30,8 @@ public partial class TipoPlanilla
     public DateTime? FechaModificacion { get; set; }
 
     // Relación con la entidad Planilla (una TipoPlanilla puede estar relacionada con muchas Planillas)
+
+    public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
+
     public virtual ICollection<Planilla> Planillas { get; set; } = new List<Planilla>();
 }

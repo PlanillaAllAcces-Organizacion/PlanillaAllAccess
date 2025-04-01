@@ -24,10 +24,12 @@ public partial class Empleado
 
     [Required(ErrorMessage = "El nombre es obligatorio.")]
     [MaxLength(50, ErrorMessage = "El nombre no debe exceder 50 caracteres.")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Solo se permiten letras y espacios (no números ni caracteres especiales)")]
     public string Nombre { get; set; } = null!;
 
     [Required(ErrorMessage = "El apellido es obligatorio.")]
     [MaxLength(50, ErrorMessage = "El apellido no debe exceder 50 caracteres.")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Solo se permiten letras y espacios (no números ni caracteres especiales)")]
     public string Apellido { get; set; } = null!;
 
     [Required(ErrorMessage = "El teléfono es obligatorio.")]
@@ -71,6 +73,9 @@ public partial class Empleado
     [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
     public string? ConfirmarPassword { get; set; } = null!;
 
+    [Display(Name = "Tipo de planilla")]
+    public int? TipoPlanillaId { get; set; } = null;
+
     public virtual ICollection<AsignacionBono> AsignacionBonos { get; set; } = new List<AsignacionBono>();
 
     public virtual ICollection<AsignacionDescuento> AsignacionDescuentos { get; set; } = new List<AsignacionDescuento>();
@@ -89,6 +94,8 @@ public partial class Empleado
 
     [Display(Name = "Horario")]
     public virtual TipodeHorario? TipoDeHorario { get; set; }
+
+    public virtual TipoPlanilla? TipoPlanilla { get; set; }
 
     public virtual ICollection<Vacacion> Vacacions { get; set; } = new List<Vacacion>();
 }

@@ -189,6 +189,10 @@ public partial class PlanillaDbContext : DbContext
             entity.HasOne(d => d.TipoDeHorario).WithMany(p => p.Empleados)
                 .HasForeignKey(d => d.TipoDeHorarioId)
                 .HasConstraintName("FK_Empleado_Horario");
+
+            entity.HasOne(d => d.TipoPlanilla).WithMany(p => p.Empleados)
+                .HasForeignKey(d => d.TipoPlanillaId)
+                .HasConstraintName("FK_Empleado_TipoPlanilla");
         });
 
         modelBuilder.Entity<EmpleadoPlanilla>(entity =>
