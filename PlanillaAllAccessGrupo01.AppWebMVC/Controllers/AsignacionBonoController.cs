@@ -45,31 +45,81 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(asignacionBono);
         }
 
-        // GET: AsignacionBono/Create
-        public IActionResult Create()
+
+
+
+
+        public IActionResult Create(int? empleadoId)
         {
-            ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono");
-            ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido");
+
+            if (empleadoId == null)
+            {
+                return NotFound();
+            }
+            var empleado = _context.Empleados.Include(e => e.PuestoTrabajo).FirstOrDefault(e => e.Id == empleadoId);
+
+            ViewBag.EmpleadoId = empleado.Id;
+            ViewBag.EmpleadoNombre = empleado.Nombre;
+            ViewBag.EmpleadoDUI = empleado.Dui;
+            ViewBag.EmpleadoPuesto = empleado.PuestoTrabajo.NombrePuesto;
+            ViewBag.EmpleadoSalario = empleado.SalarioBase;
+            ViewBag.Bonos = _context.Bonos.ToList();
+
+
             return View();
         }
 
-        // POST: AsignacionBono/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EmpleadosId,BonosId,Estado")] AsignacionBono asignacionBono)
+        public async Task<IActionResult> Create(int empleadoId, List<int> bonosSeleccionados)
         {
-            if (ModelState.IsValid)
+            if (empleadoId == 0 || bonosSeleccionados == null || !bonosSeleccionados.Any())
             {
-                _context.Add(asignacionBono);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["ErrorMessage"] = "Debe seleccionar al menos un bono.";
+                return RedirectToAction("Create", new { empleadoId });
             }
-            ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
-            ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
-            return View(asignacionBono);
+
+            foreach (var bonoId in bonosSeleccionados)
+            {
+                var asignacionBono = new AsignacionBono
+                {
+                    EmpleadosId = empleadoId,
+                    BonosId = bonoId,
+
+                };
+                _context.AsignacionBonos.Add(asignacionBono);
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Bonos asignados correctamente.";
+            return RedirectToAction("Index", "Empleado");
         }
+
+
+
+
+
+        //public IActionResult Create()
+        //{
+        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono");
+        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido");
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,EmpleadosId,BonosId,Estado")] AsignacionBono asignacionBono)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(asignacionBono);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
+        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
+        //    return View(asignacionBono);
+        //}
 
         // GET: AsignacionBono/Edit/5
         public async Task<IActionResult> Edit(int? id)
