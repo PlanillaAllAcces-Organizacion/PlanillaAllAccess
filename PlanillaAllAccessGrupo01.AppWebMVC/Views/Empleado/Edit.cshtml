@@ -11,7 +11,7 @@
 	<h1 class="display-4 text-warning"><i class="bi bi-pencil"></i> Editar Empleado</h1>
 	<hr class="bg-warning" style="height: 2px;" />
 
-	<div class="col-md-6">
+	<div class="col-md-12">
 		<div class="card shadow-lg p-4">
 
 			<form asp-action="Edit">
@@ -61,21 +61,29 @@
 
 				<div class="row">
 
-					<div class="col-md-12 mb-3">
+					<div class="col-md-6 mb-3">
 						<label asp-for="SalarioBase" class="form-label fw-bold"></label>
 						<input asp-for="SalarioBase" class="form-control" id="salarioBaseInput" type="number" step="0.01" readonly />
 						<span asp-validation-for="SalarioBase" class="text-danger"></span>
+					</div>
+
+					<div class="col-md-6 mb-3">
+						<label asp-for="PuestoTrabajoId" class="form-label fw-bold"></label>
+						<select asp-for="PuestoTrabajoId" class="form-control" asp-items="ViewBag.PuestoTrabajoId" id="puestoTrabajoSelect">
+							<option value="">-- Seleccione un puesto --</option>
+						</select>
+						<span asp-validation-for="PuestoTrabajoId" class="text-danger"></span>
 					</div>
 
 				</div>
 
 				<div class="row">
 					<div class="col-md-6 mb-4">
-						<label asp-for="PuestoTrabajoId" class="form-label fw-bold"></label>
-						<select asp-for="PuestoTrabajoId" class="form-control" asp-items="ViewBag.PuestoTrabajoId" id="puestoTrabajoSelect">
+						<label asp-for="TipoPlanillaId" class="form-label fw-bold"></label>
+						<select asp-for="TipoPlanillaId" class="form-control" asp-items="ViewBag.TipoPlanillaId">
 							<option value="">-- Seleccione un puesto --</option>
 						</select>
-						<span asp-validation-for="PuestoTrabajoId" class="text-danger"></span>
+						<span asp-validation-for="TipoPlanillaId" class="text-danger"></span>
 					</div>
 
 					<div class="col-md-6 mb-4">

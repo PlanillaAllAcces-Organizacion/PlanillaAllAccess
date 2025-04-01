@@ -14,30 +14,32 @@
         <div class="card shadow-lg p-4">
 
             <div class="row">
-                <div class="col-md-12 mb-3">
+                <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Dui)</label>
-                    <div class="form-control-plaintext border-bottom text-center">@Model.Dui</div>
+                    <div class="form-control-plaintext border-bottom">@Model.Dui</div>
                 </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Nombre)</label>
                     <div class="form-control-plaintext border-bottom">@Model.Nombre</div>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Apellido)</label>
                     <div class="form-control-plaintext border-bottom">@Model.Apellido</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Telefono)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.Telefono</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Telefono)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.Telefono</div>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Estado)</label>
+                    <div class="form-control-plaintext border-bottom">@(Model.Estado == 1 ? "Activo" : "Inactivo")</div>
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Correo)</label>
                     <div class="form-control-plaintext border-bottom">@Model.Correo</div>
@@ -49,11 +51,11 @@
                     <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.SalarioBase)</label>
                     <div class="form-control-plaintext border-bottom">@Model.SalarioBase</div>
                 </div>
-
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Estado)</label>
-                    <div class="form-control-plaintext border-bottom">@(Model.Estado == 1 ? "Activo" : "Inactivo")</div>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.PuestoTrabajo)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.PuestoTrabajo?.NombrePuesto</div>
                 </div>
+
             </div>
 
             <div class="row">
@@ -75,8 +77,8 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.PuestoTrabajo)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.PuestoTrabajo?.NombrePuesto</div>
+                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TipoPlanillaId)</label>
+                    <div class="form-control-plaintext border-bottom">@Model.TipoPlanilla?.NombreTipo</div>
                 </div>
             </div>
 
@@ -91,8 +93,6 @@
                     <div class="form-control-plaintext border-bottom">@Model.Usuario</div>
                 </div>
             </div>
-
-
             <div class="d-flex justify-content-center mt-4">
                 <a asp-action="Index" class="btn btn-primary px-4">
                     <i class="fas fa-arrow-left"></i> Volver
