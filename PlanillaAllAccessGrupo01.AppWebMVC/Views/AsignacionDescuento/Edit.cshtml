@@ -4,7 +4,71 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">Editar Asignación de Descuento</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Empleado: <strong>@ViewBag.EmpleadoNombre</strong></h5>
+            <hr />
+
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="EmpleadosId" />
+
+                <!-- Lista de descuentos con checkboxes -->
+                <fieldset class="form-group">
+                    <legend class="col-form-label pt-0 font-weight-bold">Descuentos Asignados</legend>
+                    <div class="border rounded p-3">
+                        @if (ViewBag.DescuentosDisponibles != null)
+                        {
+                            foreach (var descuento in ViewBag.DescuentosDisponibles)
+                            {
+                                bool isChecked = ViewBag.DescuentosAsignados != null && ViewBag.DescuentosAsignados.Contains(descuento.Id);
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="descuentosSeleccionados" value="@descuento.Id" @(isChecked ? "checked" : "") />
+                                    <label class="form-check-label">
+                                        @descuento.Nombre - <strong>@descuento.Valor.ToString("$0.00")</strong>
+                                        <br />
+                                        <small class="text-muted">
+                                            Planilla: @descuento.PlanillaTexto | Operación: @descuento.OperacionTexto
+                                        </small>
+                                    </label>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No hay descuentos disponibles.</p>
+                        }
+                    </div>
+                </fieldset>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-controller="Empleado" asp-action="Index" class="btn btn-outline-secondary">
+                        ← Volver a la lista
+                    </a>
+                    <button type="submit" class="btn btn-danger" asp-controller="Empleado" asp-action="Index">
+                        💾 Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+@* <h1>Edit</h1>
 
 <h4>AsignacionDescuento</h4>
 <hr />
@@ -37,3 +101,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+ *@

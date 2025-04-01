@@ -4,7 +4,85 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Asignar Descuentos a @ViewBag.EmpleadoNombre</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h5 class="text-secondary">Detalles del Empleado</h5>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Nombre:</strong> @ViewBag.EmpleadoNombre</li>
+                    <li class="list-group-item"><strong>DUI:</strong> @ViewBag.EmpleadoDUI</li>
+                    <li class="list-group-item"><strong>Puesto de Trabajo:</strong> @ViewBag.EmpleadoPuesto</li>
+                    <li class="list-group-item"><strong>Salario Base:</strong> @ViewBag.EmpleadoSalario</li>
+                </ul>
+            </div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                </div>
+            }
+
+            <form asp-action="Create" method="post">
+                <input type="hidden" name="empleadoId" value="@ViewBag.EmpleadoId" />
+
+                <div class="mb-4">
+                    <h5 class="text-secondary">Descuentos Disponibles</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Seleccionar</th>
+                                    <th>Nombre del Descuento</th>
+                                    <th>Valor</th>
+                                    <th>Operación</th>
+                                    <th>Planilla</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.Descuentos != null && ((List<Descuento>)ViewBag.Descuentos).Any())
+                                {
+                                    foreach (var descuento in (List<Descuento>)ViewBag.Descuentos)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="descuentosSeleccionados" value="@descuento.Id" class="form-check-input" />
+                                            </td>
+                                            <td>@descuento.Nombre</td>
+                                            <td>@descuento.Valor.ToString("$0.00")</td>
+                                            <td>@descuento.OperacionTexto</td>
+                                            <td>@descuento.PlanillaTexto</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">No hay descuentos disponibles.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-danger me-2" asp-controller=" Empleado" asp-action="Index" ><i></i> Asignar Descuentos</button>
+                    <a asp-controller="Empleado" asp-action="Index" class="btn btn-secondary">
+                        <i></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@* <h1>Create</h1>
 
 <h4>AsignacionDescuento</h4>
 <hr />
@@ -33,4 +111,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+} *@
