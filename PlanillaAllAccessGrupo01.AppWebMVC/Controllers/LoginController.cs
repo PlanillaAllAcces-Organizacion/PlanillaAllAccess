@@ -32,7 +32,15 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         {
             // Esta acción HTTP POST maneja el envío del formulario de inicio de sesión.
             // Calcula el hash MD5 de la contraseña ingresada por el usuario.
-            empleado.Password = CalcularHashMD5(empleado.Password);
+            if (!string.IsNullOrWhiteSpace(empleado.Password))
+            {
+                empleado.Password = CalcularHashMD5(empleado.Password);
+            }
+            else
+            {
+                ModelState.AddModelError("Password", "Ingrese la contraseña");
+            }
+           
 
             // Realiza una consulta asíncrona a la base de datos para buscar un empleado con el usuario y contraseña proporcionados.
             // Incluye la relación 'PuestoTrabajo' para obtener el nombre del puesto del empleado.

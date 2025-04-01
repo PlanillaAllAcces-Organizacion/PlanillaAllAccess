@@ -116,15 +116,28 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             // Asigna una lista de tipos de horarios al ViewData para que esté disponible en la vista.
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario");
 
+            ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo");
+
             // Retorna la vista "Create" para mostrar el formulario de creación de empleados.
+
             return View();
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,Usuario,Password,ConfirmarPassword,PuestoTrabajoId")] Empleado empleado)
+        public async Task<IActionResult> Create([Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,Usuario,Password,ConfirmarPassword,PuestoTrabajoId,TipoPlanillaId")] Empleado empleado)
         {
+            // Crea una lista de elementos SelectListItem para representar los estados (Activo/Inactivo).
+            var estados = new List<SelectListItem>
+            {
+                new  SelectListItem{ Value="1",Text="Activo" },
+                new  SelectListItem{ Value="0",Text="Inactivo" }
+            };
+
+            // Asigna la lista de estados al ViewBag para que esté disponible en la vista.
+            ViewBag.Estados = estados;
+
             // Realiza validaciones personalizadas para los campos Usuario y Password.
             if (string.IsNullOrWhiteSpace(empleado.Usuario))
             {
@@ -199,6 +212,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
             ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
+            ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", empleado.TipoPlanillaId);
 
             // Retorna la vista "Create".
             return View(empleado);
@@ -288,6 +302,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 .Include(e => e.JefeInmediato)
                 .Include(e => e.PuestoTrabajo)
                 .Include(e => e.TipoDeHorario)
+                .Include(e => e.TipoPlanilla)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             // Verifica si se encontró el empleado.
@@ -317,6 +332,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 .Include(e => e.JefeInmediato)
                 .Include(e => e.PuestoTrabajo)
                 .Include(e => e.TipoDeHorario)
+                .Include(e => e.TipoPlanilla)
                 .FirstOrDefaultAsync(m => m.Id == id);
             // Verifica si se encontró el empleado.
             if (empleado == null)
@@ -386,6 +402,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
             ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
+            ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", empleado.TipoPlanillaId);
 
             // Retorna la vista "Edit" con el objeto 'empleado' para mostrar el formulario de edición.
             return View(empleado);
@@ -393,7 +410,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,PuestoTrabajoId")] Empleado empleado)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,JefeInmediatoId,TipoDeHorarioId,Dui,Nombre,Apellido,Telefono,Correo,Estado,SalarioBase,FechaContraInicial,FechaContraFinal,PuestoTrabajoId,TipoPlanillaId")] Empleado empleado)
         {
             // Verifica si el 'id' proporcionado coincide con el 'id' del empleado en el modelo.
             if (id != empleado.Id)
@@ -464,6 +481,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewData["JefeInmediatoId"] = new SelectList(_context.Empleados.Where(e => e.PuestoTrabajo.NombrePuesto == "Supervisor").ToList(), "Id", "Nombre");
             ViewData["PuestoTrabajoId"] = new SelectList(_context.PuestoTrabajos.Where(e => e.Estado == 1).ToList(), "Id", "NombrePuesto");
             ViewData["NombreHorario"] = new SelectList(_context.TipodeHorarios, "Id", "NombreHorario", empleado.TipoDeHorarioId);
+            ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", empleado.TipoPlanillaId);
 
             // Retorna la vista "Edit" con el objeto 'empleado' para mostrar los errores de validación.
             return View(empleado);
