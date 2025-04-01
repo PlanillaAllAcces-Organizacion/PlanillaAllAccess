@@ -470,6 +470,33 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
+        public async Task<IActionResult> VerificarBono(int empleadoId)
+        {
+            // Buscar la asignación de bono existente para el empleado
+            var asignacionBono = await _context.AsignacionBonos
+                .FirstOrDefaultAsync(b => b.EmpleadosId == empleadoId);
+
+            if (asignacionBono != null)
+            {
+                return RedirectToAction("Edit", "AsignacionBono", new { id = asignacionBono.Id });
+            }
+
+            return RedirectToAction("Create", "AsignacionBono", new { empleadoId });
+        }
+
+        public async Task<IActionResult> VerificarDescuento(int empleadoId)
+        {
+            var descuento = await _context.AsignacionDescuentos
+                .FirstOrDefaultAsync(d => d.EmpleadosId == empleadoId);
+
+            if (descuento != null)
+            {
+                return RedirectToAction("Edit", "AsignacionDescuento", new { id = descuento.Id });
+            }
+
+            return RedirectToAction("Create", "AsignacionDescuento", new { empleadoId });
+        }
+
     }
 
 }
