@@ -137,8 +137,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                                 // Si el horario no existe en la base de datos, lo agrega a la lista de horarios del tipo de horario actual.
                                 horarioExistente.Dias = horario.Dias;
                                 horarioExistente.HorasxDia = horario.HorasxDia;
-                                horarioExistente.HorasEntrada = horario.HorasEntrada;
-                                horarioExistente.HorasSalida = horario.HorasSalida;
+                                horarioExistente.HorasEntrada = TimeSpan.Parse(horario.HorasEntrada.ToString("hh\\:mm"));
+                                horarioExistente.HorasSalida = TimeSpan.Parse(horario.HorasSalida.ToString("hh\\:mm"));
                             }
                         }
                         else
