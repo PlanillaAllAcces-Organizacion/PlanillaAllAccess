@@ -14,7 +14,7 @@
 					<option value="">Seleccione...</option>
 					@foreach (var jefe in ViewBag.Jefes)
 					{
-							<option value="@jefe.Id">@jefe.Nombre @jefe.Apellido</option>
+						<option value="@jefe.Id">@jefe.Nombre @jefe.Apellido</option>
 					}
 				</select>
 			</div>
@@ -25,7 +25,7 @@
 					<option value="">Seleccione...</option>
 					@foreach (var horario in ViewBag.TiposDeHorario)
 					{
-							<option value="@horario.Id">@horario.NombreHorario</option>
+						<option value="@horario.Id">@horario.NombreHorario</option>
 					}
 				</select>
 
@@ -55,6 +55,15 @@
 	</div>
 </div>
 
+<div id="mensaje-error-campos" class="alert alert-danger d-none" role="alert">
+</div>
+
+<div id="mensaje-error" class="alert alert-danger d-none" role="alert">
+</div>
+
+<div id="mensaje-guardado" class="alert alert-success d-none" role="alert">
+</div>
+
 <div class="table-responsive mt-4">
 	<table class="table table-bordered table-striped table-hover">
 		<thead class="table-dark text-center align-middle">
@@ -77,83 +86,97 @@
 </div>
 
 @section Scripts {
-		<script>
+	<script>
 
 
-			$(document).ready(function () {
+		$(document).ready(function () {
 
-				// Cargar los días cuando se seleccione un horario
-				$('#horarioDropdown').change(function () {
-					var tipoHorarioId = $(this).val();
+			// Cargar los días cuando se seleccione un horario
+			$('#horarioDropdown').change(function () {
+				var tipoHorarioId = $(this).val();
 
-					if (tipoHorarioId) {
-						$.get('/Asistencia/GetDiasPorHorario', { tipoHorarioId }, function (data) {
-							$('#diasDropdown').empty().append('<option value="">Seleccione...</option>');
-							data.forEach(dia => {
-								$('#diasDropdown').append(`<option value="${dia}">${dia}</option>`);
-							});
+				if (tipoHorarioId) {
+					$.get('/Asistencia/GetDiasPorHorario', { tipoHorarioId }, function (data) {
+						$('#diasDropdown').empty().append('<option value="">Seleccione...</option>');
+						data.forEach(dia => {
+							$('#diasDropdown').append(`<option value="${dia}">${dia}</option>`);
 						});
+					});
+				}
+			});
+
+				$('#buscarEmpleados').click(function () {
+			var jefeId = $('#jefeDropdown').val();
+			var tipoHorarioId = $('#horarioDropdown').val();
+			var diaSeleccionado = $('#diasDropdown').val();
+			var fechaAsistencia = $('#fechaAsistencia').val();
+
+			if (jefeId && tipoHorarioId && diaSeleccionado && fechaAsistencia) {
+				$.get('/Asistencia/GetEmpleadosPorJefeYHorario', { jefeId, tipoHorarioId, diaSeleccionado }, function (data) {
+					$('#tablaAsistencia').empty();
+
+					data.forEach(emp => {
+						let row = `<tr>
+							<td>${emp.nombre} ${emp.apellido}</td>
+							<td>${diaSeleccionado}</td>
+							<td>${fechaAsistencia}</td>
+							<td>${emp.horaEntrada || ''}</td>  // Asigna directamente el valor a la celda
+							<td>${emp.horaSalida || ''}</td>   // Asigna directamente el valor a la celda
+							<td><select class='form-control asistencia'>
+									<option value=''>Seleccione</option>
+									<option value='Asistió'>Asistió</option>
+									<option value='No asistió'>No asistió</option>
+									<option value='Tiene permiso'>Tiene permiso</option>
+								</select></td>
+							<td><input type='number' class='form-control horasTardia' min='0' /></td>
+							<td><input type='number' class='form-control horasExtra' min='0' /></td>
+							<td><button class='btn btn-success guardarAsistencia' data-empleado='${emp.id}'>Guardar</button></td>
+						</tr>`;
+						$('#tablaAsistencia').append(row);
+					});
+				});
+			} else {
+				$('#mensaje-error').removeClass('d-none');
+				$('#mensaje-error').text("Por favor, seleccione todas las opciones para buscar."); // Mensaje específico
+				setTimeout(function () {
+				$('#mensaje-error').addClass('d-none');
+				}, 3000);
+
+			}
+		});
+
+					$(document).on('click', '.guardarAsistencia', function () {
+			var empleadoId = $(this).data('empleado');
+			var row = $(this).closest('tr');
+			var fecha = row.find('td:eq(2)').text();
+			var asistencia = row.find('.asistencia').val();
+			var horasTardia = row.find('.horasTardia').val() || null;
+			var horasExtra = row.find('.horasExtra').val() || null;
+			var dia = row.find('td:eq(1)').text();
+			var entrada = row.find('td:eq(3)').text(); // Obtener hora como cadena
+			var salida = row.find('td:eq(4)').text(); // Obtener hora como cadena
+
+			if (fecha && asistencia) {
+				$.post('/Asistencia/GuardarAsistencia', { empleadoId, dia, entrada, salida, fecha, asistencia, horasTardia, horasExtra }, function (response) {
+					if (response.success) {
+					   $('#mensaje-guardado').removeClass('d-none'); // Mostrar la alerta
+					   $('#mensaje-guardado').text("Asistencia guarda exitosamente");
+					   setTimeout(function () {
+					   $('#mensaje-guardado').addClass('d-none'); // Ocultar la alerta después de 3 segundos
+					   }, 3000);
+
 					}
 				});
+			} else {
+				$('#mensaje-error-campos').removeClass('d-none');
+				$('#mensaje-error-campos').text("No se puede guardar, Seleccione la asistencia"); // Mensaje específico
+				setTimeout(function () {
+				$('#mensaje-error-campos').addClass('d-none');
+				}, 3000);
+			}
+		});
+		});
 
-					$('#buscarEmpleados').click(function () {
-				var jefeId = $('#jefeDropdown').val();
-				var tipoHorarioId = $('#horarioDropdown').val();
-				var diaSeleccionado = $('#diasDropdown').val();
-				var fechaAsistencia = $('#fechaAsistencia').val();
-
-				if (jefeId && tipoHorarioId && diaSeleccionado && fechaAsistencia) {
-					$.get('/Asistencia/GetEmpleadosPorJefeYHorario', { jefeId, tipoHorarioId, diaSeleccionado }, function (data) {
-						$('#tablaAsistencia').empty();
-
-						data.forEach(emp => {
-							let row = `<tr>
-								<td>${emp.nombre} ${emp.apellido}</td>
-								<td>${diaSeleccionado}</td>
-								<td>${fechaAsistencia}</td>
-								<td>${emp.horaEntrada || ''}</td>  // Asigna directamente el valor a la celda
-								<td>${emp.horaSalida || ''}</td>   // Asigna directamente el valor a la celda
-								<td><select class='form-control asistencia'>
-										<option value=''>Seleccione</option>
-										<option value='Asistió'>Asistió</option>
-										<option value='No asistió'>No asistió</option>
-										<option value='Tiene permiso'>Tiene permiso</option>
-									</select></td>
-								<td><input type='number' class='form-control horasTardia' min='0' /></td>
-								<td><input type='number' class='form-control horasExtra' min='0' /></td>
-								<td><button class='btn btn-success guardarAsistencia' data-empleado='${emp.id}'>Guardar</button></td>
-							</tr>`;
-							$('#tablaAsistencia').append(row);
-						});
-					});
-				} else {
-					alert("Seleccione todos los campos antes de buscar.");
-				}
-			});
-
-						$(document).on('click', '.guardarAsistencia', function () {
-				var empleadoId = $(this).data('empleado');
-				var row = $(this).closest('tr');
-				var fecha = row.find('td:eq(2)').text();
-				var asistencia = row.find('.asistencia').val();
-				var horasTardia = row.find('.horasTardia').val() || null;
-				var horasExtra = row.find('.horasExtra').val() || null;
-				var dia = row.find('td:eq(1)').text();
-				var entrada = row.find('td:eq(3)').text(); // Obtener hora como cadena
-				var salida = row.find('td:eq(4)').text(); // Obtener hora como cadena
-
-				if (fecha && asistencia) {
-					$.post('/Asistencia/GuardarAsistencia', { empleadoId, dia, entrada, salida, fecha, asistencia, horasTardia, horasExtra }, function (response) {
-						if (response.success) {
-							alert('Asistencia guardada correctamente');
-						}
-					});
-				} else {
-					alert('Por favor, complete todos los campos.');
-				}
-			});
-			});
-
-		</script>
+	</script>
 }
 
