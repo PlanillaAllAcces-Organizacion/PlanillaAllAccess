@@ -37,7 +37,7 @@ public partial class EmpleadoPlanilla
 
     public decimal? TotalDescuentos { get; set; }
 
-    public decimal? LiquidoTotal { get; set; }
+    public decimal LiquidoTotal { get; set; }
 
     public virtual DescuentoPlanilla? DescuentoPlanilla { get; set; }
 

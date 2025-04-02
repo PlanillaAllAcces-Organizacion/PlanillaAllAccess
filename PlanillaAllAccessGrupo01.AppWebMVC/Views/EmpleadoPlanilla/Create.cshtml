@@ -1,0 +1,55 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.EmpleadoPlanilla
+
+@{
+    ViewData["Title"] = "Generar Planilla General de Pago";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <form asp-action="BuscarInformacionEmpleados" method="post" id="planillaForm">
+        @Html.AntiForgeryToken()
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Filtros</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Fecha Inicio*</label>
+                            <input type="date" class="form-control" id="fechaInicio" name="fechaInicio"
+                                   value="@(ViewBag.FechaInicio?.ToString("yyyy-MM-dd") ?? "")" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Fecha Fin*</label>
+                            <input type="date" class="form-control" id="fechaFin" name="fechaFin"
+                                   value="@(ViewBag.FechaFin?.ToString("yyyy-MM-dd") ?? "")" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary mr-2" id="btnBuscar">
+                            <i class="fas fa-search"></i> Buscar Información
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Resumen General -->
+
+
+    <div class="form-group text-right">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver a la Lista
+        </a>
+    </div>
+</div>
+

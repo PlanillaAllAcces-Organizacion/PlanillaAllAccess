@@ -45,7 +45,7 @@ public partial class Empleado
 
     [Display(Name = "Salario Base")]
     [Range(0, double.MaxValue, ErrorMessage = "El salario base debe ser un valor positivo.")]
-    public decimal? SalarioBase { get; set; }
+    public decimal SalarioBase { get; set; }
 
     [Display(Name = "Fecha de contratacion")]
     [Required(ErrorMessage = "La fecha inicial del contrato es obligatoria.")]
