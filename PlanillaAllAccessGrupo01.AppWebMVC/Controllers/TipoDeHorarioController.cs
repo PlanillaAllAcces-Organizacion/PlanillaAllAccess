@@ -6,7 +6,8 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recursos Humanos")]
+
     public class TipoDeHorarioController : Controller
     {
         private readonly PlanillaDbContext _context;

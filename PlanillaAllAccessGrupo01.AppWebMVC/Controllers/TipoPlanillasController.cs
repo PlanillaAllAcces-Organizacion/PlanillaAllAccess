@@ -11,7 +11,7 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
     //Autorización para tener acceso a este apartado de Tipo de Planilla
-    [Authorize]
+    [Authorize(Roles = "Recursos Humanos")]
     public class TipoPlanillasController : Controller
     {
         private readonly PlanillaDbContext _context;

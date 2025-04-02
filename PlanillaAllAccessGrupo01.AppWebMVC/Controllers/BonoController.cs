@@ -10,7 +10,8 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-    [Authorize]
+    //Autorización de acceso al apartado de Bonos
+    [Authorize(Roles = "Recursos Humanos")]
     public class BonoController : Controller
     {
         private readonly PlanillaDbContext _context;

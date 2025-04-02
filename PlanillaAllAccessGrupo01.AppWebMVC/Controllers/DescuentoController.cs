@@ -11,7 +11,7 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
     //Autorización para tener acceso a este apartado de Descuentos
-    [Authorize]
+    [Authorize(Roles = "Recursos Humanos")]
     public class DescuentoController : Controller
     {
         private readonly PlanillaDbContext _context;

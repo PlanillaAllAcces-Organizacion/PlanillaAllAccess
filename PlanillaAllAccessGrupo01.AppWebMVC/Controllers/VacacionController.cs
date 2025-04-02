@@ -11,7 +11,7 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-    [Authorize] // Requiere autenticación para acceder a este controlador
+    [Authorize(Roles = "Recursos Humanos")]    // Requiere autenticación para acceder a este controlador
     public class VacacionController : Controller
     {
         private readonly PlanillaDbContext _context; // Contexto de base de datos
