@@ -13,7 +13,7 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recursos Humanos")]
     public class EmpleadoController : Controller
     {
         private readonly PlanillaDbContext _context;
@@ -487,7 +487,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(empleado);
         }
 
-
+        //Verificar asignación de bonos
         public async Task<IActionResult> VerificarBono(int empleadoId)
         {
             // Buscar la asignación de bono existente para el empleado
@@ -502,8 +502,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return RedirectToAction("Create", "AsignacionBono", new { empleadoId });
         }
 
+        //Verificar Asignación de Descuentos
         public async Task<IActionResult> VerificarDescuento(int empleadoId)
         {
+            // Buscar la asignación de descuento existente para el empleado
             var descuento = await _context.AsignacionDescuentos
                 .FirstOrDefaultAsync(d => d.EmpleadosId == empleadoId);
 

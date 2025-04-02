@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
+    [Authorize(Roles = "Recursos Humanos")]
+
     public class AsignacionDescuentoController : Controller
     {
         private readonly PlanillaDbContext _context;
@@ -45,7 +48,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(asignacionDescuento);
         }
 
-
+        //GET CREATE ASIGNACION DE DESCUENTOS, muestra la infromación y la lista de desucentos al empleado seleccionado
         public IActionResult Create(int? empleadoId)
         {
             if (empleadoId == null)
@@ -66,7 +69,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View();
         }
 
-
+        //POST CREATE ASIGNACION DESCUENTO, funciona para la lógica de guardar los descuentos seleccionados para ese empleado
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int empleadoId, List<int> descuentosSeleccionados)
@@ -93,7 +96,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
-
+        //GET EDIT Permite la visualizacion de datos del empleado y los decuentos que tiene asignados.
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -129,7 +132,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(asignacionDescuento);
         }
 
-
+        //POST EDIT Permite agregar o quitar descuentos y actualizar la lista de descuentos seleccionados
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, List<int> descuentosSeleccionados)
