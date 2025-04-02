@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
+    //Autorización de acceso a asignación de bonos
+    [Authorize(Roles = "Recursos Humanos")]
     public class AsignacionBonoController : Controller
     {
         private readonly PlanillaDbContext _context;
@@ -48,7 +51,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
 
 
-
+        //GET CREATE ASIGNACION DE BONOS, muestra la información y la lista de bonos al empleado seleccionado
         public IActionResult Create(int? empleadoId)
         {
 
@@ -68,6 +71,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return View();
         }
+
+        //POST CREATE ASIGNACION BONO, funciona para la lógica de guardar los bonos seleccionados para ese empleado
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -96,34 +101,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
-
-
-
-        //public IActionResult Create()
-        //{
-        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono");
-        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido");
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,EmpleadosId,BonosId,Estado")] AsignacionBono asignacionBono)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(asignacionBono);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
-        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
-        //    return View(asignacionBono);
-        //}
-
-
-
-
+        //GET EDIT Permite la visualizacion de datos del empleado y los bonos que tiene asignados.
 
         public async Task<IActionResult> Edit(int? id)
         {
@@ -157,6 +135,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return View(asignacionBono);
         }
+
+        //POST EDIT Permite agregar o quitar bonos y actualizar la lista de descuentos seleccionados
 
         // POST: AsignacionBono/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -198,58 +178,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
 
 
-
-
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var asignacionBono = await _context.AsignacionBonos.FindAsync(id);
-        //    if (asignacionBono == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
-        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
-        //    return View(asignacionBono);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadosId,BonosId,Estado")] AsignacionBono asignacionBono)
-        //{
-        //    if (id != asignacionBono.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(asignacionBono);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!AsignacionBonoExists(asignacionBono.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["BonosId"] = new SelectList(_context.Bonos, "Id", "NombreBono", asignacionBono.BonosId);
-        //    ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Apellido", asignacionBono.EmpleadosId);
-        //    return View(asignacionBono);
-        //}
 
 
 
