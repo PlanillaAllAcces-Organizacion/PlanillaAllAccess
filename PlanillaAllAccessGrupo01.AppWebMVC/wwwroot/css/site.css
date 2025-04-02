@@ -50,7 +50,7 @@ body {
 }
 
 /* Estilos para dispositivos móviles */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .contenedor-principal {
         flex-direction: column;
     }
@@ -59,11 +59,11 @@ body {
         width: 100%;
         min-height: auto;
         position: fixed;
-        top: 60px; /* Ajusta la posición para que no se superponga con la barra superior */
-        left: 0;
+        top: 60px;*/ /* Ajusta la posición para que no se superponga con la barra superior */
+        /*left: 0;
         z-index: 1000;
-        display: none; /* Oculta el menú lateral por defecto en móviles */
-    }
+        display: none;*/ /* Oculta el menú lateral por defecto en móviles */
+    /*}
 
     .contenido-principal {
         margin-left: 0;
@@ -72,10 +72,10 @@ body {
     .menu-toggle {
 
     }
-}
+}*/
 
 /* Estilos para el botón de toggle del menú */
-.menu-toggle {
+/*.menu-toggle {
 
     background: none;
     border: none;
@@ -86,23 +86,23 @@ body {
 
 #toggleMenuBtn {
     background-color: rgb(56,60,68);
-    color: white; /* Cambia el color del icono */
-}
+    color: white;*/ /* Cambia el color del icono */
+/*}
 
     #toggleMenuBtn:hover {
-        color: #ccc; /* Cambia el color al pasar el mouse, opcional */
-    }
+        color: #ccc;*/ /* Cambia el color al pasar el mouse, opcional */
+    /*}*/
 
 /*HACER RESPONSIVO*/
 
 /* Asegurarse de que el contenido principal se ajuste dinámicamente */
-.contenido-principal {
+/*.contenido-principal {
     width: 100%;
     overflow-x: auto;
-}
+}*/
 
 /* Ajustar la barra superior para pantallas pequeñas */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .barra-superior {
         flex-wrap: wrap;
         justify-content: center;
@@ -112,10 +112,10 @@ body {
     .menu-toggle-button {
         margin-bottom: 10px;
     }
-}
+}*/
 
 /* Hacer que el menú lateral se oculte en pantallas pequeñas */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     #menuLateral {
         position: absolute;
         z-index: 1000;
@@ -133,62 +133,198 @@ body {
     .menu-lateral ul.nav {
         flex-direction: column;
     }
-}
+}*/
 
 /* Asegurar que el menú lateral sea visible y ajustado en dispositivos pequeños */
-.menu-lateral {
-    position: relative; /* Cambiar a relative para mantenerlo dentro del flujo del diseño */
-    width: 100%; /* Ajustar el ancho a toda la pantalla en móviles */
-    max-width: 250px; /* Mantener un ancho máximo */
-    overflow-y: auto; /* Permitir scroll si el contenido es extenso */
-    background-color: #343a40; /* Color del menú lateral */
-}
+/*.menu-lateral {
+    position: relative;*/ /* Cambiar a relative para mantenerlo dentro del flujo del diseño */
+    /*width: 100%;*/ /* Ajustar el ancho a toda la pantalla en móviles */
+    /*max-width: 250px;*/ /* Mantener un ancho máximo */
+    /*overflow-y: auto;*/ /* Permitir scroll si el contenido es extenso */
+    /*background-color: #343a40;*/ /* Color del menú lateral */
+/*}
 
     .menu-lateral ul.nav {
-        flex-direction: column; /* Asegurar la columna */
-    }
+        flex-direction: column;*/ /* Asegurar la columna */
+    /*}
 
 @media (max-width: 768px) {
     .menu-lateral {
-        position: fixed; /* Posición fija en móviles */
-        width: 80%; /* Usar un ancho del 80% */
-        height: 100%; /* Ocupa toda la altura de la pantalla */
-        left: 0; /* Fijar al lado izquierdo */
-        z-index: 1050; /* Asegurar que esté por encima de otros elementos */
-    }
+        position: fixed;*/ /* Posición fija en móviles */
+        /*width: 80%;*/ /* Usar un ancho del 80% */
+        /*height: 100%;*/ /* Ocupa toda la altura de la pantalla */
+        /*left: 0;*/ /* Fijar al lado izquierdo */
+        /*z-index: 1050;*/ /* Asegurar que esté por encima de otros elementos */
+    /*}
 
     .contenido-principal {
-        margin-left: 80%; /* Dejar espacio para el menú lateral */
-    }
-}
+        margin-left: 80%;*/ /* Dejar espacio para el menú lateral */
+    /*}
+}*/
 
 /* Ajustar la barra superior para pantallas pequeñas */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .barra-superior {
-        flex-wrap: wrap; /* Permite que los elementos se ajusten */
-        justify-content: center; /* Centra los elementos */
-        text-align: center; /* Asegura buena presentación en pantallas pequeñas */
-    }
+        flex-wrap: wrap;*/ /* Permite que los elementos se ajusten */
+        /*justify-content: center;*/ /* Centra los elementos */
+        /*text-align: center;*/ /* Asegura buena presentación en pantallas pequeñas */
+    /*}
 
         .barra-superior nav {
-            margin-top: 10px; /* Separar navegación en pantallas pequeñas */
-        }
+            margin-top: 10px;*/ /* Separar navegación en pantallas pequeñas */
+        /*}
 
     .menu-toggle-button {
-        margin-bottom: 10px; /* Asegura espacio alrededor del botón */
-    }
-}
+        margin-bottom: 10px;*/ /* Asegura espacio alrededor del botón */
+    /*}
+}*/
 
 /* Contenido principal responsivo */
-.contenido-principal {
-    flex-grow: 1; /* Asegurar que tome el espacio disponible */
-    padding: 10px; /* Añadir espacio alrededor */
-    overflow-x: auto; /* Permitir desplazamiento horizontal si es necesario */
+/*.contenido-principal {
+    flex-grow: 1;*/ /* Asegurar que tome el espacio disponible */
+    /*padding: 10px;*/ /* Añadir espacio alrededor */
+    /*overflow-x: auto;*/ /* Permitir desplazamiento horizontal si es necesario */
+/*}
+
+@media (max-width: 768px) {
+    .contenido-principal {
+        width: 100%;*/ /* Ocupa todo el ancho en dispositivos pequeños */
+        /*margin: 0;*/ /* Elimina márgenes innecesarios en pantallas pequeñas */
+    /*}
+}*/
+
+/* Estilos generales para el menú lateral */
+/*.menu-lateral {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;*/ /* Ancho estándar */
+    /*height: 100%;
+    overflow-y: auto;*/ /* Permitir scroll si el contenido es extenso */
+    /*background-color: #343a40;*/ /* Mantener el color de fondo */
+    /*z-index: 1050;
+    transition: transform 0.3s ease-in-out;
+}*/
+
+
+/*----------------------------------------------------------------------------------------------*/
+
+
+/* Menú lateral */
+/*.menu-lateral {
+    position: fixed;*/ /* Fijarlo a la izquierda */
+    /*top: 60px;*/ /* Asegurarlo debajo de la barra superior */
+    /*left: 0;
+    width: 250px;*/ /* Ancho estándar del menú */
+    /*height: calc(100% - 60px);*/ /* Ajusta la altura para evitar la barra superior */
+    /*background-color: #343a40;*/ /* Fondo oscuro */
+    /*overflow-y: auto;*/ /* Permitir scroll si el contenido es extenso */
+    /*z-index: 1000;*/ /* Debajo de la barra superior */
+    /*transform: translateX(-100%);*/ /* Oculto por defecto en móviles */
+    /*transition: transform 0.3s ease-in-out;*/ /* Animación para mostrar/ocultar */
+/*}
+
+    .menu-lateral.menu-visible {
+        transform: translateX(0);*/ /* Mostrar el menú lateral */
+    /*}*/
+
+/* Barra superior */
+/*.barra-superior {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;*/ /* Altura fija */
+    /*background-color: #343a40;
+    z-index: 1100;*/ /* Por encima del menú lateral */
+    /*display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}*/
+
+/* Ajustar el contenido principal */
+/*.contenido-principal {
+    margin-top: 60px;*/ /* Espacio para la barra superior */
+    /*margin-left: 250px;*/ /* Espacio para el menú lateral en pantallas grandes */
+    /*transition: margin-left 0.3s ease-in-out;
 }
 
 @media (max-width: 768px) {
     .contenido-principal {
-        width: 100%; /* Ocupa todo el ancho en dispositivos pequeños */
-        margin: 0; /* Elimina márgenes innecesarios en pantallas pequeñas */
+        margin-left: 0;*/ /* Sin margen cuando el menú está oculto */
+    /*}
+
+    .menu-lateral {
+        width: 80%;*/ /* Menú más estrecho en pantallas pequeñas */
+    /*}
+}*/
+
+/* Estilos generales para el menú lateral */
+.menu-lateral {
+    position: fixed; /* Fijarlo a la izquierda */
+    top: 60px; /* Asegurarlo debajo de la barra superior */
+    left: 0;
+    width: 250px; /* Ancho estándar */
+    height: calc(100% - 60px); /* Ajusta la altura para evitar la barra superior */
+    background-color: #343a40; /* Fondo oscuro */
+    overflow-y: auto; /* Permitir scroll si el contenido es extenso */
+    z-index: 1000; /* Debajo de la barra superior */
+    transform: translateX(-100%); /* Oculto por defecto en móviles */
+    transition: transform 0.3s ease-in-out; /* Animación para mostrar/ocultar */
+}
+
+    .menu-lateral.menu-visible {
+        transform: translateX(0); /* Mostrar el menú lateral */
+    }
+
+/* Barra superior */
+.barra-superior {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px; /* Altura fija */
+    background-color: #343a40;
+    z-index: 1100; /* Por encima del menú lateral */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}
+
+/* Ajustar el contenido principal */
+.contenido-principal {
+    margin-top: 60px; /* Espacio para la barra superior */
+    margin-left: 250px; /* Espacio para el menú lateral en pantallas grandes */
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Para dispositivos móviles */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        flex-direction: column; /* Columnas en pantallas pequeñas */
+    }
+
+    .menu-lateral {
+        width: 80%; /* Menú más estrecho en pantallas pequeñas */
+    }
+
+    .contenido-principal {
+        margin-left: 0; /* Sin margen cuando el menú está oculto */
     }
 }
+
+/* Estilos para el botón de toggle del menú */
+#toggleMenuBtn {
+    background-color: rgb(56, 60, 68);
+    color: white; /* Cambia el color del icono */
+    font-size: 1.5em;
+    border: none;
+    cursor: pointer;
+    z-index: 1100; /* Asegurar que esté por encima del menú lateral */
+}
+
+    #toggleMenuBtn:hover {
+        color: #ccc; /* Cambia el color al pasar el mouse, opcional */
+    }
