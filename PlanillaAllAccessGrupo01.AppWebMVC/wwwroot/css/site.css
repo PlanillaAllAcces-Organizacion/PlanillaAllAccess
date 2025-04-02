@@ -83,3 +83,12 @@ body {
     font-size: 1.5em;
     cursor: pointer;
 }
+
+#toggleMenuBtn {
+    background-color: rgb(56,60,68);
+    color: white; /* Cambia el color del icono */
+}
+
+    #toggleMenuBtn:hover {
+        color: #ccc; /* Cambia el color al pasar el mouse, opcional */
+    }
