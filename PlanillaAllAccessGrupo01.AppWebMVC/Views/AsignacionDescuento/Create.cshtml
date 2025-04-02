@@ -4,6 +4,8 @@
     ViewData["Title"] = "Asignar Descuento";
 }
 
+<!--Esta vista funciona para asignar descuentos al empleado-->
+
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-danger text-white">
@@ -13,6 +15,7 @@
             <div class="mb-3">
                 <h5 class="text-secondary">Detalles del Empleado</h5>
                 <ul class="list-group">
+                    <!--Traerá la información del empleado-->
                     <li class="list-group-item"><strong>Nombre:</strong> @ViewBag.EmpleadoNombre</li>
                     <li class="list-group-item"><strong>DUI:</strong> @ViewBag.EmpleadoDUI</li>
                     <li class="list-group-item"><strong>Puesto de Trabajo:</strong> @ViewBag.EmpleadoPuesto</li>
@@ -27,6 +30,7 @@
                 </div>
             }
 
+           <!--Permitirá la selección de descuentos para el empleado-->
             <form asp-action="Create" method="post">
                 <input type="hidden" name="empleadoId" value="@ViewBag.EmpleadoId" />
 
@@ -82,33 +86,4 @@
 </div>
 
 
-@* <h1>Create</h1>
 
-<h4>AsignacionDescuento</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EmpleadosId" class="control-label"></label>
-                <select asp-for="EmpleadosId" class ="form-control" asp-items="ViewBag.EmpleadosId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DescuentosId" class="control-label"></label>
-                <select asp-for="DescuentosId" class ="form-control" asp-items="ViewBag.DescuentosId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-} *@
