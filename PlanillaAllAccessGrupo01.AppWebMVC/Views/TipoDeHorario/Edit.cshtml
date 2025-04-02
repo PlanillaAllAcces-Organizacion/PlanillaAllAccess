@@ -74,15 +74,14 @@
                                     <div class="form-group">
                                         <label class="form-label fw-bold">Hora Entrada</label>
                                         <input type="time" name="Horarios[@i].HorasEntrada"
-                                               value="@horario.HorasEntrada.ToString("HH:mm")"
+                                               value="@horario.HorasEntrada.ToString(@"hh\:mm")"
                                                class="form-control text-center" required />
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-1">
                                     <div class="form-group">
-                                        <label class="form-label fw-bold">Hora Salida</label>
                                         <input type="time" name="Horarios[@i].HorasSalida"
-                                               value="@horario.HorasSalida.ToString("HH:mm")"
+                                               value="@horario.HorasSalida.ToString(@"hh\:mm")"
                                                class="form-control text-center" required />
                                     </div>
                                 </div>

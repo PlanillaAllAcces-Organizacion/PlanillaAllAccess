@@ -11,9 +11,9 @@ public partial class ControlAsistencium
 
     public string Dia { get; set; } = null!;
 
-    public TimeOnly Entrada { get; set; }
+    public TimeSpan Entrada { get; set; }
 
-    public TimeOnly Salida { get; set; }
+    public TimeSpan Salida { get; set; }
 
     public DateOnly Fecha { get; set; }
 

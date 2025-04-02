@@ -27,12 +27,12 @@ public partial class Horario
     [Required(ErrorMessage = "La Hora de Entrada es obligatoria.")]
     [Display(Name = "Hora de Entrada")]
 
-    public TimeOnly HorasEntrada { get; set; }
+    public TimeSpan HorasEntrada { get; set; }
 
 
     [Required(ErrorMessage = "La Hora de Salida es obligatoria.")]
     [Display(Name = "Hora de Salida")]
-    public TimeOnly HorasSalida { get; set; }
+    public TimeSpan HorasSalida { get; set; }
 
     public virtual TipodeHorario? TipoDeHorario { get; set; } = null!;
 }
