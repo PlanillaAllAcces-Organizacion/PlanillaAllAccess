@@ -131,7 +131,59 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return Json(new { success = true });
         }
 
+
+        public IActionResult VistaListaAsistencia()
+        {
+
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BuscarAsistencia(DateTime fechaInicio, DateTime fechaFin, string? nombre = null)
+        {
+            var query = _context.ControlAsistencia
+                .Include(a => a.Empleados)
+                .Where(a => a.Fecha >= DateOnly.FromDateTime(fechaInicio) && a.Fecha <= DateOnly.FromDateTime(fechaFin));
+
+            if (!string.IsNullOrEmpty(nombre))
+            {
+                query = query.Where(a => (a.Empleados.Nombre + " " + a.Empleados.Apellido).Contains(nombre));
+            }
+
+            var asistencias = await query
+                .Select(a => new
+                {
+                    a.Id,
+                    NombreEmpleado = a.Empleados.Nombre + " " + a.Empleados.Apellido,
+                    a.Fecha,
+                    a.Asistencia,
+                    a.HoraTardia,
+                    a.HorasExtra
+                })
+                .ToListAsync();
+
+            return Json(asistencias);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModificarAsistencia(int id, string asistencia, int? horasTardia, int? horasExtra)
+        {
+            var registro = await _context.ControlAsistencia.FindAsync(id);
+            if (registro == null)
+            {
+                return Json(new { success = false, message = "Registro no encontrado" });
+            }
+
+            registro.Asistencia = asistencia;
+            registro.HoraTardia = horasTardia;
+            registro.HorasExtra = horasExtra;
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true });
+        }
     }
 
+
 }
+
 
