@@ -1,0 +1,96 @@
+﻿
+<h1 class="text-center text-primary mb-4">Asistencia</h1>
+
+<div class="card shadow-lg">
+    <div class="card-body bg-light">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nombre del Empleado:</label>
+                <input type="text" id="nombreEmpleado" class="form-control" placeholder="Ingrese el nombre" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Fecha Inicio:</label>
+                <input type="date" id="fechaInicio" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Fecha Fin:</label>
+                <input type="date" id="fechaFin" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-between mt-3">
+            <button id="buscarAsistencia" class="btn btn-primary">Buscar Asistencia</button>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark text-center align-middle">
+            <tr>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Asistencia</th>
+                <th>Horas Tardía</th>
+                <th>Horas Extra</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaAsistencia">
+            <!-- Datos se llenarán dinámicamente con AJAX -->
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+             $(document).ready(function () {
+                 $('#buscarAsistencia').click(function () {
+                     var nombreEmpleado = $('#nombreEmpleado').val();
+                     var fechaInicio = $('#fechaInicio').val();
+                     var fechaFin = $('#fechaFin').val();
+
+                     if (nombreEmpleado && fechaInicio && fechaFin) {
+                         $.get('/Asistencia/BuscarAsistencia', { nombreEmpleado, fechaInicio, fechaFin }, function (data) {
+                             $('#tablaAsistencia').empty();
+                             data.forEach(emp => {
+                                 let row = `<tr>
+                                     <td>${emp.nombreEmpleado}</td>
+                                     <td>${emp.fecha}</td>
+                                     <td><select class='form-control asistencia'>
+                                         <option value='Asistió' ${emp.asistencia === "Asistió" ? "selected" : ""}>Asistió</option>
+                                         <option value='No asistió' ${emp.asistencia === "No asistió" ? "selected" : ""}>No asistió</option>
+                                         <option value='Tiene permiso' ${emp.asistencia === "Tiene permiso" ? "selected" : ""}>Tiene permiso</option>
+                                     </select></td>
+                                     <td><input type='number' class='form-control horasTardia' value='${emp.horasTardia || 0}' min='0' /></td>
+                                     <td><input type='number' class='form-control horasExtra' value='${emp.horasExtra || 0}' min='0' /></td>
+                                     <td><button class='btn btn-success actualizarAsistencia' data-empleado='${emp.id}'>Actualizar</button></td>
+                                 </tr>`;
+                                 $('#tablaAsistencia').append(row);
+                             });
+                         });
+                     } else {
+                         alert("Ingrese todos los campos para la búsqueda.");
+                     }
+                 });
+
+                             $(document).on('click', '.actualizarAsistencia', function () {
+                 var row = $(this).closest('tr');
+                 var id = $(this).data('empleado'); // Cambiado a data-empleado para que coincida con el HTML
+                 var asistencia = row.find('.asistencia').val();
+                 var horasTardia = row.find('.horasTardia').val() || 0;
+                 var horasExtra = row.find('.horasExtra').val() || 0;
+
+                 $.post('/Asistencia/ModificarAsistencia', { id, asistencia, horasTardia, horasExtra }, function (response) {
+                     if (response.success) {
+                         alert('Asistencia actualizada correctamente');
+                     } else {
+                         alert('Error: ' + response.message);
+                     }
+                 });
+             });
+
+        });
+    </script>
+}
+
