@@ -99,6 +99,39 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> GuardarAsistencia(int empleadoId, string dia, TimeSpan entrada, TimeSpan salida, DateTime fecha, string asistencia, int? horasTardia, int? horasExtra)
+        {
+            var registro = await _context.ControlAsistencia
+                .FirstOrDefaultAsync(a => a.EmpleadosId == empleadoId && a.Fecha == DateOnly.FromDateTime(fecha));
+
+            if (registro == null)
+            {
+                registro = new ControlAsistencium
+                {
+                    EmpleadosId = empleadoId,
+                    Dia = dia,
+                    Entrada = entrada,
+                    Salida = salida,
+                    Fecha = DateOnly.FromDateTime(fecha),
+                    Asistencia = asistencia,
+                    HoraTardia = horasTardia,
+                    HorasExtra = horasExtra
+                };
+                _context.ControlAsistencia.Add(registro);
+            }
+            else
+            {
+                registro.Asistencia = asistencia;
+                registro.HoraTardia = horasTardia;
+                registro.HorasExtra = horasExtra;
+            }
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true });
+        }
 
     }
+
 }
+
