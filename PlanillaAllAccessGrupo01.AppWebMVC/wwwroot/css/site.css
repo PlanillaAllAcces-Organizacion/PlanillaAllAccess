@@ -20,10 +20,6 @@ body {
         color: #383c44;
     }
 
-.contenedor-principal {
-    display: flex;
-    flex: 1;
-}
 
 .menu-lateral {
     width: 280px;
@@ -38,7 +34,7 @@ body {
 
 .contenido-principal {
     flex: 1;
-    padding: 20px;
+    padding: 100px;
 }
 
 .menu-lateral .nav-link.active {
@@ -294,10 +290,18 @@ body {
 }
 
 /* Ajustar el contenido principal */
+/* Ajustar contenido cuando el menú está visible */
 .contenido-principal {
-    margin-top: 60px; /* Espacio para la barra superior */
-    margin-left: 250px; /* Espacio para el menú lateral en pantallas grandes */
-    transition: margin-left 0.3s ease-in-out;
+    margin-left: 250px; /* Espacio para el menú lateral */
+    width: calc(100% - 250px); /* Ajustar ancho */
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+/* Ajustar cuando el menú está oculto */
+.menu-lateral.d-none + .contenido-principal,
+.menu-lateral:not(.menu-visible) + .contenido-principal {
+    margin-left: 0;
+    width: 100%;
 }
 
 /* Para dispositivos móviles */
@@ -328,3 +332,4 @@ body {
     #toggleMenuBtn:hover {
         color: #ccc; /* Cambia el color al pasar el mouse, opcional */
     }
+    

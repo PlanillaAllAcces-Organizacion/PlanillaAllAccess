@@ -120,14 +120,25 @@
 
 	@*Codigo para que funcione el menu lateral por medio del boton*@
 	<script>
-				const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+		const toggleMenuBtn = document.getElementById('toggleMenuBtn');
 		const menuLateral = document.getElementById('menuLateral');
+		const contenidoPrincipal = document.querySelector('.contenido-principal');
 
 		// Alternar visibilidad del menú lateral
 		toggleMenuBtn.addEventListener('click', () => {
 			menuLateral.classList.toggle('menu-visible'); // Mostrar u ocultar el menú
 		});
+
+		// Asegurar que en pantallas grandes, el menú no se oculte permanentemente
+		window.addEventListener('resize', () => {
+			if (window.innerWidth > 768) {
+				menuLateral.classList.remove('d-none');
+				contenidoPrincipal.classList.remove('full-width');
+			}
+		});
 	</script>
+
+
 
 
 	@* <script>
