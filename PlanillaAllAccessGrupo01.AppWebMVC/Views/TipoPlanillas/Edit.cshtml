@@ -30,7 +30,7 @@
 
                 <!-- Campo para ingresar/modificar el nombre del tipo de planilla -->
                 <div class="mb-3">
-                    <label asp-for="NombreTipo" class="form-label fw-bold">Nombre del Tipo de Planilla</label>
+                    <label asp-for="NombreTipo" class="form-label fw-bold required">Nombre del Tipo de Planilla</label>
                     <input asp-for="NombreTipo" class="form-control" placeholder="Ingrese el nombre del tipo de planilla" />
                     <!-- Mensaje de error si el campo no es válido -->
                     <span asp-validation-for="NombreTipo" class="text-danger"></span>

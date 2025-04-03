@@ -21,7 +21,7 @@
 
                 <div class="mb-3">
                     @* Etiqueta para el campo NombrePuesto. *@
-                    <label asp-for="NombrePuesto" class="form-label fw-bold"></label>
+                    <label asp-for="NombrePuesto" class="form-label fw-bold required"></label>
                     @* Campo de entrada para el nombre del puesto. *@
                     <input asp-for="NombrePuesto" class="form-control" placeholder="Ingrese el nombre del puesto" />
                     @* Muestra el error de validación para el campo NombrePuesto. *@
@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo SalarioBase. *@
-                        <label asp-for="SalarioBase" class="form-label fw-bold"></label>
+                        <label asp-for="SalarioBase" class="form-label fw-bold required"></label>
                         @* Campo de entrada numérico para el salario base. *@
                         <input asp-for="SalarioBase" class="form-control" type="number" placeholder="Ingrese el salario base" />
                         @* Muestra el error de validación para el campo SalarioBase. *@
@@ -39,7 +39,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo ValorxHora. *@
-                        <label asp-for="ValorxHora" class="form-label fw-bold"></label>
+                        <label asp-for="ValorxHora" class="form-label fw-bold required"></label>
                         @* Campo de entrada numérico para el valor por hora. *@
                         <input asp-for="ValorxHora" class="form-control" type="number" placeholder="Ingrese el valor por hora" />
                         @* Muestra el error de validación para el campo ValorxHora. *@
@@ -50,7 +50,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo ValorExtra. *@
-                        <label asp-for="ValorExtra" class="form-label fw-bold"></label>
+                        <label asp-for="ValorExtra" class="form-label fw-bold required"></label>
                         @* Campo de entrada numérico para el valor extra. *@
                         <input asp-for="ValorExtra" class="form-control" type="number" placeholder="Ingrese el valor extra" />
                         @* Muestra el error de validación para el campo ValorExtra. *@
@@ -58,7 +58,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo Estado. *@
-                        <label asp-for="Estado" class="form-label fw-bold"></label>
+                        <label asp-for="Estado" class="form-label fw-bold required"></label>
                         @* Menú desplegable para seleccionar el estado del puesto. *@
                         <select asp-for="Estado" class="form-control" asp-items="ViewBag.Estados">
                             <option value="">Seleccione un estado</option>
