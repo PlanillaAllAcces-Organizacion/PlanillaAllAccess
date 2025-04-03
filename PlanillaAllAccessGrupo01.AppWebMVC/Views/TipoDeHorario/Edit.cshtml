@@ -51,7 +51,7 @@
                                       - El formato del name permite el model binding automático con ASP.NET Core
                                     -->
                                     <div class="form-group">
-                                        <label class="form-label fw-bold">Día</label>
+                                        <label class="form-label fw-bold required">Día</label>
 
                                         <!-- Nombre estructurado para binding con colección -->
                                         <!-- Valor actual del día (ej: "Lunes", "Martes") -->
@@ -65,14 +65,14 @@
                                 </div>
                                 <div class="col-md-2 mb-1">
                                     <div class="form-group">
-                                        <label class="form-label fw-bold">Horas XDía</label>
+                                        <label class="form-label fw-bold required">Horas XDía</label>
                                         <input name="Horarios[@i].HorasxDia" value="@horario.HorasxDia"
                                                class="form-control text-center" required />
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-1">
                                     <div class="form-group">
-                                        <label class="form-label fw-bold">Hora Entrada</label>
+                                        <label class="form-label fw-bold required">Hora Entrada</label>
                                         <input type="time" name="Horarios[@i].HorasEntrada"
                                                value="@horario.HorasEntrada.ToString(@"hh\:mm")"
                                                class="form-control text-center" required />
@@ -80,6 +80,7 @@
                                 </div>
                                 <div class="col-md-3 mb-1">
                                     <div class="form-group">
+                                        <label class="form-label fw-bold required">Hora Salida</label>
                                         <input type="time" name="Horarios[@i].HorasSalida"
                                                value="@horario.HorasSalida.ToString(@"hh\:mm")"
                                                class="form-control text-center" required />
