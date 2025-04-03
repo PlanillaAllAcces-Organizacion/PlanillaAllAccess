@@ -5,12 +5,11 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-
-    public class EmpleadoPlanillaController : Controller
+    public class EmpleadoPlanillaQuincenalController : Controller
     {
         private readonly PlanillaDbContext _context;
 
-        public EmpleadoPlanillaController(PlanillaDbContext context)
+        public EmpleadoPlanillaQuincenalController(PlanillaDbContext context)
         {
             _context = context;
         }
@@ -21,6 +20,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             var planillas = await _context.EmpleadoPlanillas
                 .Include(e => e.Empleados)
                 .Include(e => e.Planilla)
+                .Where(p => p.Planilla.TipoPlanillaId == 2) // Filtro para planillas quincenales
                 .AsNoTracking()
                 .ToListAsync();
             return View(planillas);
@@ -129,11 +129,11 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
         #endregion
 
-        #region Generación de Planillas
+        #region Generación de Planillas Quincenales
         [HttpPost]
         public async Task<IActionResult> BuscarInformacionEmpleados(DateTime fechaInicio, DateTime fechaFin)
         {
-            if (!ValidarFechas(fechaInicio, fechaFin))
+            if (!ValidarFechasQuincenales(fechaInicio, fechaFin))
             {
                 CargarListasDesplegables();
                 return View("Create");
@@ -157,7 +157,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerarPlanillaGeneral(DateTime fechaInicio, DateTime fechaFin)
         {
-            if (!ValidarFechas(fechaInicio, fechaFin, true))
+            if (!ValidarFechasQuincenales(fechaInicio, fechaFin, true))
                 return RedirectToAction(nameof(Create));
 
             var empleados = await ObtenerEmpleadosConAsistencias(fechaInicio, fechaFin);
@@ -170,7 +170,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             var planilla = new Planilla
             {
                 NombrePlanilla = $"Planilla {fechaInicio:MM}",
-                TipoPlanillaId = 1,
+                TipoPlanillaId = 2, // ID para planilla quincenal
                 FechaInicio = fechaInicio,
                 FechaFin = fechaFin,
                 Autorizacion = 0
@@ -189,7 +189,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             planilla.TotalPago = totalGeneral;
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = $"Planilla generada exitosamente. Total: {totalGeneral:C}";
+            TempData["SuccessMessage"] = $"Planilla quincenal generada exitosamente. Total: {totalGeneral:C}";
             return RedirectToAction(nameof(Index), new { id = planilla.Id });
         }
         #endregion
@@ -198,20 +198,35 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         private void CargarListasDesplegables()
         {
             ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre");
-            ViewData["PlanillaId"] = new SelectList(_context.Planillas, "Id", "NombrePlanilla");
+            ViewData["PlanillaId"] = new SelectList(_context.Planillas.Where(p => p.TipoPlanillaId == 2), "Id", "NombrePlanilla");
         }
 
-        private bool ValidarFechas(DateTime fechaInicio, DateTime fechaFin, bool usarTempData = false)
+        private bool ValidarFechasQuincenales(DateTime fechaInicio, DateTime fechaFin, bool usarTempData = false)
         {
-            if (fechaFin >= fechaInicio) return true;
+            // Validación básica de rango
+            if (fechaFin < fechaInicio)
+            {
+                var mensaje = "La fecha fin debe ser mayor o igual a la fecha inicio";
+                if (usarTempData)
+                    TempData["ErrorMessage"] = mensaje;
+                else
+                    ModelState.AddModelError("fechaFin", mensaje);
+                return false;
+            }
 
-            var mensaje = "La fecha fin debe ser mayor o igual a la fecha inicio";
-            if (usarTempData)
-                TempData["ErrorMessage"] = mensaje;
-            else
-                ModelState.AddModelError("fechaFin", mensaje);
+            // Validación de quincena (15 días exactos)
+            var dias = (fechaFin - fechaInicio).Days + 1;
+            if (dias != 15)
+            {
+                var mensaje = "El período quincenal debe ser exactamente de 15 días";
+                if (usarTempData)
+                    TempData["ErrorMessage"] = mensaje;
+                else
+                    ModelState.AddModelError("fechaFin", mensaje);
+                return false;
+            }
 
-            return false;
+            return true;
         }
 
         private async Task<List<Empleado>> ObtenerEmpleadosConAsistencias(DateTime fechaInicio, DateTime fechaFin)
@@ -220,7 +235,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             var fechaFinDate = DateOnly.FromDateTime(fechaFin);
 
             return await _context.Empleados
-                .Where(e => e.Estado == 1 && e.TipoPlanillaId == 1) // Filtro por tipo de planilla mensual
+                .Where(e => e.Estado == 1 && e.TipoPlanillaId == 2) // Filtro por tipo de planilla quincenal
                 .Include(e => e.PuestoTrabajo)
                 .Include(e => e.AsignacionBonos.Where(ab => ab.Estado == 1))
                     .ThenInclude(ab => ab.Bonos)
@@ -243,11 +258,11 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 var (totalBonos, totalDescuentos) = CalcularBeneficios(empleado, minutosTardias);
                 var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado);
 
-                // Cálculos monetarios
-                decimal valorHoraNormal = empleado.SalarioBase / 30m / 8m;
+                // Cálculos monetarios (ajustados para quincena)
+                decimal valorHoraNormal = empleado.SalarioBase / 15m / 8m;
                 decimal totalPagoHorasExtra = horasExtras * valorHoraNormal * 1.5m;
-                decimal horasTardias = minutosTardias / 60m;
-                decimal subtotal = empleado.SalarioBase + totalPagoHorasExtra + pagoVacaciones + totalBonos;
+                decimal horasTardias = minutosTardias / 60m; // Convertimos a horas para mostrar
+                decimal subtotal = (empleado.SalarioBase / 2) + totalPagoHorasExtra + pagoVacaciones + totalBonos;
                 decimal salarioNeto = subtotal - totalDescuentos;
 
                 return new
@@ -255,7 +270,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                     EmpleadoId = empleado.Id,
                     Nombre = empleado.Nombre,
                     PuestoTrabajo = empleado.PuestoTrabajo?.NombrePuesto,
-                    SalarioBase = empleado.SalarioBase,
+                    SalarioBase = empleado.SalarioBase / 2,
                     TotalBonos = totalBonos,
                     TotalDescuentos = totalDescuentos,
                     DiasVacaciones = diasVacaciones,
@@ -263,40 +278,33 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                     HorasExtras = horasExtras,
                     TotalPagoHorasExtra = totalPagoHorasExtra,
                     HorasTardias = horasTardias,
+                    MinutosTardias = minutosTardias, // Mantenemos los minutos para referencia
                     PagoVacaciones = pagoVacaciones,
                     SubTotal = subtotal,
-                    SalarioNeto = salarioNeto,
-                    Asistencias = asistencias.Select(a => new
-                    {
-                        Fecha = a.Fecha.ToString("dd/MM/yyyy"),
-                        Entrada = a.Entrada.ToString(@"hh\:mm"),
-                        Salida = a.Salida.ToString(@"hh\:mm"),
-                        Estado = a.Asistencia
-                    })
+                    SalarioNeto = salarioNeto
                 };
             }).ToList<object>();
         }
 
-        private (int DiasTrabajados, decimal HorasExtras, int HorasTardias, decimal HorasTrabajadas) CalcularResumenAsistencias(ICollection<ControlAsistencium> asistencias)
+        private (int DiasTrabajados, decimal HorasExtras, int MinutosTardias, decimal HorasTrabajadas) CalcularResumenAsistencias(ICollection<ControlAsistencium> asistencias)
         {
-            int dias = 0, horasTardias = 0;
+            int dias = 0, minutosTardias = 0;
             decimal horasExtras = 0, horasTrabajadasTotales = 0;
             var jornadaNormal = TimeSpan.FromHours(8);
 
-            foreach (var asistencia in asistencias.Where(a => a.Asistencia == "Asistió"))
+            foreach (var asistencia in asistencias.Where(a => a.Asistencia == "Presente"))
             {
                 dias++;
 
-                // Sumar directamente las horas tardías registradas
+                // Sumar minutos de tardanza directamente (como en el controlador original)
                 if (asistencia.HoraTardia.HasValue)
                 {
-                    horasTardias += asistencia.HoraTardia.Value; // Se guarda tal cual en horas
+                    minutosTardias += asistencia.HoraTardia.Value;
                 }
 
-                // Cálculo de horas trabajadas (considerando horario de almuerzo)
+                // Resto del cálculo permanece igual
                 var horasTrabajadas = asistencia.Salida - asistencia.Entrada;
 
-                // Descontar 1 hora de almuerzo si trabajó más de 5 horas
                 if (horasTrabajadas > TimeSpan.FromHours(5))
                 {
                     horasTrabajadas -= TimeSpan.FromHours(1);
@@ -304,7 +312,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
                 horasTrabajadasTotales += (decimal)horasTrabajadas.TotalHours;
 
-                // Cálculo de horas extra
                 if (asistencia.HorasExtra.HasValue && asistencia.HorasExtra > 0)
                 {
                     horasExtras += asistencia.HorasExtra.Value;
@@ -315,21 +322,21 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 }
             }
 
-            return (dias, horasExtras, horasTardias, horasTrabajadasTotales);
+            return (dias, horasExtras, minutosTardias, horasTrabajadasTotales);
         }
+
 
         private async Task<EmpleadoPlanilla> GenerarDetallePlanilla(Empleado empleado, int planillaId, DateTime fechaInicio, DateTime fechaFin)
         {
             var asistencias = empleado.ControlAsistencia;
-            var (diasTrabajados, horasExtras, horasTardias, horasTrabajadasTotales) = CalcularResumenAsistencias(asistencias);
+            var (diasTrabajados, horasExtras, minutosTardias, horasTrabajadasTotales) = CalcularResumenAsistencias(asistencias);
 
-            // Convertir horas tardías a minutos para el cálculo de descuentos
-            var minutosTardias = (int)(horasTardias * 60);
+            // Usamos los minutosTardias directamente para el cálculo de descuentos
             var (totalBonos, totalDescuentos) = CalcularBeneficios(empleado, minutosTardias);
-            // Resto del cálculo se mantiene igual
 
-            decimal valorHora = empleado.PuestoTrabajo?.ValorxHora ?? empleado.SalarioBase / 30m / 8m;
-            decimal salarioBaseCalculado = horasTrabajadasTotales * valorHora;
+            // Cálculos ajustados para quincena
+            decimal valorHora = empleado.PuestoTrabajo?.ValorxHora ?? empleado.SalarioBase / 15m / 8m;
+            decimal salarioBaseCalculado = (empleado.SalarioBase / 2); // Mitad del salario mensual
             decimal totalPagoHorasExtra = horasExtras * valorHora * 1.5m;
             decimal subtotal = salarioBaseCalculado + totalPagoHorasExtra + totalBonos;
             decimal salarioNeto = subtotal - totalDescuentos;
@@ -341,7 +348,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 SueldoBase = salarioBaseCalculado,
                 TotalDiasTrabajados = diasTrabajados,
                 TotalHorasExtra = (int)horasExtras,
-                TotalHorasTardias = horasTardias, // Se guarda en horas tal como viene
+                TotalHorasTardias = minutosTardias, // Guardamos los minutos directamente como en el original
                 TotalHorasTrabajadas = (int)horasTrabajadasTotales,
                 ValorDeHorasExtra = valorHora * 1.5m,
                 TotalPagoHorasExtra = totalPagoHorasExtra,
@@ -356,9 +363,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return empleadoPlanilla;
         }
 
+
         private (decimal TotalBonos, decimal TotalDescuentos) CalcularBeneficios(Empleado empleado, int minutosTardias)
         {
-            decimal valorMinuto = empleado.SalarioBase / 30m / 8m / 60m;
+            decimal valorMinuto = empleado.SalarioBase / 15m / 8m / 60m; // Ajustado para quincena
             decimal bonos = 0, descuentos = 0;
 
             // Cálculo de bonos activos
@@ -368,12 +376,11 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
                 if (bono.Operacion == 1) // Bono con operación fija
                 {
-                    bonos += bono.Valor; // Se suma directamente el valor fijo
+                    bonos += bono.Valor;
                 }
                 else // Bono con operación no fija (porcentaje)
                 {
-                    // Se calcula el porcentaje del salario base y se suma ese valor
-                    bonos += empleado.SalarioBase * (bono.Valor / 100m);
+                    bonos += (empleado.SalarioBase / 2) * (bono.Valor / 100m); // Mitad del salario mensual
                 }
             }
 
@@ -384,12 +391,11 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
                 if (descuento.Operacion == 1) // Descuento con operación fija
                 {
-                    descuentos += descuento.Valor; // Se resta directamente el valor fijo
+                    descuentos += descuento.Valor;
                 }
                 else // Descuento con operación no fija (porcentaje)
                 {
-                    // Se calcula el porcentaje del salario base y se resta ese valor
-                    descuentos += empleado.SalarioBase * (descuento.Valor / 100m);
+                    descuentos += (empleado.SalarioBase / 2) * (descuento.Valor / 100m); // Mitad del salario mensual
                 }
             }
 
@@ -398,6 +404,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return (bonos, descuentos);
         }
+
         private (int DiasVacaciones, decimal PagoVacaciones) CalcularVacaciones(Empleado empleado)
         {
             var vacacion = empleado.Vacacions.FirstOrDefault();
@@ -408,18 +415,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             decimal pago = dias * (empleado.SalarioBase / 30m);
 
             return (dias, pago);
-        }
-
-        private decimal CalcularSalarioNeto(Empleado empleado, decimal totalBonos, decimal totalDescuentos, decimal pagoVacaciones, decimal horasExtras)
-        {
-            decimal valorHora = empleado.SalarioBase / 30m / 8m;
-            decimal valorHorasExtras = horasExtras * valorHora * 1.5m;
-
-            return empleado.SalarioBase +
-                   valorHorasExtras +
-                   pagoVacaciones +
-                   totalBonos -
-                   totalDescuentos;
         }
 
         private void ConfigurarViewBagsParaVista(DateTime fechaInicio, DateTime fechaFin, List<object> empleadosInfo)
@@ -439,4 +434,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
         #endregion
     }
+
 }
+
