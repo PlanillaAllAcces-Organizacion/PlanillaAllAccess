@@ -10,6 +10,12 @@
 @*Esta vista  permitirá la visualización de los datos y podrá eliminar el registro de planilla seleccionado si lo desea*@
 <h1 class="text-center"><i class="fas fa-trash-alt text-danger"></i> Eliminar Planilla</h1>
 <h4 class="text-center text-muted">Confirmación de eliminación</h4>
+@if (TempData["ErrorMensaje"] != null)
+{
+    <div class="alert alert-danger text-center" role="alert">
+        @TempData["ErrorMensaje"]
+    </div>
+}
 <hr />
 
 <div class="row justify-content-center">

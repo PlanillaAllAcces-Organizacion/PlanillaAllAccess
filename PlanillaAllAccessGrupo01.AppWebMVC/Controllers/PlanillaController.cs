@@ -203,14 +203,32 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //var planilla = await _context.Planillas.FindAsync(id);
+            //if (planilla != null)
+            //{
+            //    _context.Planillas.Remove(planilla);
+            //}
+
+            //await _context.SaveChangesAsync();
+            //TempData["Mensaje"] = "Planilla eliminada correctamente.";//Mostrará esa alerta.
+
+            // Verificar si hay empleados asociados con la planilla
+            bool tieneEmpleados = _context.Empleados.Any(e => e.TipoPlanillaId == id);
+
+            if (tieneEmpleados)
+            {
+                TempData["ErrorMensaje"] = "No se puede eliminar la planilla porque tiene empleados asociados.";
+                return RedirectToAction(nameof(Delete), new { id = id });
+            }
+
             var planilla = await _context.Planillas.FindAsync(id);
             if (planilla != null)
             {
                 _context.Planillas.Remove(planilla);
+                await _context.SaveChangesAsync();
+                TempData["Mensaje"] = "Planilla eliminada correctamente.";
             }
 
-            await _context.SaveChangesAsync();
-            TempData["Mensaje"] = "Planilla eliminada correctamente.";//Mostrará esa alerta
             return RedirectToAction(nameof(Index));
         }
 
