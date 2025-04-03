@@ -332,4 +332,11 @@ body {
     #toggleMenuBtn:hover {
         color: #ccc; /* Cambia el color al pasar el mouse, opcional */
     }
-    
+
+
+/*Estilo para colocar el asterisco en los campos obligatorios*/
+label.required::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}

@@ -19,7 +19,7 @@
 				<input type="hidden" asp-for="Id" />
 
 				<div class=" col-md-12 mb-3">
-					<label asp-for="Dui" class="form-label fw-bold"></label>
+					<label asp-for="Dui" class="form-label fw-bold required"></label>
 					<input asp-for="Dui" class="form-control" placeholder="Ingrese el dui del empleado" />
 					<span asp-validation-for="Dui" class="text-danger"></span>
 				</div>
@@ -27,32 +27,32 @@
 				<div class="row">
 
 					<div class="col-md-6 mb-4">
-						<label asp-for="Nombre" class="form-label fw-bold"></label>
+						<label asp-for="Nombre" class="form-label fw-bold required"></label>
 						<input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre" />
 						<span asp-validation-for="Nombre" class="text-danger"></span>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label asp-for="Apellido" class="form-label fw-bold"></label>
+						<label asp-for="Apellido" class="form-label fw-bold required"></label>
 						<input asp-for="Apellido" class="form-control" placeholder="Ingrese el apellido" />
 						<span asp-validation-for="Apellido" class="text-danger"></span>
 					</div>
 					<div class="col-md-6 mb-4">
-						<label asp-for="Telefono" class="form-label fw-bold"></label>
-						<input asp-for="Telefono" class="form-control" type="number" placeholder="Ingrese el telefono" />
+						<label asp-for="Telefono" class="form-label fw-bold required"></label>
+						<input asp-for="Telefono" class="form-control" type="number" placeholder="Ingrese el teléfono" />
 						<span asp-validation-for="Telefono" class="text-danger"></span>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label asp-for="Correo" class="form-label fw-bold"></label>
+						<label asp-for="Correo" class="form-label fw-bold required"></label>
 						<input asp-for="Correo" class="form-control" placeholder="Ingrese el correo del empleado" />
 						<span asp-validation-for="Correo" class="text-danger"></span>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label asp-for="FechaContraInicial" class="form-label fw-bold"></label>
+						<label asp-for="FechaContraInicial" class="form-label fw-bold required"></label>
 						<input asp-for="FechaContraInicial" class="form-control" type="date" />
 						<span asp-validation-for="FechaContraInicial" class="text-danger"></span>
 					</div>
 					<div class="col-md-6 mb-4">
-						<label asp-for="FechaContraFinal" class="form-label fw-bold"></label>
+						<label asp-for="FechaContraFinal" class="form-label fw-bold required"></label>
 						<input asp-for="FechaContraFinal" class="form-control" type="date" />
 						<span asp-validation-for="FechaContraFinal" class="text-danger"></span>
 					</div>
@@ -81,7 +81,7 @@
 					<div class="col-md-6 mb-4">
 						<label asp-for="TipoPlanillaId" class="form-label fw-bold"></label>
 						<select asp-for="TipoPlanillaId" class="form-control" asp-items="ViewBag.TipoPlanillaId">
-							<option value="">-- Seleccione un puesto --</option>
+							<option value="">-- Seleccione un Tipo de Planilla --</option>
 						</select>
 						<span asp-validation-for="TipoPlanillaId" class="text-danger"></span>
 					</div>
