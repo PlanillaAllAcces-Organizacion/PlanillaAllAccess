@@ -21,7 +21,7 @@
 
                 <div class="mb-3">
                     @* Etiqueta para el campo EmpleadosId. *@
-                    <label asp-for="EmpleadosId" class="form-label fw-bold">Empleado</label>
+                    <label asp-for="EmpleadosId" class="form-label fw-bold required">Empleado</label>
                     @* Menú desplegable para seleccionar el empleado (deshabilitado). *@
                     <select asp-for="EmpleadosId" class="form-control" asp-items="ViewBag.EmpleadosId" disabled></select>
                     @* Campo oculto para el EmpleadosId. *@
@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo MesVacaciones. *@
-                        <label asp-for="MesVacaciones" class="form-label fw-bold">Mes de Vacaciones</label>
+                        <label asp-for="MesVacaciones" class="form-label fw-bold required">Mes de Vacaciones</label>
                         @* Menú desplegable para seleccionar el mes de la vacación. *@
                         <select asp-for="MesVacaciones" class="form-control">
                             <option value="">Seleccione un mes</option>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo AnnoVacacion. *@
-                        <label asp-for="AnnoVacacion" class="form-label fw-bold">Año de Vacaciones</label>
+                        <label asp-for="AnnoVacacion" class="form-label fw-bold required">Año de Vacaciones</label>
                         @* Campo de entrada para el año de la vacación. *@
                         <input asp-for="AnnoVacacion" class="form-control" placeholder="Ej: 2023" />
                         @* Muestra el error de validación para el campo AnnoVacacion. *@
@@ -64,7 +64,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo DiaInicio. *@
-                        <label asp-for="DiaInicio" class="form-label fw-bold">Fecha de Inicio</label>
+                        <label asp-for="DiaInicio" class="form-label fw-bold required">Fecha de Inicio</label>
                         @* Campo de entrada de fecha para la fecha de inicio. *@
                         <input asp-for="DiaInicio" type="date" class="form-control"
                                value="@Model.DiaInicio.ToString("yyyy-MM-dd")" />
@@ -73,7 +73,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo DiaFin. *@
-                        <label asp-for="DiaFin" class="form-label fw-bold">Fecha de Fin</label>
+                        <label asp-for="DiaFin" class="form-label fw-bold required">Fecha de Fin</label>
                         @* Campo de entrada de fecha para la fecha de fin. *@
                         <input asp-for="DiaFin" type="date" class="form-control"
                                value="@Model.DiaFin.ToString("yyyy-MM-dd")" />
