@@ -21,8 +21,16 @@
             <div>
                 <!-- Botón para buscar planillas -->
                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
-                <!-- Botón para crear una nueva planilla -->
-                <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nuevo Tipo de Planilla</a>
+
+                @if (ViewBag.PlanillaCount < 2)
+                {
+                    <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nueva Planilla</a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary disabled"><i class="fas fa-ban"></i> Límite de Planillas Alcanzado</button>
+                }
+                
             </div>
             <!-- Botón para generar planilla, redirige a la acción "Index" del controlador "Bono" -->
             <a class="btn btn-outline-dark" asp-controller="Planilla" asp-action="Index"><i class="fas fa-percent"></i> Generar Planilla</a>
@@ -57,7 +65,15 @@
                     <td class="text-center">
                         <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Editar</a>
                         <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i> Ver</a>
-                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Eliminar</a>
+
+                        @if (!item.Empleados.Any())
+                        {
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Eliminar</a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-secondary disabled"><i class="fas fa-ban"></i> Tipo planilla asociado</button>
+                        }
                     </td>
                 </tr>
             }
