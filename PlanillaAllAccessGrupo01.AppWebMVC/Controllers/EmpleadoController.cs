@@ -26,7 +26,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         public async Task<IActionResult> Index(Empleado empleado, int topRegistro = 10, int? mesInicioContrato = null, int? mesFinContrato = null)
         {
             // 1. Filtrado inicial de empleados
-            var query = _context.Empleados.AsQueryable();
+            var query = _context.Empleados
+                .Include(e => e.AsignacionBonos)
+                .Include(e => e.AsignacionDescuentos)
+                .AsQueryable();
 
             // Filtros básicos (texto)
             if (!string.IsNullOrWhiteSpace(empleado.Dui))

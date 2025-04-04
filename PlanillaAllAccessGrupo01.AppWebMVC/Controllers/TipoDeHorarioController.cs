@@ -22,7 +22,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             // Esta acción HTTP GET muestra una lista de tipos de horarios.
 
             // Crea una consulta LINQ para obtener los tipos de horarios de la base de datos.
-            var query = _context.TipodeHorarios.AsQueryable();
+            var query = _context.TipodeHorarios
+                .Include(e => e.Empleados)
+                .AsQueryable();
 
             // Si se proporciona un nombre de horario en el modelo, filtra la consulta para buscar coincidencias.
             if (!string.IsNullOrWhiteSpace(tipodeHorario.NombreHorario))
@@ -47,6 +49,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombreHorario")] TipodeHorario tipoDeHorario)
         {
+            if (await _context.TipodeHorarios.AnyAsync(h => h.NombreHorario == h.NombreHorario))
+            {
+                ModelState.AddModelError("NombreHorario", "El nombre del tipo de horario ingresado ya está registrado.");
+            }
 
             // Verifica si el modelo es válido.
             if (ModelState.IsValid)
