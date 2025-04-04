@@ -21,7 +21,7 @@
 
                 <div class="mb-3">
                     @* Etiqueta para el campo EmpleadosId. *@
-                    <label asp-for="EmpleadosId" class="form-label fw-bold required">Empleado</label>
+                    <label asp-for="EmpleadosId" class="form-label fw-bold required">EmpleadoId</label>
                     @* Menú desplegable para seleccionar el empleado (deshabilitado). *@
                     <select asp-for="EmpleadosId" class="form-control" asp-items="ViewBag.EmpleadosId" disabled></select>
                     @* Campo oculto para el EmpleadosId. *@
@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo MesVacaciones. *@
-                        <label asp-for="MesVacaciones" class="form-label fw-bold required">Mes de Vacaciones</label>
+                        <label asp-for="MesVacaciones" class="form-label fw-bold required">Mes de la vacación</label>
                         @* Menú desplegable para seleccionar el mes de la vacación. *@
                         <select asp-for="MesVacaciones" class="form-control">
                             <option value="">Seleccione un mes</option>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         @* Etiqueta para el campo AnnoVacacion. *@
-                        <label asp-for="AnnoVacacion" class="form-label fw-bold required">Año de Vacaciones</label>
+                        <label asp-for="AnnoVacacion" class="form-label fw-bold required">Año de la vacación</label>
                         @* Campo de entrada para el año de la vacación. *@
                         <input asp-for="AnnoVacacion" class="form-control" placeholder="Ej: 2023" />
                         @* Muestra el error de validación para el campo AnnoVacacion. *@
@@ -61,54 +61,57 @@
                     </div>
                 </div>
 
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo de día de inicio. *@
+                        <label class="form-label fw-bold required">Día de inicio</label>
+                        @* Campo de entrada numérico para el día de inicio. *@
+                        <input type="number" min="1" max="31" class="form-control"
+                               id="diaInicio" name="diaInicio" required />
+                        @* Muestra el error de validación para el día de inicio. *@
+                        <span class="text-danger" id="diaInicioError"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        @* Etiqueta para el campo de día de fin. *@
+                        <label class="form-label fw-bold required">Día de fin</label>
+                        @* Campo de entrada numérico para el día de fin. *@
+                        <input type="number" min="1" max="31" class="form-control"
+                               id="diaFin" name="diaFin" required />
+                        @* Muestra el error de validación para el día de fin. *@
+                        <span class="text-danger" id="diaFinError"></span>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        @* Etiqueta para el campo DiaInicio. *@
-                        <label asp-for="DiaInicio" class="form-label fw-bold required">Fecha de Inicio</label>
-                        @* Campo de entrada de fecha para la fecha de inicio. *@
-                        <input asp-for="DiaInicio" type="date" class="form-control"
-                               value="@Model.DiaInicio.ToString("yyyy-MM-dd")" />
-                        @* Muestra el error de validación para el campo DiaInicio. *@
-                        <span asp-validation-for="DiaInicio" class="text-danger"></span>
+                        @* Etiqueta para el campo Estado. *@
+                        <label asp-for="Estado" class="form-label fw-bold">Estado</label>
+                        @* Menú desplegable para seleccionar el estado de la vacación. *@
+                        <select asp-for="Estado" class="form-control">
+                            <option value="1" selected="@(Model.Estado == 1)">Asignada</option>
+                            <option value="2" selected="@(Model.Estado == 2)">Finalizada</option>
+                        </select>
+                        @* Muestra el error de validación para el campo Estado. *@
+                        <span asp-validation-for="Estado" class="text-danger"></span>
                     </div>
+
                     <div class="col-md-6 mb-3">
-                        @* Etiqueta para el campo DiaFin. *@
-                        <label asp-for="DiaFin" class="form-label fw-bold required">Fecha de Fin</label>
-                        @* Campo de entrada de fecha para la fecha de fin. *@
-                        <input asp-for="DiaFin" type="date" class="form-control"
-                               value="@Model.DiaFin.ToString("yyyy-MM-dd")" />
-                        @* Muestra el error de validación para el campo DiaFin. *@
-                        <span asp-validation-for="DiaFin" class="text-danger"></span>
+                        @* Etiqueta para el campo VacacionPagada. *@
+                        <label asp-for="VacacionPagada" class="form-label fw-bold">¿Vacación pagada?</label>
+                        @* Menú desplegable para indicar si la vacación fue pagada. *@
+                        <select asp-for="VacacionPagada" class="form-control">
+                            <option value="0" selected="@(Model.VacacionPagada == 0)">No Pagada</option>
+                            <option value="1" selected="@(Model.VacacionPagada == 1)">Pagada</option>
+                        </select>
+                        @* Muestra el error de validación para el campo VacacionPagada. *@
+                        <span asp-validation-for="VacacionPagada" class="text-danger"></span>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    @* Etiqueta para el campo Estado. *@
-                    <label asp-for="Estado" class="form-label fw-bold">Estado</label>
-                    @* Menú desplegable para seleccionar el estado de la vacación. *@
-                    <select asp-for="Estado" class="form-control">
-                        <option value="1" selected="@(Model.Estado == 1)">Asignada</option>
-                        <option value="2" selected="@(Model.Estado == 2)">Finalizada</option>
-                    </select>
-                    @* Muestra el error de validación para el campo Estado. *@
-                    <span asp-validation-for="Estado" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    @* Etiqueta para el campo VacacionPagada. *@
-                    <label asp-for="VacacionPagada" class="form-label fw-bold">Vacación Pagada</label>
-                    @* Menú desplegable para indicar si la vacación fue pagada. *@
-                    <select asp-for="VacacionPagada" class="form-control">
-                        <option value="0" selected="@(Model.VacacionPagada == 0)">No Pagada</option>
-                        <option value="1" selected="@(Model.VacacionPagada == 1)">Pagada</option>
-                    </select>
-                    @* Muestra el error de validación para el campo VacacionPagada. *@
-                    <span asp-validation-for="VacacionPagada" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3" id="pagoVacacionesGroup" style="@(Model.VacacionPagada == 1 ? "display:block" : "display:none")">
                     @* Etiqueta para el campo PagoVacaciones. *@
-                    <label asp-for="PagoVacaciones" class="form-label fw-bold">Monto de Pago</label>
+                    <label asp-for="PagoVacaciones" class="form-label fw-bold">Pago de la vacación</label>
                     @* Campo de entrada para el monto de pago. *@
                     <input asp-for="PagoVacaciones" class="form-control" type="number" step="0.01" />
                     @* Muestra el error de validación para el campo PagoVacaciones. *@
@@ -157,17 +160,57 @@
                 }
             });
 
-            // Validación de fechas
-            $('form').submit(function() {
-                const inicio = new Date($('#DiaInicio').val());
-                const fin = new Date($('#DiaFin').val());
+            // // Validación de fechas
+            // $('form').submit(function() {
+            //     const inicio = new Date($('#DiaInicio').val());
+            //     const fin = new Date($('#DiaFin').val());
 
-                if (fin < inicio) {
-                    alert('La fecha de fin no puede ser anterior a la fecha de inicio');
-                    return false;
+            //     if (fin < inicio) {
+            //         alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+            //         return false;
+            //     }
+            //     return true;
+            // });
+
+              // Eventos
+            $('#vacacionPagada').change(actualizarInputs);
+            $('#MesVacaciones, #AnnoVacacion').change(validateDays);
+            $('#diaInicio, #diaFin').change(validateDays);
+
+            // Validar antes de enviar
+            $('form').submit(function(e) {
+                const month = $('#MesVacaciones').val();
+                const year = parseInt($('#AnnoVacacion').val());
+                const diaInicio = parseInt($('#diaInicio').val());
+                const diaFin = parseInt($('#diaFin').val());
+
+                if (month && !isNaN(year)) {
+                    const daysInMonth = getDaysInMonth(month, year);
+
+                    if (isNaN(diaInicio) || diaInicio < 1 || diaInicio > daysInMonth) {
+                        $('#diaInicioError').text('Día inicio no válido');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (isNaN(diaFin) || diaFin < 1 || diaFin > daysInMonth) {
+                        $('#diaFinError').text('Día fin no válido');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (diaInicio > diaFin) {
+                        $('#diaFinError').text('Debe ser mayor o igual al día inicio');
+                        e.preventDefault();
+                        return false;
+                    }
                 }
+
                 return true;
             });
+                // Inicializar
+            actualizarInputs();
+
         });
     </script>
 }
