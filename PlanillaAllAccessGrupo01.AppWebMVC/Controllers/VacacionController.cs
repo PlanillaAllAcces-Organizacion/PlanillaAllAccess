@@ -211,8 +211,13 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,EmpleadosId,MesVacaciones,AnnoVacacion,DiaInicio,DiaFin,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion, int diaInicio, int diaFin)
+          [Bind("Id,EmpleadosId,MesVacaciones,AnnoVacacion,Estado,VacacionPagada,PagoVacaciones,FechaPago")] Vacacion vacacion,
+          int diaInicio, int diaFin)
         {
+            if (id != vacacion.Id)
+            {
+                return NotFound();
+            }
 
             try
             {
@@ -287,17 +292,34 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                     }
                 }
 
-                // Si todas las validaciones son correctas, guardar en BD
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        _context.Update(vacacion);
+                        // Cargar la entidad existente
+                        var vacacionExistente = await _context.Vacacions.FindAsync(id);
+                        if (vacacionExistente == null)
+                        {
+                            return NotFound();
+                        }
+
+                        // Actualizar propiedades
+                        vacacionExistente.MesVacaciones = vacacion.MesVacaciones;
+                        vacacionExistente.AnnoVacacion = vacacion.AnnoVacacion;
+                        vacacionExistente.DiaInicio = vacacion.DiaInicio;
+                        vacacionExistente.DiaFin = vacacion.DiaFin;
+                        vacacionExistente.Estado = vacacion.Estado;
+                        vacacionExistente.VacacionPagada = vacacion.VacacionPagada;
+                        vacacionExistente.PagoVacaciones = vacacion.PagoVacaciones;
+                        vacacionExistente.FechaPago = vacacion.FechaPago;
+
+                        // Marcar como modificado y guardar
+                        _context.Update(vacacionExistente);
                         await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        // Manejo de errores de concurrencia
                         if (!VacacionExists(vacacion.Id))
                         {
                             return NotFound();
@@ -307,34 +329,16 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                             throw;
                         }
                     }
-                    return RedirectToAction(nameof(Index));
                 }
-
-
-                //if (ModelState.IsValid)
-                //{
-                //    _context.Add(vacacion);
-                //    await _context.SaveChangesAsync();
-                //    return RedirectToAction("Index", "Empleado");
-                //}
             }
             catch (Exception ex)
             {
-                // Manejo de errores inesperados
                 ModelState.AddModelError("", $"Ocurrió un error inesperado: {ex.Message}");
             }
 
-            //if (id != vacacion.Id)
-            //{
-            //    return NotFound();
-            //}
-
-
-            // Si hay errores, recargar la vista con los datos
             ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre", vacacion.EmpleadosId);
             return View(vacacion);
         }
-
         // Acción para mostrar la confirmación de eliminación
         public async Task<IActionResult> Delete(int? id)
         {
