@@ -3,19 +3,16 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
 <div class="row justify-content-center">
     <h1 class="display-4 text-warning text-center mb-4"><i class="fas fa-plus-circle"></i> Añadir o modificar días de trabajo al horario</h1>
     <hr class="bg-warning" style="height: 2px;" />
 
     <div class="col-lg-10 col-xl-8">
         <div class="card shadow-lg p-4">
-            <!-- Formulario con validación de días repetidos -->
-            <form asp-action="Edit" method="post" onsubmit="return validarDiasRepetidos()">
+            <form asp-action="Edit" method="post" onsubmit="return validarFormulario()">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
 
-                <!-- Contenedor para mensajes de error -->
                 <div id="mensaje-error" class="alert alert-danger mb-4" style="display: none;"></div>
 
                 <div class="form-group">
@@ -23,69 +20,44 @@
                     <span asp-validation-for="NombreHorario" class="text-danger"></span>
                 </div>
                 <br />
-                <!-- Botón para añadir nuevos días -->
                 <div class="text-center mb-4">
                     <button type="button" id="add-horario" class="btn btn-success">
                         <i class="fas fa-plus"></i> Añadir día
                     </button>
                 </div>
 
-                <!-- Contenedor dinámico para los horarios -->
                 <div id="horarios-container">
                     @{
                         int i = 0;
                     }
-                    <!-- Iteración sobre los horarios existentes -->
                     @foreach (var horario in Model.Horarios)
                     {
-                        <!-- Estructura de cada día de horario -->
                         <div class="horario-item">
                             <div class="row align-items-center text-center">
-
-                                <!-- Campos para día, horas, entrada y salida -->
                                 <div class="col-md-3 mb-1">
-
-                                    <!--
-                                      Input para selección/ingreso del día de la semana en el horario laboral
-                                      - Se renderiza dinámicamente para cada día en la colección Horarios
-                                      - El formato del name permite el model binding automático con ASP.NET Core
-                                    -->
                                     <div class="form-group">
                                         <label class="form-label fw-bold">Día</label>
-
-                                        <!-- Nombre estructurado para binding con colección -->
-                                        <!-- Valor actual del día (ej: "Lunes", "Martes") -->
-                                        <input name="Horarios[@i].Dias" value="@horario.Dias" class="form-control text-center" required />
+                                        <input name="Horarios[@i].Dias" value="@horario.Dias" class="form-control text-center dia-input" required />
                                     </div>
-                                    <!--
-                                      1. @*i*@ es el contador del loop que garantiza índices únicos para cada horario
-                                      2. El formato Horarios[index].Propiedad permite reconstruir la colección completa al enviar
-                                      3. El binding automático mapeará estos valores al modelo Horario en el controlador
-                                    -->
                                 </div>
                                 <div class="col-md-2 mb-1">
                                     <div class="form-group">
-                                        <label class="form-label fw-bold">Horas XDía</label>
-                                        <input name="Horarios[@i].HorasxDia" value="@horario.HorasxDia"
-                                               class="form-control text-center" required />
+                                        <label class="form-label fw-bold">Horas</label>
+                                        <input name="Horarios[@i].HorasxDia" value="@horario.HorasxDia" class="form-control text-center horas-input" required />
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-1">
                                     <div class="form-group">
                                         <label class="form-label fw-bold">Hora Entrada</label>
-                                        <input type="time" name="Horarios[@i].HorasEntrada"
-                                               value="@horario.HorasEntrada.ToString(@"hh\:mm")"
-                                               class="form-control text-center" required />
+                                        <input type="time" name="Horarios[@i].HorasEntrada" value="@horario.HorasEntrada.ToString(@"hh\:mm")" class="form-control text-center hora-entrada-input" required />
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-1">
                                     <div class="form-group">
-                                        <input type="time" name="Horarios[@i].HorasSalida"
-                                               value="@horario.HorasSalida.ToString(@"hh\:mm")"
-                                               class="form-control text-center" required />
+                                        <label class="form-label fw-bold">Hora Salida</label>
+                                        <input type="time" name="Horarios[@i].HorasSalida" value="@horario.HorasSalida.ToString(@"hh\:mm")" class="form-control text-center hora-salida-input" required />
                                     </div>
                                 </div>
-                                <!-- Botón para eliminar el día -->
                                 <div class="col-md-1 text-center">
                                     <button type="button" class="remove-horario btn btn-danger btn-sm">
                                         <i class="fas fa-trash-alt"></i>
@@ -96,7 +68,6 @@
                         i++;
                     }
                 </div>
-                <!-- Boton para guardar los horarios asignados al tipo de horario -->
                 <div class="d-flex justify-content-between mt-4">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Guardar
@@ -106,84 +77,73 @@
                     </a>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
 
-
-
 @section Scripts {
     <script>
-        // Cuando el DOM está completamente cargado
         document.addEventListener("DOMContentLoaded", function () {
-            let index = @Model.Horarios.Count; // Índice basado en horarios existentes
-            const maxInputs = 7;  // Límite máximo de días
+            let index = @Model.Horarios.Count;
+            const maxInputs = 7;
             const container = document.getElementById("horarios-container");
             const addButton = document.getElementById("add-horario");
 
-            // Evento para añadir nuevo horario
+            function createNewHorarioElement(currentIndex) {
+                const newHorario = document.createElement("div");
+                newHorario.classList.add("horario-item");
+                newHorario.innerHTML = `
+                    <div class="row align-items-center text-center">
+                        <div class="col-md-3 mb-1">
+                            <div class="form-group">
+                                <label class="form-label fw-bold">Día</label>
+                                <input name="Horarios[${currentIndex}].Dias" class="form-control text-center dia-input" required />
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-1">
+                            <div class="form-group">
+                                <label class="form-label fw-bold">Horas XDía</label>
+                                <input name="Horarios[${currentIndex}].HorasxDia" class="form-control text-center horas-input" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-1">
+                            <div class="form-group">
+                                <label class="form-label fw-bold">Hora Entrada</label>
+                                <input type="time" name="Horarios[${currentIndex}].HorasEntrada" class="form-control text-center hora-entrada-input" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-1">
+                            <div class="form-group">
+                                <label class="form-label fw-bold">Hora Salida</label>
+                                <input type="time" name="Horarios[${currentIndex}].HorasSalida" class="form-control text-center hora-salida-input" required />
+                            </div>
+                        </div>
+                        <div class="col-md-1 text-center">
+                            <button type="button" class="remove-horario btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return newHorario;
+            }
+
             addButton.addEventListener("click", function () {
                 if (index >= maxInputs) {
                     alert("No puedes agregar más de 7 horarios.");
                     return;
                 }
 
-                // Crear nuevo elemento de horario con los campos necesarios
-                let newHorario = document.createElement("div");
-                newHorario.classList.add("horario-item");
-                newHorario.innerHTML = ` 
-
-                   <div class="horario-item">
-                            <div class="row align-items-center text-center">
-                                <div class="col-md-3 mb-1">
-                                    <div class="form-group">
-                                        <label class="form-label fw-bold">Día</label>
-                                        <input name="Horarios[${index}].Dias"
-                                               class="form-control text-center" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-2 mb-1">
-                                    <div class="form-group">
-                                        <label class="form-label fw-bold">Horas XDía</label>
-                                        <input name="Horarios[${index}].HorasxDia"
-                                               class="form-control text-center" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-1">
-                                    <div class="form-group">
-                                        <label class="form-label fw-bold">Hora Entrada</label>
-                                        <input type="time" name="Horarios[${index}].HorasEntrada"
-                                               class="form-control text-center" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-1">
-                                    <div class="form-group">
-                                        <label class="form-label fw-bold">Hora Salida</label>
-                                        <input type="time" name="Horarios[${index}].HorasSalida"
-                                               class="form-control text-center" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-1 text-center">
-                                    <button type="button" class="remove-horario btn btn-danger btn-sm">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-
-                `; // Plantilla HTML para nuevos días
-
+                const newHorario = createNewHorarioElement(index);
                 container.appendChild(newHorario);
                 index++;
 
-                // Deshabilitar botón si se alcanza el máximo
                 addButton.disabled = (index >= maxInputs);
             });
 
-            // Evento delegado para eliminar horarios
             container.addEventListener("click", function (e) {
-                if (e.target.classList.contains("remove-horario")) {
+                if (e.target.closest(".remove-horario")) {
                     e.target.closest(".horario-item").remove();
                     index--;
                     addButton.disabled = false;
@@ -191,43 +151,77 @@
             });
         });
 
-        // Validar que no haya días repetidos
+        function mostrarError(mensaje) {
+            const mensajeError = document.getElementById("mensaje-error");
+            mensajeError.textContent = mensaje;
+            mensajeError.style.display = "block";
+        }
+
+        function validarFormulario() {
+            return validarDiasRepetidos() && validarMinutosEnHoras();
+        }
+
         function validarDiasRepetidos() {
             let mensajeError = document.getElementById("mensaje-error");
             let inputs = document.querySelectorAll('input[name$="Dias"]');
-            let dias = new Set(); // Usamos Set para detectar duplicados
+            let dias = new Set();
 
-             // Resetear mensajes de error
             mensajeError.style.display = "none";
             mensajeError.textContent = "";
 
-              // Validar cada campo
             for (let input of inputs) {
                 let dia = input.value.trim();
 
-                  // Validar campo vacío
                 if (!dia) {
                     mostrarError("Por favor, ingresa un día en todos los campos.");
                     return false;
                 }
-                // Validar día repetido
-                if (dias.has(dia)) {
-                    mostrarError(`El día "${dia}" está repetido. Por favor, corrige los datos.`);
+                if (dias.has(dia.toLowerCase())) {
+                    mostrarError(`El día "${dia}" está repetido.`);
                     return false;
                 }
 
-                dias.add(dia);
+                dias.add(dia.toLowerCase());
             }
 
             return true;
         }
 
-        // Mostrar mensajes de error
-        function mostrarError(mensaje) {
+        function validarMinutosEnHoras() {
             let mensajeError = document.getElementById("mensaje-error");
-            mensajeError.textContent = mensaje;
-            mensajeError.style.display = "block";
-        }
+            let horarioItems = document.querySelectorAll('.horario-item');
 
+            for (let item of horarioItems) {
+                let entrada = item.querySelector('input[name*="HorasEntrada"]');
+                let salida = item.querySelector('input[name*="HorasSalida"]');
+
+                if (entrada && salida) {
+                    let entradaValue = entrada.value;
+                    let salidaValue = salida.value;
+
+                    if (entradaValue && salidaValue) {
+                        let minutosEntrada = parseInt(entradaValue.split(':')[1], 10);
+                        let minutosSalida = parseInt(salidaValue.split(':')[1], 10);
+
+                        if ((minutosEntrada !== 0 && minutosEntrada !== 30) ||
+                            (minutosSalida !== 0 && minutosSalida !== 30)) {
+                            mostrarError("Las horas deben tener minutos 00 o 30.");
+                            return false;
+                        }
+
+                        if (minutosEntrada !== minutosSalida) {
+                            mostrarError("La hora de entrada y salida deben tener los mismos minutos.");
+                            return false;
+                        }
+                    } else {
+                        mostrarError("Completa todas las horas de entrada y salida.");
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     </script>
 }
+

@@ -63,6 +63,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             var planilla = await _context.Planillas
                 .Include(p => p.TipoPlanilla)
+                .Include(p => p.EmpleadoPlanillas)
+                .ThenInclude(ep => ep.Empleados)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (planilla == null)
             {
@@ -218,5 +220,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         {
             return _context.Planillas.Any(e => e.Id == id);
         }
+
     }
 }

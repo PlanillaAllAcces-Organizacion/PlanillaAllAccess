@@ -46,10 +46,6 @@
         </div>
         @*Funcionalidad de botones para buscar el registro y para poder crear un nuevo registro*@
         <div class="col-md-9 d-flex align-items-end justify-content-between">
-            <div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
-                <a class="btn btn-success" asp-action="Create"><i class="fas fa-plus"></i> Crear Nueva Planilla</a>
-            </div>
             <a class="btn btn-outline-dark" asp-controller="TipoPlanillas" asp-action="Index"><i class="fas fa-percent"></i> Volver a Tipo de Planilla</a>
         </div>
     </div>
@@ -100,8 +96,6 @@
                             <i class="fas fa-eye"></i></a>
                         <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
                             <i class="fas fa-trash"></i></a>
-                        <a class="btn btn-sm btn-secondary" asp-action="Asignar" asp-route-id="@item.Id">
-                            <i class="fas fa-user-check"></i></a>
                     </td>
                 </tr>
             }
