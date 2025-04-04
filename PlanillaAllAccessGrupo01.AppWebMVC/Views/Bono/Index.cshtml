@@ -100,7 +100,24 @@
             {
                 <tr class="align-middle">
                     <td>@Html.DisplayFor(modelItem => item.NombreBono)</td>
-                    <td>$@Html.DisplayFor(modelItem => item.Valor)</td>
+                    @*<td>$@Html.DisplayFor(modelItem => item.Valor)</td>*@
+
+                    <td>
+                        @if (item.Operacion == 1) // 1 para Operación Fija
+                        {
+                            @($"${item.Valor}")
+                        }
+                        else if (item.Operacion == 2) // 2 para Operación No Fija
+                        {
+                            @($"{item.Valor}%")
+                        }
+                        else
+                        {
+                            @("Valor no especificado")
+                            // Caso opcional para valores no esperados
+                        }
+                    </td>
+
                     <td>
                         <!-- Muestra estado con una etiqueta (badge) según el valor -->
                         <span class="badge @(item.Estado == 1 ? "bg-success" : "bg-danger")">

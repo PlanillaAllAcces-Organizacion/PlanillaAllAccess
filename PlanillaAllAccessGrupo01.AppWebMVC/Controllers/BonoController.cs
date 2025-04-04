@@ -29,6 +29,18 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         {
             var query = _context.Bonos.AsQueryable();
 
+            var planillaDbContext = _context.AsignacionDescuentos
+               .Include(a => a.Descuentos)
+               .Include(a => a.Empleados)
+               .Select(a => new
+               {
+                   a.Id,
+                   EmpleadoNombre = a.Empleados.Nombre,
+                   DescuentoNombre = a.Descuentos.Nombre,
+                   ValorDescuento = a.Descuentos.Valor,
+                   EsOperacionFija = a.Descuentos.Operacion
+               });
+
             if (!string.IsNullOrWhiteSpace(bono.NombreBono))
                 query = query.Where(s => s.NombreBono.Contains(bono.NombreBono));
 
