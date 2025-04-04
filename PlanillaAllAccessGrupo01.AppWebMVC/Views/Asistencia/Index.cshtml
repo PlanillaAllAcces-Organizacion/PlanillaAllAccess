@@ -9,7 +9,7 @@
 
 		<div class="row g-3">
 			<div class="col-md-6">
-				<label class="form-label">Seleccionar Jefe Inmediato:</label>
+				<label class="form-label required">Seleccionar Jefe Inmediato:</label>
 				<select id="jefeDropdown" class="form-control">
 					<option value="">Seleccione...</option>
 					@foreach (var jefe in ViewBag.Jefes)
@@ -20,7 +20,7 @@
 			</div>
 
 			<div class="col-md-6">
-				<label class="form-label">Seleccionar Tipo de Horario:</label>
+				<label class="form-label required">Seleccionar Tipo de Horario:</label>
 				<select id="horarioDropdown" class="form-control">
 					<option value="">Seleccione...</option>
 					@foreach (var horario in ViewBag.TiposDeHorario)
@@ -35,14 +35,14 @@
 		<div class="row g-3">
 
 			<div class="col-md-6">
-				<label class="form-label">Seleccionar Día:</label>
+				<label class="form-label required">Seleccionar Día:</label>
 				<select id="diasDropdown" class="form-control">
 					<option value="">Seleccione...</option>
 				</select>
 			</div>
 
 			<div class="col-md-6">
-				<label class="form-label">Seleccionar Fecha de Asistencia:</label>
+				<label class="form-label required">Seleccionar Fecha de Asistencia:</label>
 				<input type="date" id="fechaAsistencia" class="form-control" />
 			</div>
 		</div>
