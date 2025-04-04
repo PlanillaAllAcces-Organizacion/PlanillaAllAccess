@@ -52,7 +52,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 _context.Add(empleadoPlanilla);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Registro de planilla creado exitosamente";
-                return RedirectToAction("Index", "Empleado"); 
+                return RedirectToAction("Index", "Planilla"); 
             }
             CargarListasDesplegables();
             return View(empleadoPlanilla);
@@ -204,7 +204,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = $"Planilla generada exitosamente. Total: {totalGeneral:$0.00}";
-            return RedirectToAction("Index", "Empleado"); // Redirige al Index de Empleado
+            return RedirectToAction("Index", "Planilla"); // Redirige al Index de Empleado
         }
         #endregion
 
