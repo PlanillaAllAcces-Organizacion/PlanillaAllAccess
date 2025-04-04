@@ -2,7 +2,73 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<style>
+    body {
+        background-image: url('/css/foto4.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .bubble-box {
+        background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco con transparencia */
+        border-radius: 25px; /* Bordes redondeados para el efecto burbuja */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Sombra para resaltar el cuadro */
+        max-width: 700px; /* Espacio adicional para acomodar la imagen y el texto */
+        padding: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%; /* Centrado horizontalmente */
+        transform: translate(-50%, -50%); /* Centrado verticalmente */
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 40px; /* Espacio entre la imagen y el texto */
+    }
+
+    .bubble-image img {
+        max-width: 250px; /* Tamaño aumentado de la imagen */
+        height: auto; /* Ajuste automático de la altura proporcional */
+        border-radius: 20px; /* Bordes redondeados más pronunciados */
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Sombra para resaltar la imagen */
+    }
+
+    .bubble-content {
+        flex: 1; /* Hace que el texto ocupe el espacio restante */
+    }
+
+    h2 {
+        color: black;
+    }
+
+    p {
+        color: black;
+    }
+</style>
+
+
+<body>
+    <div class="bubble-box">
+        <div class="bubble-image">
+            <img src="/css/foto.jpeg" width="500" height="500">
+        </div>
+        <div class="bubble-content">
+            <h2 class="fw-bold">Planillas Access</h2>
+            <hr />
+            <p>
+                El sistema de gestión de planillas optimiza los procesos administrativos,
+                desde el cálculo automático de salarios y descuentos hasta la generación
+                de reportes, garantizando precisión y cumplimiento con las normativas legales.
+                Su diseño intuitivo permite un manejo eficiente de la información de empleados
+                y pagos, reduciendo errores y mejorando la productividad.
+            </p>
+            <p>
+                Además, ofrece opciones de personalización que se adaptan a las necesidades
+                de cada empresa, como exportación de datos y reportes visuales. Es una herramienta
+                esencial para agilizar la gestión y promover la modernización organizacional.
+            </p>
+        </div>
+    </div>
+</body>
