@@ -88,6 +88,13 @@
 						</a>
 					</li>
 				}
+				@if (User.Identity.IsAuthenticated && User.IsInRole("Administrador de Nómina"))
+				{
+					<a asp-controller="Planilla" asp-action="Index" class="nav-link text-white">
+						<i class="bi bi-file-earmark-spreadsheet-fill"></i> Administrar planillas
+					</a>
+				}
+
 				
 
 			</ul>
