@@ -1,0 +1,153 @@
+﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.EmpleadoPlanilla
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Planilla Mensual Generada";
+    var culture = new CultureInfo("en-US");
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <!-- Resumen General -->
+    @if (ViewBag.EmpleadosInfo != null)
+    {
+        <form asp-action="GenerarPlanillaGeneral" method="post" id="formPlanillaGeneral">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="fechaInicio" value="@ViewBag.FechaInicio.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="fechaFin" value="@ViewBag.FechaFin.ToString("yyyy-MM-dd")" />
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Período: @ViewBag.FechaInicio.ToString("dd/MM/yyyy") al @ViewBag.FechaFin.ToString("dd/MM/yyyy")</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Total Empleados</h6>
+                                    <p class="card-text h4">@ViewBag.EmpleadosInfo.Count</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Horas Extras</h6>
+                                    <p class="card-text h4">@ViewBag.TotalHorasExtrasGeneral.ToString("0.##")</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Total Nómina</h6>
+                                    <p class="card-text h4 text-success">@ViewBag.TotalSalarioNetoGeneral.ToString("C", culture)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalle por Empleado -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Detalle por Empleado</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered" id="tablaEmpleados">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Empleado</th>
+                                    <th>Puesto</th>
+                                    <th>Días Trab.</th>
+                                    <th>Hrs Ext.</th>
+                                    <th>Hrs. Tard.</th>
+                                    <th>Salario Base</th>
+                                    <th>Pago Hrs Ext.</th>
+                                    <th>Bonos</th>
+                                    <th>Descuentos</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var empleado in ViewBag.EmpleadosInfo)
+                                {
+                                    <tr>
+                                        <td>@empleado.Nombre</td>
+                                        <td>@empleado.PuestoTrabajo</td>
+                                        <td class="text-center">@empleado.DiasTrabajados</td>
+                                        <td class="text-center">@empleado.HorasExtras.ToString("0.##")</td>
+                                        <td class="text-center">@((empleado.HorasTardias * 60).ToString("0"))</td>
+                                        <td class="text-right">@empleado.SalarioBase.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.TotalPagoHorasExtra.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.TotalBonos.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.TotalDescuentos.ToString("C", culture)</td>
+                                        <td class="text-right font-weight-bold">@empleado.SalarioNeto.ToString("C", culture)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="bg-light">
+                                <tr>
+                                    <th colspan="5" class="text-right">Totales:</th>
+                                    <th class="text-right">@ViewBag.SalarioBaseGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.TotalPagoHorasExtraGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.TotalBonosGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.TotalDescuentosGeneral.ToString("C", culture)</th>
+                                    <th class="text-right text-success">@ViewBag.TotalSalarioNetoGeneral.ToString("C", culture)</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-right">
+                <a asp-controller="Planilla" asp-action="Index" class="btn btn-secondary mr-2">
+                    <i class="fas fa-arrow-left"></i> Volver al Listado
+                </a>
+                <button type="submit" class="btn btn-success" id="btnGenerarPlanilla">
+                    <i class="fas fa-file-invoice-dollar"></i> Generar Planilla General
+                </button>
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            $('#tablaEmpleados').DataTable({
+                ordering: false,
+                "dom": "tp",
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                }
+            });
+
+            $('#formPlanillaGeneral').submit(function(e) {
+                if (!confirm('¿Está seguro que desea generar la planilla general para todos los empleados?')) {
+                    return false;
+                }
+                $('#btnGenerarPlanilla').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+            });
+        });
+    </script>
+}
