@@ -75,15 +75,25 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-danger me-2"><i></i> Asignar Descuentos</button>
-                    <a asp-controller="Empleado" asp-action="Index" class="btn btn-secondary">
+                    <a asp-controller="Empleado" asp-action="Index" class="btn btn-secondary me-2">
                         <i></i> Volver a la lista
                     </a>
+                    <button type="submit" class="btn btn-danger" onclick="return confirmarAsignacion();">
+                        <i></i> Asignar Descuentos
+                    </button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function confirmarAsignacion() {
+        return confirm("Una vez asignado el descuento, no se podrá modificar. ¿Deseas continuar?");
+    }
+</script>
+
 
 
 
