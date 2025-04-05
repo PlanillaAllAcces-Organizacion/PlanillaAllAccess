@@ -82,9 +82,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View();
         }
 
-        // POST: Planilla/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
         //En el metódo de Crear POST, se valida la fecha fin y cada uno de los campos que se vayan a ingresar para que pueda guardar el registro.
         [HttpPost]
