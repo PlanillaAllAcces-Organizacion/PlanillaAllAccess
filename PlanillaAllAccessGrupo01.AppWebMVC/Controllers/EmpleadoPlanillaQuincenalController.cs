@@ -332,20 +332,20 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 var asistencias = empleado.ControlAsistencia;
                 var (diasTrabajados, horasExtras, minutosTardias, horasTrabajadasTotales) = CalcularResumenAsistencias(asistencias);
 
-                // Salario base quincenal (la mitad del mensual)
-                decimal salarioQuincenal = (decimal)(empleado.SalarioBase / 2m);
-                decimal valorHoraNormal = salarioQuincenal / 15m / 8m;
+                // Salarios
+                decimal salarioBaseMensual = (decimal)empleado.SalarioBase;
+                decimal salarioBaseQuincenal = salarioBaseMensual / 2m;
+                decimal valorHoraNormal = salarioBaseQuincenal / 15m / 8m;
+                decimal salarioCalculado = horasTrabajadasTotales * valorHoraNormal;
                 decimal valorHoraExtra = empleado.PuestoTrabajo?.ValorExtra ?? valorHoraNormal * 1.5m;
 
-                var (totalBonos, totalDescuentos) = CalcularBeneficiosQuincenales(empleado, minutosTardias, salarioQuincenal);
-
+                var (totalBonos, totalDescuentos) = CalcularBeneficiosQuincenales(empleado, minutosTardias, salarioCalculado);
                 var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado, fechaInicio, fechaFin);
 
-
-                // Calcula extras, subtotal y salario neto
+                // Cálculos finales
                 decimal totalPagoHorasExtra = horasExtras * valorHoraExtra;
                 decimal horasTardias = minutosTardias / 60m;
-                decimal subtotal = salarioQuincenal + totalPagoHorasExtra + pagoVacaciones + totalBonos;
+                decimal subtotal = salarioCalculado + totalPagoHorasExtra + pagoVacaciones + totalBonos;
                 decimal salarioNeto = subtotal - totalDescuentos;
 
                 return new
@@ -353,8 +353,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                     EmpleadoId = empleado.Id,
                     Nombre = empleado.Nombre,
                     PuestoTrabajo = empleado.PuestoTrabajo?.NombrePuesto,
-                    SalarioBase = salarioQuincenal,
-                    SalarioCalculado = salarioQuincenal,
+                    SalarioBaseMensual = salarioBaseMensual,
+                    SalarioBaseQuincenal = salarioBaseQuincenal,
+                    SalarioCalculado = salarioCalculado,
                     TotalBonos = totalBonos,
                     TotalDescuentos = totalDescuentos,
                     DiasVacaciones = diasVacaciones,
@@ -364,7 +365,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                     HorasTardias = horasTardias,
                     PagoVacaciones = pagoVacaciones,
                     SubTotal = subtotal,
-                    SalarioNeto = salarioNeto
+                    LiquidoTotal = salarioNeto,
+                    ValorHoraNormal = valorHoraNormal
                 };
             }).ToList<object>();
         }
@@ -534,28 +536,20 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
         private void ConfigurarViewBagsParaVista(DateTime fechaInicio, DateTime fechaFin, List<object> empleadosInfo)
         {
-            // Asigna la lista de información de los empleados al ViewBag para que esté disponible en la vista.
             ViewBag.EmpleadosInfo = empleadosInfo;
-            // Asigna la fecha de inicio al ViewBag.
             ViewBag.FechaInicio = fechaInicio;
-            // Asigna la fecha de fin al ViewBag.
             ViewBag.FechaFin = fechaFin;
 
-            // Calcula y asigna los totales generales al ViewBag para mostrarlos en la vista.
-            // Suma todos los salarios base de los empleados en la lista.
-            ViewBag.SalarioBaseGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioBase").GetValue(e));
-            // Suma todos los bonos de los empleados en la lista.
+            // Totales generales
+            ViewBag.SalarioBaseMensualGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioBaseMensual").GetValue(e));
+            ViewBag.SalarioBaseQuincenalGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioBaseQuincenal").GetValue(e));
+            ViewBag.SalarioCalculadoGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioCalculado").GetValue(e));
             ViewBag.TotalBonosGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalBonos").GetValue(e));
-            // Suma todos los descuentos de los empleados en la lista.
             ViewBag.TotalDescuentosGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalDescuentos").GetValue(e));
-            // Suma todas las horas extras de los empleados en la lista.
             ViewBag.TotalHorasExtrasGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("HorasExtras").GetValue(e));
-            // Suma el pago total de las horas extras de los empleados en la lista.
             ViewBag.TotalPagoHorasExtraGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalPagoHorasExtra").GetValue(e));
-            // Suma todas las horas tardías de los empleados en la lista.
             ViewBag.TotalHorasTardiasGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("HorasTardias").GetValue(e));
-            // Suma todos los salarios netos de los empleados en la lista.
-            ViewBag.TotalSalarioNetoGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioNeto").GetValue(e));
+            ViewBag.TotalSalarioNetoGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("LiquidoTotal").GetValue(e));
         }
         #endregion
     }

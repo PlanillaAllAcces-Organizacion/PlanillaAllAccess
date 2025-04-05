@@ -1,14 +1,15 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.EmpleadoPlanilla
-
 @using System.Globalization
 
 @{
     ViewData["Title"] = "Generar Planilla Quincenal";
+    var culture = new CultureInfo("en-US");
 }
 
 <div class="container">
     <h2 class="mb-4">@ViewData["Title"]</h2>
 
+    <!-- Mensajes de alerta -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -35,6 +36,7 @@
             <input type="hidden" name="fechaInicio" value="@ViewBag.FechaInicio.ToString("yyyy-MM-dd")" />
             <input type="hidden" name="fechaFin" value="@ViewBag.FechaFin.ToString("yyyy-MM-dd")" />
 
+            <!-- Resumen General -->
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
                     <div class="d-flex justify-content-between align-items-center">
@@ -54,24 +56,24 @@
                         <div class="col-md-3">
                             <div class="card bg-light mb-3">
                                 <div class="card-body text-center">
-                                    <h6 class="card-title">Total Salarios</h6>
-                                    <p class="card-text h4">@ViewBag.SalarioBaseGeneral.ToString("C", CultureInfo.GetCultureInfo("en-US"))</p>
+                                    <h6 class="card-title">Salario Base Mensual</h6>
+                                    <p class="card-text h4">@ViewBag.SalarioBaseMensualGeneral.ToString("C", culture)</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-light mb-3">
                                 <div class="card-body text-center">
-                                    <h6 class="card-title">Total Horas Extras</h6>
-                                    <p class="card-text h4">@ViewBag.TotalHorasExtrasGeneral</p>
+                                    <h6 class="card-title">Salario Base Quincenal</h6>
+                                    <p class="card-text h4">@ViewBag.SalarioBaseQuincenalGeneral.ToString("C", culture)</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-light mb-3">
                                 <div class="card-body text-center">
-                                    <h6 class="card-title">Total Nómina</h6>
-                                    <p class="card-text h4 text-success font-weight-bold">@ViewBag.TotalSalarioNetoGeneral.ToString("C", CultureInfo.GetCultureInfo("en-US"))</p>
+                                    <h6 class="card-title">Salario Calculado</h6>
+                                    <p class="card-text h4">@ViewBag.SalarioCalculadoGeneral.ToString("C", culture)</p>
                                 </div>
                             </div>
                         </div>
@@ -82,10 +84,7 @@
             <!-- Detalle por Empleado -->
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Detalle por Empleado</h5>
-
-                    </div>
+                    <h5 class="mb-0">Detalle por Empleado</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -95,11 +94,13 @@
                                     <th>Empleado</th>
                                     <th>Puesto</th>
                                     <th>Días Trab.</th>
-                                    <th>Horas Ext.</th>
-                                    <th>Horas Tard.</th>
+                                    <th>Hrs Ext.</th>
+                                    <th>Hrs. Tard.</th>
                                     <th>Salario Base</th>
+                                    <th>Salario Calc.</th>
+                                    <th>Hrs Ext.</th>
                                     <th>Bonos</th>
-                                    <th>Descuentos</th>
+                                    <th>Desc.</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -111,21 +112,25 @@
                                         <td>@empleado.PuestoTrabajo</td>
                                         <td class="text-center">@empleado.DiasTrabajados</td>
                                         <td class="text-center">@empleado.HorasExtras.ToString("0.##")</td>
-                                        <td class="text-center">@((empleado.HorasTardias * 60).ToString("0"))</td>
-                                        <td class="text-right">@string.Format(new CultureInfo("en-US"), "{0:C}", empleado.SalarioBase)</td>
-                                        <td class="text-right">@string.Format(new CultureInfo("en-US"), "{0:C}", empleado.TotalBonos)</td>
-                                        <td class="text-right">@string.Format(new CultureInfo("en-US"), "{0:C}", empleado.TotalDescuentos)</td>
-                                        <td class="text-right font-weight-bold">@string.Format(new CultureInfo("en-US"), "{0:C}", empleado.SalarioNeto)</td>
+                                        <td class="text-center">@((empleado.HorasTardias * 60).ToString("0")) </td>
+                                        <td class="text-right">@empleado.SalarioBaseQuincenal.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.SalarioCalculado.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.TotalPagoHorasExtra.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.TotalBonos.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.TotalDescuentos.ToString("C", culture)</td>
+                                        <td class="text-right font-weight-bold">@empleado.LiquidoTotal.ToString("C", culture)</td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot class="bg-light">
                                 <tr>
                                     <th colspan="5" class="text-right">Totales:</th>
-                                    <th class="text-right">@ViewBag.SalarioBaseGeneral.ToString("C", CultureInfo.GetCultureInfo("en-US"))</th>
-                                    <th class="text-right">@ViewBag.TotalBonosGeneral.ToString("C", CultureInfo.GetCultureInfo("en-US"))</th>
-                                    <th class="text-right">@ViewBag.TotalDescuentosGeneral.ToString("C", CultureInfo.GetCultureInfo("en-US"))</th>
-                                    <th class="text-right text-success">@ViewBag.TotalSalarioNetoGeneral.ToString("C", CultureInfo.GetCultureInfo("en-US"))</th>
+                                    <th class="text-right">@ViewBag.SalarioBaseQuincenalGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.SalarioCalculadoGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.TotalPagoHorasExtraGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.TotalBonosGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.TotalDescuentosGeneral.ToString("C", culture)</th>
+                                    <th class="text-right text-success">@ViewBag.TotalSalarioNetoGeneral.ToString("C", culture)</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -144,8 +149,6 @@
         </form>
     }
 </div>
-
-
 
 @section Scripts {
     @{
