@@ -253,3 +253,10 @@ ADD TipoPlanillaId INT NULL;
 ALTER TABLE Empleado
 ADD CONSTRAINT FK_Empleado_TipoPlanilla FOREIGN KEY (TipoPlanillaId) 
 REFERENCES TipoPlanilla(Id);
+
+-- Modificar relacion de empleadosPlanilla y planilla
+ALTER TABLE EmpleadoPlanilla
+DROP CONSTRAINT FK_EmpleadoPlanilla_Planilla;
+ALTER TABLE EmpleadoPlanilla
+ADD CONSTRAINT FK_EmpleadoPlanilla_Planilla FOREIGN KEY (PlanillaId) REFERENCES Planilla(Id)
+ON DELETE CASCADE;
