@@ -31,7 +31,7 @@ public partial class Bono
     [Display(Name = "Fecha Validacion")]
     public DateOnly? FechaValidacion { get; set; }
 
-    [Display(Name = "Fecha de Exiración")]
+    [Display(Name = "Fecha de Expiración")]
     public DateOnly? FechaExpiracion { get; set; }
 
     [Display(Name = "Tipo de Operación")]

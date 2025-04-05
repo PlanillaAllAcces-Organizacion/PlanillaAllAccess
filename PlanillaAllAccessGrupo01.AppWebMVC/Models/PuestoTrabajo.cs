@@ -20,14 +20,14 @@ public partial class PuestoTrabajo
     [Display(Name = "Salario Base")]
     public decimal SalarioBase { get; set; }
 
-    [Required(ErrorMessage = "El valor por hora es obligatorio.")]
+    [Required(ErrorMessage = "El pago por hora es obligatorio.")]
     [Range(0, double.MaxValue, ErrorMessage = "El valor por hora debe ser un número positivo.")]
-    [Display(Name = "Valor por Hora")]
+    [Display(Name = "Pago por Hora")]
     public decimal ValorxHora { get; set; }
 
     [Required(ErrorMessage = "El campo es obligatorio")]
     [Range(0, double.MaxValue, ErrorMessage = "El valor extra debe ser un número positivo.")]
-    [Display(Name = "Valor Extra")]
+    [Display(Name = "Pago por Hora Extra")]
     public decimal? ValorExtra { get; set; }
 
     [Required(ErrorMessage = "El estado es obligatorio.")]

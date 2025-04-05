@@ -49,7 +49,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombreHorario")] TipodeHorario tipoDeHorario)
         {
-            if (await _context.TipodeHorarios.AnyAsync(h => h.NombreHorario == h.NombreHorario))
+            if (await _context.TipodeHorarios.AnyAsync(h => h.NombreHorario == tipoDeHorario.NombreHorario))
             {
                 ModelState.AddModelError("NombreHorario", "El nombre del tipo de horario ingresado ya está registrado.");
             }
