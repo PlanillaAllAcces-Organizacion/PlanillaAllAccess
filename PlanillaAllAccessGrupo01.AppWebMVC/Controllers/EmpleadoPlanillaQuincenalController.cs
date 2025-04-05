@@ -338,7 +338,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 decimal valorHoraExtra = empleado.PuestoTrabajo?.ValorExtra ?? valorHoraNormal * 1.5m;
 
                 var (totalBonos, totalDescuentos) = CalcularBeneficiosQuincenales(empleado, minutosTardias, salarioQuincenal);
-                var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado);
+
+                var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado, fechaInicio, fechaFin);
+
 
                 // Calcula extras, subtotal y salario neto
                 decimal totalPagoHorasExtra = horasExtras * valorHoraExtra;
@@ -420,11 +422,10 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             decimal salarioBaseCalculado = horasTrabajadasTotales * valorHoraNormal;
 
             var (totalBonos, totalDescuentos) = CalcularBeneficiosQuincenales(empleado, minutosTardias, salarioBaseCalculado);
-            var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado); // 👉 OJO: este pago no se está sumando todavía
+            var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado, fechaInicio, fechaFin);
 
             decimal totalPagoHorasExtra = horasExtras * valorHoraExtra;
 
-            // Se puede incluir el pago de vacaciones aquí si se desea:
             decimal subtotal = salarioBaseCalculado + totalPagoHorasExtra + totalBonos + pagoVacaciones;
             decimal salarioNeto = subtotal - totalDescuentos;
 
@@ -439,6 +440,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 TotalHorasTardias = minutosTardias,
                 TotalHorasTrabajadas = (int)horasTrabajadasTotales,
                 ValorDeHorasExtra = Math.Round(valorHoraExtra, 2),
+                TotalPagoVacacion = Math.Round(pagoVacaciones, 2),
                 TotalPagoHorasExtra = Math.Round(totalPagoHorasExtra, 2),
                 TotalDevengos = Math.Round(totalBonos, 2),
                 TotalDescuentos = Math.Round(totalDescuentos, 2),
@@ -496,21 +498,38 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return (bonos, descuentos);
         }
 
-        private (int DiasVacaciones, decimal PagoVacaciones) CalcularVacaciones(Empleado empleado)
+        private (int DiasVacaciones, decimal PagoVacaciones) CalcularVacaciones(Empleado empleado, DateTime fechaInicio,DateTime fechaFin)
         {
-            // Busca la primera entrada de vacaciones del empleado.
-            var vacacion = empleado.Vacacions.FirstOrDefault();
-            // Si no se encuentra ninguna entrada de vacaciones, retorna cero días y cero pago.
-            if (vacacion == null) return (0, 0);
 
-            // Calcula la diferencia en días entre la fecha de fin y la fecha de inicio de las vacaciones.
-            TimeSpan diferencia = vacacion.DiaFin - vacacion.DiaInicio;
-            int dias = diferencia.Days;
-            // Calcula el pago de las vacaciones basado en los días de vacaciones y el salario base diario del empleado.
-            decimal pago = (decimal)(dias * (empleado.SalarioBase / 30m));
+            var vacacionesValidas = empleado.Vacacions.Where(v => v.VacacionPagada == 1 && v.DiaInicio >= fechaInicio &&
+            v.DiaFin <= fechaFin).ToList();
+            
+            if (!vacacionesValidas.Any())
+                return (0, 0);
 
-            // Retorna el número de días de vacaciones y el pago correspondiente.
-            return (dias, pago);
+            // Calcular días y pago total de todas las vacaciones válidas
+            int diasTotales = 0;
+            decimal pagoTotal = 0;
+
+            foreach (var vacacion in vacacionesValidas)
+            {
+                TimeSpan diferencia = vacacion.DiaFin - vacacion.DiaInicio;
+                int dias = diferencia.Days + 1; // +1 para incluir ambos días
+                diasTotales += dias;
+
+                // Si tiene un pago específico, usarlo, sino calcularlo
+                if (vacacion.PagoVacaciones.HasValue)
+                {
+                    pagoTotal += vacacion.PagoVacaciones.Value;
+                }
+                else
+                {
+                    // Para planilla quincenal, calculamos proporcional a 15 días
+                    pagoTotal += (decimal)(dias * (empleado.SalarioBase / 30m / 2m));
+                }
+            }
+
+            return (diasTotales, pagoTotal);
         }
 
         private void ConfigurarViewBagsParaVista(DateTime fechaInicio, DateTime fechaFin, List<object> empleadosInfo)
