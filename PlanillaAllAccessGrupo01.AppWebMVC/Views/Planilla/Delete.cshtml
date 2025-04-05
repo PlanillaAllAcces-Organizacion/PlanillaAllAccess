@@ -1,7 +1,7 @@
 ﻿@model PlanillaAllAccessGrupo01.AppWebMVC.Models.Planilla
 
 @{
-    ViewData["Title"] = "Delete";
+	ViewData["Title"] = "Delete";
 }
 @* Link utilizado para la funcionalida dde los íconos de la vista*@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -12,114 +12,124 @@
 <h4 class="text-center text-muted">Confirmación de eliminación</h4>
 @if (TempData["ErrorMensaje"] != null)
 {
-    <div class="alert alert-danger text-center" role="alert">
-        @TempData["ErrorMensaje"]
-    </div>
+	<div class="alert alert-danger text-center" role="alert">
+		@TempData["ErrorMensaje"]
+	</div>
 }
 <hr />
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-lg p-4">
-            <h3 class="text-center text-danger mb-4">¿Estás seguro de que deseas eliminar esta planilla?</h3>
-
-            <dl class="row">
-                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.NombrePlanilla)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.NombrePlanilla)</dd>
-
-                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.FechaInicio)</dt>
-                <dd class="col-sm-8">@Model.FechaInicio.ToString("dd/MM/yyyy")</dd>
-
-                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.FechaFin)</dt>
-                <dd class="col-sm-8">@Model.FechaFin.ToString("dd/MM/yyyy")</dd>
-
-                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.Autorizacion)</dt>
-                <dd class="col-sm-8">
-                    @if (Model.Autorizacion == 1)
-                    {
-                        <span class="badge bg-success">Autorizada</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">No Autorizada</span>
-                    }
-                </dd>
-
-                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.TotalPago)</dt>
-                <dd class="col-sm-8">@Model.TotalPago</dd>
-
-                <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.TipoPlanilla)</dt>
-                <dd class="col-sm-8">@Model.TipoPlanilla?.NombreTipo</dd>
-            </dl>
-            @*Funcionalidad del botónEliminar para eliminar el registro seleccionado y el botón Cancelar, que dirigirá a la pantalla principal Index de Planilla*@
-            <form asp-action="Delete" class="d-flex justify-content-between mt-4">
-                <input type="hidden" asp-for="Id" />
-                <button type="submit" class="btn btn-danger px-4">
-                    <i class="fas fa-trash-alt"></i> Eliminar
-                </button>
-                <a asp-action="Index" class="btn btn-secondary px-4">
-                    <i class="fas fa-times"></i> Cancelar
-                </a>
-            </form>
-        </div>
-    </div>
+<div class="container mt-5">
+	<div class="card shadow-lg">
+		<div class="card-header bg-danger text-white text-center">
+			<h4 class="mb-0">Detalles de Planilla</h4>
+		</div>
+		<div class="card-body">
+			<div class="row mb-4">
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.NombrePlanilla)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.NombrePlanilla</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaInicio)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.FechaInicio.ToString("dd/MM/yyyy")</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TotalPago)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.TotalPago</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaFin)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.FechaFin.ToString("dd/MM/yyyy")</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Autorizacion)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">
+							@if (Model.Autorizacion == 1)
+							{
+								<span class="badge bg-success">Autorizada</span>
+							}
+							else
+							{
+								<span class="badge bg-secondary">No Autorizada</span>
+							}
+						</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TipoPlanilla)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.TipoPlanilla?.NombreTipo</div>
+					</div>
+				</div>
+				<div class="table-responsive mt-4">
+					<table class="table table-bordered table-striped table-hover" id="tablaExportar">
+						<thead class="table-dark text-center align-middle">
+							<tr>
+								<th>Empleado</th>
+								<th>Dias Trab.</th>
+								<th>Hora Trab.</th>
+								<th>Horas Extr.</th>
+								<th>Horas Tard.</th>
+								<th>Sueldo Bs.</th>
+								<th>Total Bon.</th>
+								<th>Total Des.</th>
+								<th>SubTotal</th>
+								<th>Liquido Total.</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var EmpleadoPla in Model.EmpleadoPlanillas)
+							{
+								<tr class="align-middle">
+									<td class="text-center fw-semibold">@EmpleadoPla.Empleados?.Nombre</td>
+									<td class="text-center">@EmpleadoPla.TotalDiasTrabajados</td>
+									<td class="text-center">@EmpleadoPla.TotalHorasTrabajadas</td>
+									<td class="text-center">@EmpleadoPla.TotalHorasExtra</td>
+									<td class="text-center">@EmpleadoPla.TotalHorasTardias</td>
+									<td class="text-center">@EmpleadoPla.SueldoBase</td>
+									<td class="text-center">@EmpleadoPla.TotalDevengos</td>
+									<td class="text-center">@EmpleadoPla.TotalDescuentos</td>
+									<td class="text-center">@EmpleadoPla.SubTotal</td>
+									<td class="text-center">@EmpleadoPla.LiquidoTotal</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+				@*Funcionalidad del botónEliminar para eliminar el registro seleccionado y el botón Cancelar, que dirigirá a la pantalla principal Index de Planilla*@
+				<form asp-action="Delete" class="d-flex justify-content-between mt-4">
+					<input type="hidden" asp-for="Id" />
+					<button type="submit" class="btn btn-danger px-4">
+						<i class="fas fa-trash-alt"></i> Eliminar
+					</button>
+					<a asp-action="Index" class="btn btn-secondary px-4">
+						<i class="fas fa-times"></i> Cancelar
+					</a>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		  $(document).ready(function() {
+			$('#tablaExportar').DataTable({
+				 ordering: false,
+				 "dom": "tp", //QUITA EL BOTON DE MOSTRAR Y LA BARRA DE BUSQUEDA DE LA PAGINACION
+				"language": {
+					"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+				}
+			});
+		});
+	</script>
+
+
+	
 }
 
-@* <h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Planilla</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombrePlanilla)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NombrePlanilla)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Autorizacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Autorizacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPago)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoPlanilla)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoPlanilla.NombreTipo)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
- *@

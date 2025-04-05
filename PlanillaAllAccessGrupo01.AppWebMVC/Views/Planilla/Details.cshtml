@@ -13,120 +13,137 @@
 <h4 class="text-center text-muted">Información completa</h4>
 <hr />
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-lg p-4">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.NombrePlanilla)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.NombrePlanilla</div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaInicio)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.FechaInicio.ToString("dd/MM/yyyy")</div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaFin)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.FechaFin.ToString("dd/MM/yyyy")</div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Autorizacion)</label>
-                    <div class="form-control-plaintext border-bottom">
-                        @if (Model.Autorizacion == 1)
-                        {
-                            <span class="badge bg-success">Autorizada</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary">No Autorizada</span>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TotalPago)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.TotalPago</div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TipoPlanilla)</label>
-                    <div class="form-control-plaintext border-bottom">@Model.TipoPlanilla?.NombreTipo</div>
-                </div>
-            </div>
-            @*Funcionalidad del botón Volver, que dirigirá a la pantalla principal Index de Planilla*@
-            <div class="d-flex justify-content-center mt-4">
-                <a asp-action="Index" class="btn btn-primary px-4">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
-            </div>
-        </div>
-    </div>
+<div class="container mt-5">
+	<div class="card shadow-lg">
+		<div class="card-header bg-primary text-white text-center">
+			<h4 class="mb-0">Detalles de Planilla</h4>
+		</div>
+		<div class="card-body">
+			<div class="row mb-4">
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.NombrePlanilla)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.NombrePlanilla</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaInicio)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.FechaInicio.ToString("dd/MM/yyyy")</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TotalPago)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.TotalPago</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.FechaFin)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.FechaFin.ToString("dd/MM/yyyy")</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.Autorizacion)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">
+							@if (Model.Autorizacion == 1)
+							{
+								<span class="badge bg-success">Autorizada</span>
+							}
+							else
+							{
+								<span class="badge bg-secondary">No Autorizada</span>
+							}
+						</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold">@Html.DisplayNameFor(model => model.TipoPlanilla)</label>
+						<div class="form-control-plaintext border p-2 rounded bg-light">@Model.TipoPlanilla?.NombreTipo</div>
+					</div>
+				</div>
+				<div class="table-responsive mt-4">
+					<table class="table table-bordered table-striped table-hover" id="tablaExportar">
+						<thead class="table-dark text-center align-middle">
+							<tr>
+								<th>Empleado</th>
+								<th>Dias Trab.</th>
+								<th>Hora Trab.</th>
+								<th>Horas Extr.</th>
+								<th>Horas Tard.</th>
+								<th>Sueldo Bs.</th>
+								<th>Total Bon.</th>
+								<th>Total Des.</th>
+								<th>SubTotal</th>
+								<th>Liquido Total.</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var EmpleadoPla in Model.EmpleadoPlanillas)
+							{
+								<tr class="align-middle">
+									<td class="text-center fw-semibold">@EmpleadoPla.Empleados?.Nombre</td>
+									<td class="text-center">@EmpleadoPla.TotalDiasTrabajados</td>
+									<td class="text-center">@EmpleadoPla.TotalHorasTrabajadas</td>
+									<td class="text-center">@EmpleadoPla.TotalHorasExtra</td>
+									<td class="text-center">@EmpleadoPla.TotalHorasTardias</td>
+									<td class="text-center">@EmpleadoPla.SueldoBase</td>
+									<td class="text-center">@EmpleadoPla.TotalDevengos</td>
+									<td class="text-center">@EmpleadoPla.TotalDescuentos</td>
+									<td class="text-center">@EmpleadoPla.SubTotal</td>
+									<td class="text-center">@EmpleadoPla.LiquidoTotal</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="d-flex justify-content-center">
+				<a asp-action="Index" class="btn btn-secondary px-4">
+					<i class="fas fa-arrow-left"></i> Volver
+				</a>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		$(document).ready(function() {
+			var table = $('#tablaExportar').DataTable({
+				ordering: false,
+				dom: 'Brtip',
+				buttons: [
+					{
+						extend: 'excel',
+						text: '<i class="fas fa-file-excel"></i> Excel',
+						className: 'btn btn-success btn-sm',
+						title: 'Reporte de Planilla',
+						messageTop: 'Generado el: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")',
+						exportOptions: {
+							columns: ':visible',
+							format: {
+								body: function(data, row, column, node) {
+									// Formatear números para Excel
+									if (column >= 5) { // Ajusta según tus columnas de montos
+										return data.replace(/[^\d.-]/g, '');
+									}
+									return data;
+								}
+							}
+						}
+					},
+				],
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json'
+				}
+			});
+
+			// Botones personalizados fuera de la tabla
+			$('#btnExportarExcel').click(function() {
+				table.button('.buttons-excel').trigger();
+			});
+
+
+		});
+	</script>
 }
-
-
-
-
-
-
-@* <h1>Details</h1>
-
-<div>
-    <h4>Planilla</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombrePlanilla)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NombrePlanilla)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Autorizacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Autorizacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPago)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoPlanilla)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoPlanilla.NombreTipo)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
- *@
