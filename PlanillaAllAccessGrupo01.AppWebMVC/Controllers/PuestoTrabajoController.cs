@@ -46,6 +46,9 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             // Limita el número de resultados
             query = query.Take(top);
 
+            // Ordena los resultados por ID de forma descendente.
+            query = query.OrderByDescending(s => s.Id);
+
             // Ejecuta la consulta y devuelve la vista con los resultados
             return View(await query.ToListAsync());
         }
