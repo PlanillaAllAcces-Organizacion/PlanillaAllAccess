@@ -309,7 +309,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
                 var (totalBonos, totalDescuentos) = CalcularBeneficios(empleado, minutosTardias, salarioCalculado);
 
-                // Cambio aquí: Pasamos las fechas al cálculo de vacaciones
                 var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado, fechaInicio, fechaFin);
 
                 decimal totalPagoHorasExtra = horasExtras * valorHoraNormal * 1.5m;
@@ -417,7 +416,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 TotalHorasTrabajadas = (int)horasTrabajadasTotales,
                 ValorDeHorasExtra = valorHoraExtra,
                 TotalPagoHorasExtra = totalPagoHorasExtra,
-                TotalPagoVacacion = pagoVacaciones, // Aseguramos que se guarde el pago de vacaciones
+                TotalPagoVacacion = pagoVacaciones, 
                 TotalDevengos = totalBonos,
                 TotalDescuentos = totalDescuentos,
                 SubTotal = subtotal,
@@ -520,13 +519,15 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewBag.FechaFin = fechaFin;
 
             // Cálculo de totales generales para mostrar en la vista resumen
-            ViewBag.SalarioBaseGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioBase").GetValue(e));
+            ViewBag.SalarioBaseGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioCalculado").GetValue(e));
             ViewBag.TotalBonosGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalBonos").GetValue(e));
             ViewBag.TotalDescuentosGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalDescuentos").GetValue(e));
             ViewBag.TotalHorasExtrasGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("HorasExtras").GetValue(e));
             ViewBag.TotalPagoHorasExtraGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalPagoHorasExtra").GetValue(e));
             ViewBag.TotalHorasTardiasGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("HorasTardias").GetValue(e));
             ViewBag.TotalSalarioNetoGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioNeto").GetValue(e));
+            ViewBag.SalarioCalculadoGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioCalculado").GetValue(e));
+
         }
 
         #endregion

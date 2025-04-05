@@ -77,7 +77,7 @@
                                     <th>Días Trab.</th>
                                     <th>Hrs Ext.</th>
                                     <th>Hrs. Tard.</th>
-                                    <th>Salario Base</th>
+                                    <th>Salario Calc.</th> <!-- Nueva columna -->
                                     <th>Pago Hrs Ext.</th>
                                     <th>Bonos</th>
                                     <th>Descuentos</th>
@@ -93,7 +93,7 @@
                                         <td class="text-center">@empleado.DiasTrabajados</td>
                                         <td class="text-center">@empleado.HorasExtras.ToString("0.##")</td>
                                         <td class="text-center">@((empleado.HorasTardias * 60).ToString("0"))</td>
-                                        <td class="text-right">@empleado.SalarioBase.ToString("C", culture)</td>
+                                        <td class="text-right">@empleado.SalarioCalculado.ToString("C", culture)</td> <!-- Nueva columna -->
                                         <td class="text-right">@empleado.TotalPagoHorasExtra.ToString("C", culture)</td>
                                         <td class="text-right">@empleado.TotalBonos.ToString("C", culture)</td>
                                         <td class="text-right">@empleado.TotalDescuentos.ToString("C", culture)</td>
@@ -104,7 +104,7 @@
                             <tfoot class="bg-light">
                                 <tr>
                                     <th colspan="5" class="text-right">Totales:</th>
-                                    <th class="text-right">@ViewBag.SalarioBaseGeneral.ToString("C", culture)</th>
+                                    <th class="text-right">@ViewBag.SalarioCalculadoGeneral.ToString("C", culture)</th> <!-- Nueva columna -->
                                     <th class="text-right">@ViewBag.TotalPagoHorasExtraGeneral.ToString("C", culture)</th>
                                     <th class="text-right">@ViewBag.TotalBonosGeneral.ToString("C", culture)</th>
                                     <th class="text-right">@ViewBag.TotalDescuentosGeneral.ToString("C", culture)</th>
