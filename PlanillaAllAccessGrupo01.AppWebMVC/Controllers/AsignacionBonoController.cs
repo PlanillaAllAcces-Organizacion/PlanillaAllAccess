@@ -56,7 +56,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(asignacionBono);
         }
 
-        // GET: AsignacionBono/Create
         // Muestra el formulario para crear nuevas asignaciones de bonos
         public IActionResult Create(int? empleadoId)
         {
@@ -81,7 +80,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View();
         }
 
-        // POST: AsignacionBono/Create
         // Procesa el formulario de creación de asignaciones de bonos
         [HttpPost]
         [ValidateAntiForgeryToken] // Protección contra CSRF
@@ -109,8 +107,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             TempData["SuccessMessage"] = "Bonos asignados correctamente.";
             return RedirectToAction("Index", "Empleado"); // Redirige al listado de empleados
         }
-
-        // GET: AsignacionBono/Edit/5
         // Muestra el formulario para editar asignaciones de bonos
         public async Task<IActionResult> Edit(int? id)
         {

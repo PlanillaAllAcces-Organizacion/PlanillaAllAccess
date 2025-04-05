@@ -175,8 +175,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(planilla);
         }
 
-        //En los metódos de DELETE se envía la información para visualizarla y se confirma si se mantendrá o se eliminará
-        // GET: Planilla/Delete/5
+        //En los metódos de DELETE se envía la información para visualizarla y se confirma si se mantendrá o se 
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
