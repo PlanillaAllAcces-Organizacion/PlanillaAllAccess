@@ -135,9 +135,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(planilla);
         }
 
-        // POST: Planilla/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         //Se colocó la funcionalidad para que pudiera actualizar registros si se modificaban.
         //Se le colocó también la validación de la fecha fin.
         [HttpPost]

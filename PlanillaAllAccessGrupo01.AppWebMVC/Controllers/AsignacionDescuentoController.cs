@@ -10,37 +10,44 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-    [Authorize(Roles = "Recursos Humanos")]
-
+    [Authorize(Roles = "Recursos Humanos")] // Restringe el acceso solo a usuarios con rol "Recursos Humanos"
     public class AsignacionDescuentoController : Controller
     {
-        private readonly PlanillaDbContext _context;
+        private readonly PlanillaDbContext _context; // Contexto de base de datos
 
+        // Constructor que inyecta el contexto de la base de datos
         public AsignacionDescuentoController(PlanillaDbContext context)
         {
             _context = context;
         }
 
         // GET: AsignacionDescuento
+        // Muestra la lista de todas las asignaciones de descuentos
         public async Task<IActionResult> Index()
         {
-            var planillaDbContext = _context.AsignacionDescuentos.Include(a => a.Descuentos).Include(a => a.Empleados);
+            // Incluye los datos relacionados de Descuentos y Empleados
+            var planillaDbContext = _context.AsignacionDescuentos
+                .Include(a => a.Descuentos)
+                .Include(a => a.Empleados);
             return View(await planillaDbContext.ToListAsync());
         }
 
         // GET: AsignacionDescuento/Details/5
+        // Muestra los detalles de una asignación específica
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null) // Verifica si el ID es nulo
             {
                 return NotFound();
             }
 
+            // Busca la asignación incluyendo datos relacionados
             var asignacionDescuento = await _context.AsignacionDescuentos
                 .Include(a => a.Descuentos)
                 .Include(a => a.Empleados)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (asignacionDescuento == null)
+
+            if (asignacionDescuento == null) // Verifica si se encontró la asignación
             {
                 return NotFound();
             }
@@ -48,38 +55,45 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(asignacionDescuento);
         }
 
-        //GET CREATE ASIGNACION DE DESCUENTOS, muestra la infromación y la lista de desucentos al empleado seleccionado
+        // GET: AsignacionDescuento/Create
+        // Muestra el formulario para crear nuevas asignaciones de descuentos
         public IActionResult Create(int? empleadoId)
         {
-            if (empleadoId == null)
+            if (empleadoId == null) // Verifica si se proporcionó un ID de empleado
             {
                 return NotFound();
             }
 
-            var empleado = _context.Empleados.Include(e => e.PuestoTrabajo).FirstOrDefault(e => e.Id == empleadoId);
+            // Obtiene los datos del empleado incluyendo su puesto de trabajo
+            var empleado = _context.Empleados
+                .Include(e => e.PuestoTrabajo)
+                .FirstOrDefault(e => e.Id == empleadoId);
 
-
+            // Pasa los datos del empleado a la vista usando ViewBag
             ViewBag.EmpleadoId = empleado.Id;
             ViewBag.EmpleadoNombre = empleado.Nombre;
             ViewBag.EmpleadoDUI = empleado.Dui;
             ViewBag.EmpleadoPuesto = empleado.PuestoTrabajo.NombrePuesto;
             ViewBag.EmpleadoSalario = empleado.SalarioBase;
-            ViewBag.Descuentos = _context.Descuentos.ToList();
+            ViewBag.Descuentos = _context.Descuentos.ToList(); // Lista de todos los descuentos disponibles
 
             return View();
         }
 
-        //POST CREATE ASIGNACION DESCUENTO, funciona para la lógica de guardar los descuentos seleccionados para ese empleado
+        // POST: AsignacionDescuento/Create
+        // Procesa el formulario de creación de asignaciones de descuentos
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Protección contra CSRF
         public async Task<IActionResult> Create(int empleadoId, List<int> descuentosSeleccionados)
         {
+            // Valida que se hayan seleccionado descuentos
             if (descuentosSeleccionados == null || !descuentosSeleccionados.Any())
             {
                 TempData["ErrorMessage"] = "Debe seleccionar al menos un descuento.";
                 return RedirectToAction("Create", new { empleadoId });
             }
 
+            // Crea una nueva asignación por cada descuento seleccionado
             foreach (var descuentoId in descuentosSeleccionados)
             {
                 var asignacion = new AsignacionDescuento
@@ -90,41 +104,41 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 _context.AsignacionDescuentos.Add(asignacion);
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Guarda los cambios en la base de datos
             TempData["SuccessMessage"] = "Descuentos asignados correctamente.";
-            return RedirectToAction("Index", "Empleado");
+            return RedirectToAction("Index", "Empleado"); // Redirige al listado de empleados
         }
 
-
-        //GET EDIT Permite la visualizacion de datos del empleado y los decuentos que tiene asignados.
+        // GET: AsignacionDescuento/Edit/5
+        // Muestra el formulario para editar asignaciones de descuentos
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) // Verifica si el ID es nulo
             {
                 return NotFound();
             }
 
-            // Obtener la asignación de descuento
+            // Obtiene la asignación de descuento con datos relacionados
             var asignacionDescuento = await _context.AsignacionDescuentos
                 .Include(a => a.Descuentos)
                 .Include(a => a.Empleados)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            if (asignacionDescuento == null)
+            if (asignacionDescuento == null) // Verifica si se encontró la asignación
             {
                 return NotFound();
             }
 
-            // Obtener todos los descuentos disponibles
+            // Obtiene todos los descuentos disponibles
             var descuentosDisponibles = await _context.Descuentos.ToListAsync();
 
-            // Obtener los descuentos ya asignados al empleado
+            // Obtiene los IDs de los descuentos ya asignados al empleado
             var descuentosAsignados = await _context.AsignacionDescuentos
                 .Where(a => a.EmpleadosId == asignacionDescuento.EmpleadosId)
                 .Select(a => a.DescuentosId)
                 .ToListAsync();
 
-            // Pasar los datos a la vista
+            // Pasa los datos a la vista
             ViewBag.DescuentosDisponibles = descuentosDisponibles;
             ViewBag.DescuentosAsignados = descuentosAsignados;
             ViewBag.EmpleadoNombre = $"{asignacionDescuento.Empleados.Nombre} {asignacionDescuento.Empleados.Apellido}";
@@ -132,28 +146,29 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(asignacionDescuento);
         }
 
-        //POST EDIT Permite agregar o quitar descuentos y actualizar la lista de descuentos seleccionados
+        // POST: AsignacionDescuento/Edit/5
+        // Procesa el formulario de edición de asignaciones de descuentos
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Protección contra CSRF
         public async Task<IActionResult> Edit(int id, List<int> descuentosSeleccionados)
         {
-            // Obtener la asignación de descuento existente
+            // Obtiene la asignación existente
             var asignacionDescuento = await _context.AsignacionDescuentos
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            if (asignacionDescuento == null)
+            if (asignacionDescuento == null) // Verifica si se encontró la asignación
             {
                 return NotFound();
             }
 
-            // Eliminar los descuentos previamente asignados
+            // Elimina todas las asignaciones previas del empleado
             var descuentosPrevios = _context.AsignacionDescuentos
                 .Where(a => a.EmpleadosId == asignacionDescuento.EmpleadosId)
                 .ToList();
 
             _context.AsignacionDescuentos.RemoveRange(descuentosPrevios);
 
-            // Agregar los nuevos descuentos seleccionados
+            // Crea nuevas asignaciones con los descuentos seleccionados
             foreach (var descuentoId in descuentosSeleccionados)
             {
                 _context.AsignacionDescuentos.Add(new AsignacionDescuento
@@ -163,24 +178,26 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 });
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Empleado");
+            await _context.SaveChangesAsync(); // Guarda los cambios
+            return RedirectToAction("Index", "Empleado"); // Redirige al listado de empleados
         }
 
-
         // GET: AsignacionDescuento/Delete/5
+        // Muestra la confirmación para eliminar una asignación
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null) // Verifica si el ID es nulo
             {
                 return NotFound();
             }
 
+            // Obtiene la asignación con datos relacionados
             var asignacionDescuento = await _context.AsignacionDescuentos
                 .Include(a => a.Descuentos)
                 .Include(a => a.Empleados)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (asignacionDescuento == null)
+
+            if (asignacionDescuento == null) // Verifica si se encontró la asignación
             {
                 return NotFound();
             }
@@ -189,20 +206,23 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
         // POST: AsignacionDescuento/Delete/5
+        // Procesa la eliminación de una asignación
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Protección contra CSRF
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // Busca la asignación a eliminar
             var asignacionDescuento = await _context.AsignacionDescuentos.FindAsync(id);
-            if (asignacionDescuento != null)
+            if (asignacionDescuento != null) // Verifica si se encontró
             {
-                _context.AsignacionDescuentos.Remove(asignacionDescuento);
+                _context.AsignacionDescuentos.Remove(asignacionDescuento); // Marca para eliminación
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            await _context.SaveChangesAsync(); // Ejecuta la eliminación en la base de datos
+            return RedirectToAction(nameof(Index)); // Redirige al listado
         }
 
+        // Método auxiliar para verificar si existe una asignación
         private bool AsignacionDescuentoExists(int id)
         {
             return _context.AsignacionDescuentos.Any(e => e.Id == id);
