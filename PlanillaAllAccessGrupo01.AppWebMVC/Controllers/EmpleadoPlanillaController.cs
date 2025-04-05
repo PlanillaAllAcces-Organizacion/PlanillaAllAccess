@@ -168,13 +168,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return View("Create"); // Regresa al formulario de creación
             }
 
-            // Esta validación se repite innecesariamente, podría eliminarse
-            if (!ValidarFechas(fechaInicio, fechaFin))
-            {
-                CargarListasDesplegables();
-                return View("Create");
-            }
-
             // Verifica si todos los empleados están inactivos (Estado == 2)
             if (_context.Empleados.Any(e => e.Estado == 2))
             {
@@ -517,26 +510,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return (diasTotales, pagoTotal);
         }
-
-
-
-        // Método que calcula el salario neto de un empleado sumando bonos, horas extras, vacaciones y restando descuentos
-        private decimal CalcularSalarioNeto(Empleado empleado, decimal totalBonos, decimal totalDescuentos, decimal pagoVacaciones, decimal horasExtras)
-        {
-            // Calcular el valor por hora del empleado (asumiendo jornada de 8 horas diarias en 30 días)
-            decimal valorHora = (decimal)(empleado.SalarioBase / 30m / 8m);
-
-            // Calcular el valor de las horas extra (se pagan al 150%)
-            decimal valorHorasExtras = horasExtras * valorHora * 1.5m;
-
-            // Salario neto = salario base + horas extra + pago vacaciones + bonos - descuentos
-            return (decimal)(empleado.SalarioBase +
-                   valorHorasExtras +
-                   pagoVacaciones +
-                   totalBonos -
-                   totalDescuentos);
-        }
-
 
         // Método que configura los datos necesarios en ViewBag para ser usados en la vista de la planilla
         private void ConfigurarViewBagsParaVista(DateTime fechaInicio, DateTime fechaFin, List<object> empleadosInfo)
