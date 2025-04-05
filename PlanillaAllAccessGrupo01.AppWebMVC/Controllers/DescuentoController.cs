@@ -10,23 +10,26 @@ using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-    //Autorización para tener acceso a este apartado de Descuentos
+    // Restringe el acceso solo a usuarios con rol "Recursos Humanos"
     [Authorize(Roles = "Recursos Humanos")]
     public class DescuentoController : Controller
     {
-        private readonly PlanillaDbContext _context;
+        private readonly PlanillaDbContext _context; // Contexto de base de datos
 
+        // Constructor que inyecta el contexto de la base de datos
         public DescuentoController(PlanillaDbContext context)
         {
             _context = context;
         }
 
-        //Modificación del método Index para que la funcionalidad de los filtros de la vista Index se cumplan.
         // GET: Descuento
+        // Muestra la lista de descuentos con capacidades de filtrado
         public async Task<IActionResult> Index(Descuento descuento, int topRegistro = 10)
         {
+            // Consulta base para los descuentos
             var query = _context.Descuentos.AsQueryable();
 
+            // Consulta adicional para mostrar asignaciones de descuentos a empleados
             var planillaDbContext = _context.AsignacionDescuentos
                .Include(a => a.Descuentos)
                .Include(a => a.Empleados)
@@ -39,6 +42,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                    EsOperacionFija = a.Descuentos.Operacion
                });
 
+            // Aplicación de filtros según los parámetros recibidos
             if (!string.IsNullOrWhiteSpace(descuento.Nombre))
                 query = query.Where(s => s.Nombre.Contains(descuento.Nombre));
 
@@ -51,56 +55,64 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             if (descuento.Operacion > 0)
                 query = query.Where(s => s.Operacion == descuento.Operacion);
 
+            // Ordenamiento y limitación de resultados
             query = query.OrderByDescending(e => e.Id);
 
             if (topRegistro > 0)
                 query = query.Take(topRegistro);
 
+            // Ejecución de la consulta
             var listaDescuentos = await query.ToListAsync();
+
+            // Asignación de fechas por defecto si no están establecidas
             foreach (var descuentoItem in listaDescuentos)
             {
-                descuentoItem.FechaValidacion = DateOnly.FromDateTime(DateTime.Now); // Asignar la fecha de validación
-                descuentoItem.FechaExpiracion = DateOnly.FromDateTime(DateTime.Now.AddMonths(1)); // Asignar la fecha de expiración
+                descuentoItem.FechaValidacion = DateOnly.FromDateTime(DateTime.Now);
+                descuentoItem.FechaExpiracion = DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
             }
-            return View(listaDescuentos); 
+
+            return View(listaDescuentos);
         }
 
         // GET: Descuento/Details/5
+        // Muestra los detalles de un descuento específico
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null) // Validación de ID nulo
             {
                 return NotFound();
             }
 
+            // Búsqueda del descuento
             var descuento = await _context.Descuentos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (descuento == null)
+
+            if (descuento == null) // Validación de existencia
             {
                 return NotFound();
             }
 
-            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);// Asignar la fecha de validación
-            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));// Asignar la fecha de expiración
+            // Asignación de fechas por defecto si no están establecidas
+            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);
+            descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
 
             return View(descuento);
         }
 
         // GET: Descuento/Create
+        // Muestra el formulario de creación de descuentos
         public IActionResult Create()
         {
             return View();
         }
 
-        //Moddificación del metódo de Crear de Descuentos para que valide la fecha de validación y de expiración y para que guarde los registros que se han creado.
         // POST: Descuento/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Procesa el formulario de creación de descuentos
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Protección contra CSRF
         public async Task<IActionResult> Create([Bind("Id,Nombre,Valor,Estado,FechaValidacion,FechaExpiracion,Operacion,Planilla")] Descuento descuento)
         {
-
+            // Validación personalizada de fechas
             if (descuento.FechaValidacion != null && descuento.FechaExpiracion != null)
             {
                 if (descuento.FechaExpiracion <= descuento.FechaValidacion)
@@ -109,6 +121,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 }
             }
 
+            // Si el modelo es válido, guarda el descuento
             if (ModelState.IsValid)
             {
                 _context.Add(descuento);
@@ -118,41 +131,41 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return View(descuento);
         }
 
-        //Modificación de los metódos de editar para que valide las fechas y me las muestre y guarde si el registro fue modificado.
         // GET: Descuento/Edit/5
+        // Muestra el formulario de edición de descuentos
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) // Validación de ID nulo
             {
                 return NotFound();
             }
 
+            // Búsqueda del descuento
             var descuento = await _context.Descuentos.FindAsync(id);
-            if (descuento == null)
+            if (descuento == null) // Validación de existencia
             {
                 return NotFound();
             }
 
-
-            // Asignar valores temporales si las fechas están vacías
-            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now); // Asignar fecha de validación si es nula
+            // Asignación de fechas por defecto si no están establecidas
+            descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);
             descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
 
             return View(descuento);
         }
 
         // POST: Descuento/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Procesa el formulario de edición de descuentos
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Protección contra CSRF
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Valor,Estado,FechaValidacion,FechaExpiracion,Operacion,Planilla")] Descuento descuento)
         {
-            if (id != descuento.Id)
+            if (id != descuento.Id) // Validación de coincidencia de IDs
             {
                 return NotFound();
             }
 
+            // Validación personalizada de fechas
             if (descuento.FechaValidacion != null && descuento.FechaExpiracion != null)
             {
                 if (descuento.FechaExpiracion <= descuento.FechaValidacion)
@@ -161,6 +174,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 }
             }
 
+            // Si el modelo es válido, actualiza el descuento
             if (ModelState.IsValid)
             {
                 try
@@ -185,53 +199,60 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
         // GET: Descuento/Delete/5
+        // Muestra la confirmación de eliminación
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null) // Validación de ID nulo
             {
                 return NotFound();
             }
 
+            // Búsqueda del descuento
             var descuento = await _context.Descuentos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (descuento == null)
+
+            if (descuento == null) // Validación de existencia
             {
                 return NotFound();
             }
 
+            // Asignación de fechas por defecto si no están establecidas
             descuento.FechaValidacion ??= DateOnly.FromDateTime(DateTime.Now);
             descuento.FechaExpiracion ??= DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
 
             return View(descuento);
         }
 
-        //Modificación del metódo de Eliminar empleado solo si no esta asignado a un empleado.
         // POST: Descuento/Delete/5
+        // Procesa la eliminación del descuento
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Protección contra CSRF
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            // Incluimos las asignaciones para poder comprobar si existen
+            // Búsqueda del descuento incluyendo sus asignaciones
             var descuento = await _context.Descuentos
                 .Include(b => b.AsignacionDescuentos)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
-            if (descuento == null)
+            if (descuento == null) // Validación de existencia
             {
                 return NotFound();
             }
 
+            // Validación de que el descuento no esté asignado a empleados
             if (descuento.AsignacionDescuentos.Any())
             {
                 TempData["ErrorMessage"] = "No se puede eliminar este descuento porque está asignado a uno o más empleados.";
                 return RedirectToAction(nameof(Index));
             }
 
+            // Eliminación del descuento
             _context.Descuentos.Remove(descuento);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // Método auxiliar para verificar existencia de descuento
         private bool DescuentoExists(int id)
         {
             return _context.Descuentos.Any(e => e.Id == id);
