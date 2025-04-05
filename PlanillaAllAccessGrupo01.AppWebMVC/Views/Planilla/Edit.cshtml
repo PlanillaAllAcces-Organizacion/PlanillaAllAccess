@@ -19,6 +19,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
 
+                <input type="hidden" asp-for="TipoPlanillaId" class="form-control" asp-items="ViewBag.TipoPlanillaId" readonly/>
 
                 <div class="row">
 
@@ -27,7 +28,7 @@
                         <input asp-for="NombrePlanilla" class="form-control" placeholder="Ingrese el nombre de la planilla" />
                         <span asp-validation-for="NombrePlanilla" class="text-danger"></span>
                     </div>
-                   
+
                     <div class="col-md-6 mb-3">
                         <label asp-for="Autorizacion" class="form-label fw-bold">Autorización</label>
                         <select name="autorizacion" class="form-select">
@@ -36,8 +37,9 @@
                             <option value="2">No Autorizada</option>
                         </select>
                         <span asp-validation-for="Autorizacion" class="text-danger"></span>
-                    </div>
+                    </div>  
                 </div>
+
 
                 <div class="row">
                     <div class="col-md-6 mb-3">

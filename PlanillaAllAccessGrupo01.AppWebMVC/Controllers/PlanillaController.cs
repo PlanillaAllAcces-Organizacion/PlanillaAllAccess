@@ -118,31 +118,23 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         // GET: Planilla/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var planilla = await _context.Planillas.FindAsync(id);
-            if (planilla == null)
-            {
-                return NotFound();
-            }
+            if (planilla == null) return NotFound();
+
             ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", planilla.TipoPlanillaId);
             return View(planilla);
         }
 
-       
+
         //Se colocó la funcionalidad para que pudiera actualizar registros si se modificaban.
         //Se le colocó también la validación de la fecha fin.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,NombrePlanilla,TipoPlanillaId,FechaInicio,FechaFin,Autorizacion,TotalPago")] Planilla planilla)
         {
-            if (id != planilla.Id)
-            {
-                return NotFound();
-            }
+           if (id != planilla.Id) return NotFound();
 
             if (planilla.FechaFin <= planilla.FechaInicio)
             {
@@ -156,21 +148,15 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                     _context.Update(planilla);
                     await _context.SaveChangesAsync();
                     TempData["Mensaje"] = "Planilla actualizada con éxito.";
-
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlanillaExists(planilla.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!PlanillaExists(planilla.Id)) return NotFound();
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             ViewData["TipoPlanillaId"] = new SelectList(_context.TipoPlanillas, "Id", "NombreTipo", planilla.TipoPlanillaId);
             return View(planilla);
         }
