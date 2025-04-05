@@ -301,33 +301,29 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
 
 
-        // Calcula la información de planilla para cada empleado
+        // Método modificado para pasar las fechas al cálculo de vacaciones
         private List<object> CalcularInformacionPlanilla(List<Empleado> empleados, DateTime fechaInicio, DateTime fechaFin)
         {
             return empleados.Select(empleado =>
             {
                 var asistencias = empleado.ControlAsistencia;
 
-                // Resumen de asistencias (días trabajados, horas extras, tardías, etc.)
-                var (diasTrabajados, horasExtras, minutosTardias, horasTrabajadasTotales) = CalcularResumenAsistencias(asistencias);
+                var (diasTrabajados, horasExtras, minutosTardias, horasTrabajadasTotales) =
+                    CalcularResumenAsistencias(asistencias);
 
-                // Calcular salario base por hora
                 decimal valorHoraNormal = (decimal)(empleado.PuestoTrabajo?.ValorxHora ?? empleado.SalarioBase / 30m / 8m);
                 decimal salarioCalculado = horasTrabajadasTotales * valorHoraNormal;
 
-                // Cálculo de bonos y descuentos
                 var (totalBonos, totalDescuentos) = CalcularBeneficios(empleado, minutosTardias, salarioCalculado);
 
-                // Cálculo de vacaciones
-                var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado);
+                // Cambio aquí: Pasamos las fechas al cálculo de vacaciones
+                var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado, fechaInicio, fechaFin);
 
-                // Cálculo de extras y subtotal
                 decimal totalPagoHorasExtra = horasExtras * valorHoraNormal * 1.5m;
                 decimal horasTardias = minutosTardias / 60m;
                 decimal subtotal = salarioCalculado + totalPagoHorasExtra + pagoVacaciones + totalBonos;
                 decimal salarioNeto = subtotal - totalDescuentos;
 
-                // Objeto anónimo con datos para la vista
                 return new
                 {
                     EmpleadoId = empleado.Id,
@@ -397,30 +393,30 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return (dias, horasExtras, horasTardias, horasTrabajadasTotales);
         }
 
+        // Método modificado para generar el detalle de planilla con el cálculo correcto de vacaciones
         private async Task<EmpleadoPlanilla> GenerarDetallePlanilla(Empleado empleado, int planillaId, DateTime fechaInicio, DateTime fechaFin)
         {
             var asistencias = empleado.ControlAsistencia ?? new List<ControlAsistencium>();
             var (diasTrabajados, horasExtras, minutosTardias, horasTrabajadasTotales) = CalcularResumenAsistencias(asistencias);
 
-            // Cálculos básicos
             decimal valorHoraNormal = (decimal)(empleado.PuestoTrabajo?.ValorxHora ?? empleado.SalarioBase / 30m / 8m);
             decimal salarioCalculado = horasTrabajadasTotales * valorHoraNormal;
             decimal valorHoraExtra = empleado.PuestoTrabajo?.ValorExtra ?? valorHoraNormal * 1.5m;
             decimal totalPagoHorasExtra = horasExtras * valorHoraExtra;
 
-            // Calculamos bonos y descuentos (sin crear DescuentoPlanilla)
             var (totalBonos, totalDescuentos) = CalcularBeneficios(empleado, minutosTardias, salarioCalculado);
 
-            // Cálculos finales
-            decimal subtotal = salarioCalculado + totalPagoHorasExtra + totalBonos;
+            // Cambio aquí: Pasamos las fechas al cálculo de vacaciones
+            var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado, fechaInicio, fechaFin);
+
+            decimal subtotal = salarioCalculado + totalPagoHorasExtra + pagoVacaciones + totalBonos;
             decimal salarioNeto = subtotal - totalDescuentos;
 
-            // Creamos la planilla con DescuentoPlanillaId = null
             var empleadoPlanilla = new EmpleadoPlanilla
             {
                 EmpleadosId = empleado.Id,
                 PlanillaId = planillaId,
-                DescuentoPlanillaId = null, // Explicitamente null como solicitaste
+                DescuentoPlanillaId = null,
                 SueldoBase = salarioCalculado,
                 TotalDiasTrabajados = diasTrabajados,
                 TotalHorasExtra = (int)horasExtras,
@@ -428,6 +424,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 TotalHorasTrabajadas = (int)horasTrabajadasTotales,
                 ValorDeHorasExtra = valorHoraExtra,
                 TotalPagoHorasExtra = totalPagoHorasExtra,
+                TotalPagoVacacion = pagoVacaciones, // Aseguramos que se guarde el pago de vacaciones
                 TotalDevengos = totalBonos,
                 TotalDescuentos = totalDescuentos,
                 SubTotal = subtotal,
@@ -484,25 +481,43 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return (bonos, descuentos);
         }
-        // Método que calcula los días de vacaciones tomados por un empleado y el pago correspondiente
-        private (int DiasVacaciones, decimal PagoVacaciones) CalcularVacaciones(Empleado empleado)
+        // Método modificado para calcular vacaciones considerando rango de fechas y pagadas
+        private (int DiasVacaciones, decimal PagoVacaciones) CalcularVacaciones(Empleado empleado, DateTime fechaInicio, DateTime fechaFin)
         {
-            // Obtener la primera vacación registrada del empleado (puede mejorarse para múltiples vacaciones)
-            var vacacion = empleado.Vacacions.FirstOrDefault();
+            // Obtener todas las vacaciones del empleado que estén dentro del rango y sean pagadas
+            var vacacionesValidas = empleado.Vacacions
+                .Where(v => v.VacacionPagada == 1 && // Solo vacaciones pagadas
+                           v.DiaInicio >= fechaInicio &&
+                           v.DiaFin <= fechaFin)
+                .ToList();
 
-            // Si no tiene vacaciones registradas, retorna 0
-            if (vacacion == null) return (0, 0);
+            if (!vacacionesValidas.Any())
+                return (0, 0);
 
-            // Calcular la diferencia en días entre la fecha de inicio y fin de la vacación
-            TimeSpan diferencia = vacacion.DiaFin - vacacion.DiaInicio;
-            int dias = diferencia.Days;
+            // Calcular días y pago total de todas las vacaciones válidas
+            int diasTotales = 0;
+            decimal pagoTotal = 0;
 
-            // Calcular el pago correspondiente a esos días de vacaciones
-            // Se asume un mes de 30 días
-            decimal pago = (decimal)(dias * (empleado.SalarioBase / 30m));
+            foreach (var vacacion in vacacionesValidas)
+            {
+                TimeSpan diferencia = vacacion.DiaFin - vacacion.DiaInicio;
+                int dias = diferencia.Days + 1; // +1 para incluir ambos días
+                diasTotales += dias;
 
-            return (dias, pago);
+                // Si tiene un pago específico, usarlo, sino calcularlo
+                if (vacacion.PagoVacaciones.HasValue)
+                {
+                    pagoTotal += vacacion.PagoVacaciones.Value;
+                }
+                else
+                {
+                    pagoTotal += (decimal)(dias * (empleado.SalarioBase / 30m));
+                }
+            }
+
+            return (diasTotales, pagoTotal);
         }
+
 
 
         // Método que calcula el salario neto de un empleado sumando bonos, horas extras, vacaciones y restando descuentos
