@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlanillaAllAccessGrupo01.AppWebMVC.Models;
 
 namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 {
-
+    //Autorización para tener acceso a este apartado de Gestión de Planilla
+    [Authorize(Roles = "Administrador de Nómina")]
     public class EmpleadoPlanillaController : Controller
     {
         private readonly PlanillaDbContext _context;
@@ -15,87 +17,107 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
         #region Vistas Básicas (CRUD)
+
+        // Muestra la lista de registros de planillas de empleados
         public async Task<IActionResult> Index()
         {
+            // Obtiene todos los registros de EmpleadoPlanilla, incluyendo los datos del empleado y la planilla relacionada.
             var planillas = await _context.EmpleadoPlanillas
                 .Include(e => e.Empleados)
                 .Include(e => e.Planilla)
-                .AsNoTracking()
+                .AsNoTracking() // No rastrea los cambios, mejora el rendimiento al solo mostrar los datos
                 .ToListAsync();
-            return View(planillas);
+
+            return View(planillas); // Retorna la vista con la lista de planillas
         }
 
+
+        // Muestra el detalle de un registro específico
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return NotFound(); // Si no se proporciona el ID, devuelve error 404
 
+            // Busca el registro con el ID proporcionado, incluyendo sus relaciones
             var empleadoPlanilla = await _context.EmpleadoPlanillas
                 .Include(e => e.Empleados)
                 .Include(e => e.Planilla)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            return empleadoPlanilla == null ? NotFound() : View(empleadoPlanilla);
+            return empleadoPlanilla == null ? NotFound() : View(empleadoPlanilla); // Si no se encuentra, muestra error 404
         }
 
+
+        // Muestra el formulario para crear un nuevo registro de planilla
         public IActionResult Create()
         {
-            CargarListasDesplegables();
-            return View();
+            CargarListasDesplegables(); // Carga las listas desplegables (empleados y planillas)
+            return View(); // Retorna la vista vacía del formulario
         }
 
+
+        // Recibe los datos del formulario para crear un nuevo registro
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,EmpleadosId,PlanillaId,SueldoBase,TotalDiasTrabajados,TotalHorasExtra,TotalPagoHorasExtra,TotalPagoVacacion,SubTotal,LiquidoTotal")] EmpleadoPlanilla empleadoPlanilla)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) // Verifica que los datos recibidos sean válidos
             {
-                _context.Add(empleadoPlanilla);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Registro de planilla creado exitosamente";
-                return RedirectToAction("Index", "Planilla"); 
+                _context.Add(empleadoPlanilla); // Agrega el nuevo registro al contexto
+                await _context.SaveChangesAsync(); // Guarda los cambios en la base de datos
+                TempData["SuccessMessage"] = "Registro de planilla creado exitosamente"; // Mensaje de confirmación
+                return RedirectToAction("Index", "Planilla"); // Redirige a la lista de planillas
             }
-            CargarListasDesplegables();
-            return View(empleadoPlanilla);
+
+            CargarListasDesplegables(); // Si hubo error, vuelve a cargar las listas
+            return View(empleadoPlanilla); // Devuelve la vista con los datos ingresados
         }
 
+
+        // Muestra el formulario para editar un registro de planilla existente
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return NotFound(); // Si no se proporciona el ID, retorna error 404
 
-            var empleadoPlanilla = await _context.EmpleadoPlanillas.FindAsync(id);
-            if (empleadoPlanilla == null) return NotFound();
+            var empleadoPlanilla = await _context.EmpleadoPlanillas.FindAsync(id); // Busca el registro
+            if (empleadoPlanilla == null) return NotFound(); // Si no se encuentra, error 404
 
-            CargarListasDesplegables();
-            return View(empleadoPlanilla);
+            CargarListasDesplegables(); // Carga listas desplegables
+            return View(empleadoPlanilla); // Retorna la vista con los datos actuales
         }
 
+
+        // Guarda los cambios realizados en la edición del registro
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadosId,PlanillaId,SueldoBase,TotalDiasTrabajados,TotalHorasExtra,TotalPagoHorasExtra,TotalPagoVacacion,SubTotal,LiquidoTotal")] EmpleadoPlanilla empleadoPlanilla)
         {
-            if (id != empleadoPlanilla.Id) return NotFound();
+            if (id != empleadoPlanilla.Id) return NotFound(); // Si el ID no coincide, error 404
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(empleadoPlanilla);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Registro de planilla actualizado exitosamente";
+                    _context.Update(empleadoPlanilla); // Actualiza el registro
+                    await _context.SaveChangesAsync(); // Guarda los cambios
+                    TempData["SuccessMessage"] = "Registro de planilla actualizado exitosamente"; // Mensaje de éxito
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Si el registro ya no existe, error 404
                     if (!EmpleadoPlanillaExists(empleadoPlanilla.Id))
                         return NotFound();
                     else
-                        throw;
+                        throw; // Si es otro error, lo lanza
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // Redirige al listado
             }
-            CargarListasDesplegables();
-            return View(empleadoPlanilla);
+
+            CargarListasDesplegables(); // Si hubo errores, recarga las listas
+            return View(empleadoPlanilla); // Retorna la vista con los datos ingresados
         }
 
+
+        // Muestra el formulario de confirmación para eliminar un registro
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -103,57 +125,66 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             var empleadoPlanilla = await _context.EmpleadoPlanillas
                 .Include(e => e.Empleados)
                 .Include(e => e.Planilla)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id); // Busca el registro
 
-            return empleadoPlanilla == null ? NotFound() : View(empleadoPlanilla);
+            return empleadoPlanilla == null ? NotFound() : View(empleadoPlanilla); // Si no se encuentra, error 404
         }
 
+
+        // Elimina el registro seleccionado de la base de datos
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var empleadoPlanilla = await _context.EmpleadoPlanillas.FindAsync(id);
+            var empleadoPlanilla = await _context.EmpleadoPlanillas.FindAsync(id); // Busca el registro
             if (empleadoPlanilla != null)
             {
-                _context.EmpleadoPlanillas.Remove(empleadoPlanilla);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Registro de planilla eliminado exitosamente";
+                _context.EmpleadoPlanillas.Remove(empleadoPlanilla); // Lo elimina del contexto
+                await _context.SaveChangesAsync(); // Guarda los cambios
+                TempData["SuccessMessage"] = "Registro de planilla eliminado exitosamente"; // Mensaje de éxito
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)); // Redirige a la lista
         }
 
+
+        // Verifica si un registro de planilla existe en la base de datos
         private bool EmpleadoPlanillaExists(int id)
         {
-            return _context.EmpleadoPlanillas.Any(e => e.Id == id);
+            return _context.EmpleadoPlanillas.Any(e => e.Id == id); // Devuelve true si existe
         }
+
         #endregion
 
         #region Generación de Planillas
+        // Este método busca información de empleados con base en un rango de fechas
         [HttpPost]
         public async Task<IActionResult> BuscarInformacionEmpleados(DateTime fechaInicio, DateTime fechaFin)
         {
-
+            // Verifica si la fecha final es mayor o igual a la fecha de inicio
             if (!ValidarFechas(fechaInicio, fechaFin))
             {
                 TempData["ErrorMessage"] = "Error: La fecha fin debe ser mayor o igual a la fecha inicio";
-                CargarListasDesplegables();
-                return View("Create");
+                CargarListasDesplegables(); // Carga nuevamente las listas desplegables necesarias para la vista
+                return View("Create"); // Regresa al formulario de creación
             }
 
+            // Esta validación se repite innecesariamente, podría eliminarse
             if (!ValidarFechas(fechaInicio, fechaFin))
             {
                 CargarListasDesplegables();
                 return View("Create");
             }
 
-
+            // Verifica si todos los empleados están inactivos (Estado == 2)
             if (_context.Empleados.Any(e => e.Estado == 2))
             {
                 TempData["WarningMessage"] = "Solo hay empleados inactivos en el sistema";
             }
 
+            // Obtiene la lista de empleados activos con registros de asistencia en el rango de fechas
             var empleados = await ObtenerEmpleadosConAsistencias(fechaInicio, fechaFin);
 
+            // Si no se encontró ningún empleado con asistencia en ese rango de fechas
             if (!empleados.Any())
             {
                 TempData["ErrorMessage"] = $"No se encontraron empleados activos con registros entre {fechaInicio:dd/MM/yyyy} y {fechaFin:dd/MM/yyyy}";
@@ -161,19 +192,27 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return View("Create");
             }
 
+            // Calcula la información necesaria para mostrar en la vista (sueldos, horas, etc.)
             var empleadosInfo = CalcularInformacionPlanilla(empleados, fechaInicio, fechaFin);
+
+            // Prepara los ViewBag para enviar la información a la vista
             ConfigurarViewBagsParaVista(fechaInicio, fechaFin, empleadosInfo);
 
+            // Muestra la vista con el resumen general de la planilla
             return View("CreateGeneral");
         }
 
+
+        // Este método genera la planilla general de empleados para un rango de fechas dado
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerarPlanillaGeneral(DateTime fechaInicio, DateTime fechaFin)
         {
+            // Verifica que las fechas sean válidas. Si no lo son, redirige al formulario de creación
             if (!ValidarFechas(fechaInicio, fechaFin, true))
                 return RedirectToAction(nameof(Create));
 
+            // Obtiene los empleados con asistencias dentro del rango de fechas
             var empleados = await ObtenerEmpleadosConAsistencias(fechaInicio, fechaFin);
             if (!empleados.Any())
             {
@@ -181,40 +220,51 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                 return RedirectToAction(nameof(Create));
             }
 
+            // Crea una nueva planilla con los datos básicos
             var planilla = new Planilla
             {
-                NombrePlanilla = $"Planilla Mens. {fechaInicio:MMMM}",
-                TipoPlanillaId = 1,
+                NombrePlanilla = $"Planilla Mens. {fechaInicio:MMMM}", // Ejemplo: Planilla Mens. Abril
+                TipoPlanillaId = 1, // Puede referirse a un tipo fijo como "Mensual"
                 FechaInicio = fechaInicio,
                 FechaFin = fechaFin,
-                Autorizacion = 0
+                Autorizacion = 0 // 0 puede significar "no autorizada" aún
             };
 
+            // Guarda la nueva planilla en la base de datos
             _context.Planillas.Add(planilla);
             await _context.SaveChangesAsync();
 
             decimal totalGeneral = 0;
+
+            // Por cada empleado, se genera un detalle de planilla (línea con cálculos)
             foreach (var empleado in empleados)
             {
                 var detallePlanilla = await GenerarDetallePlanilla(empleado, planilla.Id, fechaInicio, fechaFin);
-                totalGeneral += (decimal)detallePlanilla.LiquidoTotal;
+                totalGeneral += (decimal)detallePlanilla.LiquidoTotal; // Acumula el total general a pagar
             }
 
+            // Se guarda el total a pagar en la planilla general
             planilla.TotalPago = totalGeneral;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Guarda los cambios
 
+            // Mensaje de confirmación con el total generado
             TempData["SuccessMessage"] = $"Planilla generada exitosamente. Total: {totalGeneral:$0.00}";
-            return RedirectToAction("Index", "Planilla"); // Redirige al Index de Empleado
+
+            return RedirectToAction("Index", "Planilla"); // Redirige a la lista de planillas
         }
+
         #endregion
 
         #region Métodos Privados
+        // Carga los datos para los dropdowns (empleados y planillas)
         private void CargarListasDesplegables()
         {
             ViewData["EmpleadosId"] = new SelectList(_context.Empleados, "Id", "Nombre");
             ViewData["PlanillaId"] = new SelectList(_context.Planillas, "Id", "NombrePlanilla");
         }
 
+
+        // Valida que la fecha fin no sea menor que la fecha inicio
         private bool ValidarFechas(DateTime fechaInicio, DateTime fechaFin, bool usarTempData = false)
         {
             if (fechaFin >= fechaInicio) return true;
@@ -228,6 +278,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return false;
         }
 
+
+        // Obtiene empleados activos con asistencias dentro del rango de fechas
         private async Task<List<Empleado>> ObtenerEmpleadosConAsistencias(DateTime fechaInicio, DateTime fechaFin)
         {
             var fechaInicioDate = DateOnly.FromDateTime(fechaInicio);
@@ -236,14 +288,11 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             return await _context.Empleados
                 .Where(e => e.Estado == 1 && e.TipoPlanillaId == 1)
                 .Include(e => e.PuestoTrabajo)
-                .Include(e => e.AsignacionBonos)
-                    .ThenInclude(ab => ab.Bonos)
-                .Include(e => e.AsignacionDescuentos)
-                    .ThenInclude(ad => ad.Descuentos)
+                .Include(e => e.AsignacionBonos).ThenInclude(ab => ab.Bonos)
+                .Include(e => e.AsignacionDescuentos).ThenInclude(ad => ad.Descuentos)
                 .Include(e => e.Vacacions)
                 .Include(e => e.ControlAsistencia
-                    .Where(ca => ca.Fecha >= fechaInicioDate &&
-                               ca.Fecha <= fechaFinDate))
+                    .Where(ca => ca.Fecha >= fechaInicioDate && ca.Fecha <= fechaFinDate))
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -251,25 +300,34 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
 
 
+
+        // Calcula la información de planilla para cada empleado
         private List<object> CalcularInformacionPlanilla(List<Empleado> empleados, DateTime fechaInicio, DateTime fechaFin)
         {
             return empleados.Select(empleado =>
             {
                 var asistencias = empleado.ControlAsistencia;
+
+                // Resumen de asistencias (días trabajados, horas extras, tardías, etc.)
                 var (diasTrabajados, horasExtras, minutosTardias, horasTrabajadasTotales) = CalcularResumenAsistencias(asistencias);
 
-                // Calcular salario basado en asistencia
+                // Calcular salario base por hora
                 decimal valorHoraNormal = (decimal)(empleado.PuestoTrabajo?.ValorxHora ?? empleado.SalarioBase / 30m / 8m);
                 decimal salarioCalculado = horasTrabajadasTotales * valorHoraNormal;
 
+                // Cálculo de bonos y descuentos
                 var (totalBonos, totalDescuentos) = CalcularBeneficios(empleado, minutosTardias, salarioCalculado);
+
+                // Cálculo de vacaciones
                 var (diasVacaciones, pagoVacaciones) = CalcularVacaciones(empleado);
 
+                // Cálculo de extras y subtotal
                 decimal totalPagoHorasExtra = horasExtras * valorHoraNormal * 1.5m;
                 decimal horasTardias = minutosTardias / 60m;
                 decimal subtotal = salarioCalculado + totalPagoHorasExtra + pagoVacaciones + totalBonos;
                 decimal salarioNeto = subtotal - totalDescuentos;
 
+                // Objeto anónimo con datos para la vista
                 return new
                 {
                     EmpleadoId = empleado.Id,
@@ -298,6 +356,8 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }).ToList<object>();
         }
 
+
+        // Calcula el resumen de asistencias de un empleado
         private (int DiasTrabajados, decimal HorasExtras, int HorasTardias, decimal HorasTrabajadas) CalcularResumenAsistencias(ICollection<ControlAsistencium> asistencias)
         {
             int dias = 0, horasTardias = 0;
@@ -308,16 +368,14 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             {
                 dias++;
 
-                // Sumar directamente las horas tardías registradas
+                // Sumar las horas de tardanza si existen
                 if (asistencia.HoraTardia.HasValue)
                 {
-                    horasTardias += asistencia.HoraTardia.Value; // Se guarda tal cual en horas
+                    horasTardias += asistencia.HoraTardia.Value;
                 }
 
-                // Cálculo de horas trabajadas (considerando horario de almuerzo)
+                // Calcular horas trabajadas netas (descontando almuerzo si >5h)
                 var horasTrabajadas = asistencia.Salida - asistencia.Entrada;
-
-                // Descontar 1 hora de almuerzo si trabajó más de 5 horas
                 if (horasTrabajadas > TimeSpan.FromHours(5))
                 {
                     horasTrabajadas -= TimeSpan.FromHours(1);
@@ -325,7 +383,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
                 horasTrabajadasTotales += (decimal)horasTrabajadas.TotalHours;
 
-                // Cálculo de horas extra
+                // Calcular horas extra si se excede jornada normal
                 if (asistencia.HorasExtra.HasValue && asistencia.HorasExtra > 0)
                 {
                     horasExtras += asistencia.HorasExtra.Value;
@@ -338,6 +396,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return (dias, horasExtras, horasTardias, horasTrabajadasTotales);
         }
+
         private async Task<EmpleadoPlanilla> GenerarDetallePlanilla(Empleado empleado, int planillaId, DateTime fechaInicio, DateTime fechaFin)
         {
             var asistencias = empleado.ControlAsistencia ?? new List<ControlAsistencium>();
@@ -425,23 +484,37 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             return (bonos, descuentos);
         }
+        // Método que calcula los días de vacaciones tomados por un empleado y el pago correspondiente
         private (int DiasVacaciones, decimal PagoVacaciones) CalcularVacaciones(Empleado empleado)
         {
+            // Obtener la primera vacación registrada del empleado (puede mejorarse para múltiples vacaciones)
             var vacacion = empleado.Vacacions.FirstOrDefault();
+
+            // Si no tiene vacaciones registradas, retorna 0
             if (vacacion == null) return (0, 0);
 
+            // Calcular la diferencia en días entre la fecha de inicio y fin de la vacación
             TimeSpan diferencia = vacacion.DiaFin - vacacion.DiaInicio;
             int dias = diferencia.Days;
+
+            // Calcular el pago correspondiente a esos días de vacaciones
+            // Se asume un mes de 30 días
             decimal pago = (decimal)(dias * (empleado.SalarioBase / 30m));
 
             return (dias, pago);
         }
 
+
+        // Método que calcula el salario neto de un empleado sumando bonos, horas extras, vacaciones y restando descuentos
         private decimal CalcularSalarioNeto(Empleado empleado, decimal totalBonos, decimal totalDescuentos, decimal pagoVacaciones, decimal horasExtras)
         {
+            // Calcular el valor por hora del empleado (asumiendo jornada de 8 horas diarias en 30 días)
             decimal valorHora = (decimal)(empleado.SalarioBase / 30m / 8m);
+
+            // Calcular el valor de las horas extra (se pagan al 150%)
             decimal valorHorasExtras = horasExtras * valorHora * 1.5m;
 
+            // Salario neto = salario base + horas extra + pago vacaciones + bonos - descuentos
             return (decimal)(empleado.SalarioBase +
                    valorHorasExtras +
                    pagoVacaciones +
@@ -449,13 +522,16 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
                    totalDescuentos);
         }
 
+
+        // Método que configura los datos necesarios en ViewBag para ser usados en la vista de la planilla
         private void ConfigurarViewBagsParaVista(DateTime fechaInicio, DateTime fechaFin, List<object> empleadosInfo)
         {
+            // Asignar lista de información de empleados y fechas seleccionadas
             ViewBag.EmpleadosInfo = empleadosInfo;
             ViewBag.FechaInicio = fechaInicio;
             ViewBag.FechaFin = fechaFin;
 
-            // Totales generales
+            // Cálculo de totales generales para mostrar en la vista resumen
             ViewBag.SalarioBaseGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioBase").GetValue(e));
             ViewBag.TotalBonosGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalBonos").GetValue(e));
             ViewBag.TotalDescuentosGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("TotalDescuentos").GetValue(e));
@@ -464,6 +540,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             ViewBag.TotalHorasTardiasGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("HorasTardias").GetValue(e));
             ViewBag.TotalSalarioNetoGeneral = empleadosInfo.Sum(e => (decimal)e.GetType().GetProperty("SalarioNeto").GetValue(e));
         }
+
         #endregion
     }
 }
