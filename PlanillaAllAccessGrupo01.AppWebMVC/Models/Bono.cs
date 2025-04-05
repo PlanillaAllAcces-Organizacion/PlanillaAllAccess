@@ -13,7 +13,7 @@ public partial class Bono
     // que se utilizan para mostrar descripciones más legibles en las interfaces, como el listado (Index).
     public int Id { get; set; }
 
-
+    [Display(Name = "Nombre del Bono")]
     [Required(ErrorMessage = "El nombre del bono es obligatorio")]
     [StringLength(100, ErrorMessage = "El nombre del bono no puede exceder los 100 caracteres")]
     public string NombreBono { get; set; } = null!;
@@ -28,19 +28,18 @@ public partial class Bono
     [Range(0, 2, ErrorMessage = "El estado debe ser 0 (No definida), 1 (Activo) o 2 (Inactivo)")]
     public byte? Estado { get; set; }
 
-
+    [Display(Name = "Fecha Validacion")]
     public DateOnly? FechaValidacion { get; set; }
 
-
+    [Display(Name = "Fecha de Exiración")]
     public DateOnly? FechaExpiracion { get; set; }
 
-
-    [Required]
+    [Display(Name = "Tipo de Operación")]
     [Range(0, 2, ErrorMessage = "La operación debe ser 0 (No definida), 1 (Operación Fija) o 2 (Operación No Fija)")]
     public byte Operacion { get; set; }
 
 
-    [Required]
+    [Required(ErrorMessage ="Es necesario elegir una planilla")]
     [Range(0, 2, ErrorMessage = "La planilla debe ser 0 (No definida), 1 (Planilla Mensual) o 2 (Planilla Quincenal)")]
     public byte Planilla { get; set; }
 
