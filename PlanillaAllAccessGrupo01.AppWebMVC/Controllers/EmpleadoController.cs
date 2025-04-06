@@ -181,20 +181,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
               // Obtiene el puesto de trabajo del empleado.
             var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(empleado.PuestoTrabajoId);
 
-            // Define un array de nombres de puestos que no requieren jefe inmediato.
-            var rolesSinJefeInmediato = new[] { "Recursos Humanos", "Supervisor", "Administrador de Nómina" };
-
-            // Si el puesto de trabajo del empleado está en la lista de roles sin jefe inmediato,
-            // verifica que no se haya asignado un jefe inmediato.
-            if (puestoTrabajo != null && rolesSinJefeInmediato.Contains(puestoTrabajo.NombrePuesto))
-            {
-                if (empleado.JefeInmediatoId != null)
-                {
-                    ModelState.AddModelError("JefeInmediatoId", "El campo Jefe Inmediato no se puede asignar para este puesto.");
-                    empleado.JefeInmediatoId = null;
-                }
-            }
-
             // Si el modelo es válido, realiza las siguientes acciones:
             if (ModelState.IsValid)
             {
@@ -437,20 +423,6 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
 
             // Obtiene el puesto de trabajo del empleado.
             var puestoTrabajo = await _context.PuestoTrabajos.FindAsync(empleado.PuestoTrabajoId);
-
-            // Define un array de nombres de puestos que no requieren jefe inmediato.
-            var rolesSinJefeInmediato = new[] { "Recursos Humanos", "Supervisor", "Administrador de Nómina" };
-
-            // Si el puesto de trabajo del empleado está en la lista de roles sin jefe inmediato,
-            // verifica que no se haya asignado un jefe inmediato.
-            if (puestoTrabajo != null && rolesSinJefeInmediato.Contains(puestoTrabajo.NombrePuesto))
-            {
-                if (empleado.JefeInmediatoId != null)
-                {
-                    ModelState.AddModelError("JefeInmediatoId", "El campo Jefe Inmediato no se puede asignar para este puesto.");
-                    empleado.JefeInmediatoId = null;
-                }
-            }
 
             // Si el modelo es válido, realiza las siguientes acciones:
             if (ModelState.IsValid)

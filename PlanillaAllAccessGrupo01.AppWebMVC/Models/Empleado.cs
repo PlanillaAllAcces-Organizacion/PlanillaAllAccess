@@ -11,6 +11,7 @@ public partial class Empleado
     public int Id { get; set; }
 
     [Display(Name = "Jefe Inmediato")]
+    [Required(ErrorMessage = "El jefeInmediato es obligatoria.")]
     public int? JefeInmediatoId { get; set; }
 
 

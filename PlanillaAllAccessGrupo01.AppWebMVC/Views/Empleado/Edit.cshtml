@@ -94,8 +94,8 @@
 					</div>
 
 					<div class="col-md-6 mb-4">
-						<label asp-for="JefeInmediatoId" class="form-label fw-bold"></label>
-						<select asp-for="JefeInmediatoId" class="form-control" asp-items="ViewBag.JefeInmediatoId" id="jefeInmediatoSelect">
+						<label asp-for="JefeInmediatoId" class="form-label fw-bold required"></label>
+						<select asp-for="JefeInmediatoId" class="form-control" asp-items="ViewBag.JefeInmediatoId" >
 							<option value="">-- Seleccione un jefe --</option>
 						</select>
 						<span asp-validation-for="JefeInmediatoId" class="text-danger"></span>
@@ -127,37 +127,6 @@
 	}
 
 	<script>
-
-		 const rolesSinJefeInmediato = ["Recursos Humanos", "Supervisor", "Administrador de Nómina"];
-
-		 document.getElementById("puestoTrabajoSelect").addEventListener("change", function () {
-			 const puestoTrabajoId = this.value;
-			 const jefeInmediatoSelect = document.getElementById("jefeInmediatoSelect");
-
-			 if (puestoTrabajoId) {
-
-			   fetch(`/Empleado/GetPuestoNombre?puestoTrabajoId=${puestoTrabajoId}`)
-					 .then(response => response.json())
-					 .then(data => {
-					 const nombrePuesto = data.nombrePuesto;
-
-					 if (rolesSinJefeInmediato.includes(nombrePuesto)) {
-
-										 jefeInmediatoSelect.disabled = true;
-										 jefeInmediatoSelect.value = "";
-					 } else {
-
-						jefeInmediatoSelect.disabled = false;
-					 }
-				 })
-				 .catch(error => console.error("Error:", error));
-
-			 } else {
-
-				 jefeInmediatoSelect.disabled = true;
-				 jefeInmediatoSelect.value = "";
-			 }
-		 });
 
 		document.getElementById("puestoTrabajoSelect").addEventListener("change", function () {
 			 var puestoId = this.value;
