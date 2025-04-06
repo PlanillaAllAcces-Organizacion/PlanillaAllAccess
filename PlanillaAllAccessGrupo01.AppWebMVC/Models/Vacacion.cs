@@ -10,6 +10,7 @@ public partial class Vacacion
 {
     public int Id { get; set; }
 
+    [DisplayName("Nombre de Empleado")]
     public int EmpleadosId { get; set; }
 
     [DisplayName("Mes de la vacación")]
