@@ -29,6 +29,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             var query = _context.Empleados
                 .Include(e => e.AsignacionBonos)
                 .Include(e => e.AsignacionDescuentos)
+                .Include(e => e.EmpleadoPlanillas) 
                 .AsQueryable();
 
             // Filtros básicos (texto)
