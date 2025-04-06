@@ -189,7 +189,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ModificarAsistencia(int id, string asistencia, int? horasTardia, int? horasExtra)
+        public async Task<IActionResult> ModificarAsistencia(int id, string asistencia, int? horaTardia, int? horasExtra)
         {
             // Busca un registro de asistencia por su ID.
             var registro = await _context.ControlAsistencia.FindAsync(id);
@@ -200,7 +200,7 @@ namespace PlanillaAllAccessGrupo01.AppWebMVC.Controllers
             }
             // Actualiza las propiedades del registro de asistencia.
             registro.Asistencia = asistencia;
-            registro.HoraTardia = horasTardia;
+            registro.HoraTardia = horaTardia;
             registro.HorasExtra = horasExtra;
             // Guarda los cambios en la base de datos.
             await _context.SaveChangesAsync();

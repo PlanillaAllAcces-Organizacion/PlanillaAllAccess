@@ -63,7 +63,7 @@
                                          <option value='No asistió' ${emp.asistencia === "No asistió" ? "selected" : ""}>No asistió</option>
                                          <option value='Tiene permiso' ${emp.asistencia === "Tiene permiso" ? "selected" : ""}>Tiene permiso</option>
                                      </select></td>
-                                     <td><input type='number' class='form-control horasTardia' value='${emp.horasTardia || 0}' min='0' /></td>
+                                     <td><input type='number' class='form-control horasTardia' value='${emp.horaTardia || 0}' min='0' /></td>
                                      <td><input type='number' class='form-control horasExtra' value='${emp.horasExtra || 0}' min='0' /></td>
                                      <td><button class='btn btn-success actualizarAsistencia' data-empleado='${emp.id}'>Actualizar</button></td>
                                  </tr>`;
@@ -79,10 +79,10 @@
                  var row = $(this).closest('tr');
                  var id = $(this).data('empleado'); // Cambiado a data-empleado para que coincida con el HTML
                  var asistencia = row.find('.asistencia').val();
-                 var horasTardia = row.find('.horasTardia').val() || 0;
+                 var horaTardia = row.find('.horaTardia').val() || 0;
                  var horasExtra = row.find('.horasExtra').val() || 0;
 
-                 $.post('/Asistencia/ModificarAsistencia', { id, asistencia, horasTardia, horasExtra }, function (response) {
+                 $.post('/Asistencia/ModificarAsistencia', { id, asistencia, horaTardia, horasExtra }, function (response) {
                      if (response.success) {
                          alert('Asistencia actualizada correctamente');
                      } else {
